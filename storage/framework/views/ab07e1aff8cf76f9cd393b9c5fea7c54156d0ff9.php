@@ -11,8 +11,8 @@
                     <h4><?php echo e(get_phrase('Create School')); ?></h4>
                     <ul class="d-flex align-items-center eBreadcrumb-2">
                         <li><a href="#"><?php echo e(get_phrase('Home')); ?></a></li>
-                        <li><a href="#"><?php echo e(get_phrase('Schools')); ?></a></li>
-                        <li><a href="#"><?php echo e(get_phrase('Create School')); ?></a></li>
+                        <li><a href="#"><?php echo e(get_phrase('Colleges')); ?></a></li>
+                        <li><a href="#"><?php echo e(get_phrase('Create College')); ?></a></li>
                     </ul>
                 </div>
             </div>
@@ -24,8 +24,8 @@
     <div class="col-12">
         <div class="eSection-wrap">
         	<div class="title">
-				<h3><?php echo e(get_phrase('School Form')); ?></h3>
-				<p><?php echo e(get_phrase('Provide all the information required for your school.').' '.get_phrase('Also provide a admin information with email and passwoard.').' '.get_phrase('So that admin can access the created school.')); ?></p>
+				<h3><?php echo e(get_phrase('College Form')); ?></h3>
+				<p><?php echo e(get_phrase('Provide all the information required for your College.').' '.get_phrase('Also provide a admin information with email and passwoard.').' '.get_phrase('So that admin can access the created school.')); ?></p>
 			</div>
 
 			<div class="eMain">
@@ -34,29 +34,29 @@
 					<div class="row">
 						<div class="col-md-6 pb-3">
 							<div class="eForm-layouts">
-								<p class="column-title"><?php echo e(get_phrase('SCHOOL INFO')); ?></p>
+								<p class="column-title"><?php echo e(get_phrase('COLLEGE INFO')); ?></p>
 								<div class="fpb-7">
-									<label for="school_name" class="eForm-label"><?php echo e(get_phrase('School Name')); ?></label>
+									<label for="school_name" class="eForm-label"><?php echo e(get_phrase('College Name')); ?></label>
 									<input type="text" class="form-control eForm-control" id="school_name" name="school_name" required>
 								</div>
 								<div class="fpb-7">
-									<label for="school_address" class="eForm-label"><?php echo e(get_phrase('School Address')); ?></label>
+									<label for="school_address" class="eForm-label"><?php echo e(get_phrase('College Address')); ?></label>
 									<input type="text" class="form-control eForm-control" id="school_address" name="school_address" required>
 								</div>
 								<div class="fpb-7">
-									<label for="school_email" class="eForm-label"><?php echo e(get_phrase('School Email')); ?></label>
+									<label for="school_email" class="eForm-label"><?php echo e(get_phrase('College Email')); ?></label>
 									<input type="text" class="form-control eForm-control" id="school_email" name="school_email" required>
 								</div>
 								<div class="fpb-7">
-									<label for="school_phone" class="eForm-label"><?php echo e(get_phrase('School Phone')); ?></label>
+									<label for="school_phone" class="eForm-label"><?php echo e(get_phrase('College Phone')); ?></label>
 									<input type="tel" class="form-control eForm-control" id="school_phone" name="school_phone" required>
 								</div>
 								<div class="fpb-7">
-					                <label for="school_info" class="eForm-label"><?php echo e(get_phrase('School info')); ?></label>
+					                <label for="school_info" class="eForm-label"><?php echo e(get_phrase('College info')); ?></label>
 					                <textarea class="form-control eForm-control" id="school_info" name = "school_info" rows="4" required></textarea>
 					            </div>
 								<div class="fpb-7">
-					                <label for="school_logo" class="eForm-label"><?php echo e(get_phrase('School Logo')); ?></label>
+					                <label for="school_logo" class="eForm-label"><?php echo e(get_phrase('College Logo')); ?></label>
 					                <input class="form-control eForm-control-file" type="file" id="school_logo" name="school_logo" accept="image/*">
 					            </div>
 							</div>
