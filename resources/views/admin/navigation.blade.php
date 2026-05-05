@@ -369,7 +369,7 @@ use App\Models\User;
 
         @if(empty($user->menu_permission) || in_array('admin.fee_manager.list', $menu_permission) || in_array('admin.offline_payment_pending', $menu_permission) || in_array('admin.expense.list', $menu_permission) || in_array('admin.expense.category_list', $menu_permission)) 
         <li class="nav-links-li {{ request()->is('admin/fee_manager*') || request()->is('admin/offline_payment/pending*')|| request()->is('admin/expense_category*') || request()->is('admin/expenses*') ? 'showMenu':'' }}">
-            <div class="iocn-link">
+            {{-- <div class="iocn-link">
                 <a href="#">
                     <div class="sidebar_icon">
                         <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="48" height="48"><path d="M16.5,10c-1.972-.034-1.971-2.967,0-3h1c1.972,.034,1.971,2.967,0,3h-1Zm-3.5,4.413c0-1.476-.885-2.783-2.255-3.331l-2.376-.95c-.591-.216-.411-1.15,.218-1.132h1.181c.181,0,.343,.094,.434,.251,.415,.717,1.334,.962,2.05,.547,.717-.415,.962-1.333,.548-2.049-.511-.883-1.381-1.492-2.363-1.684-.399-1.442-2.588-1.375-2.896,.091-3.161,.875-3.414,5.6-.285,6.762l2.376,.95c.591,.216,.411,1.15-.218,1.132h-1.181c-.181,0-.343-.094-.434-.25-.415-.717-1.334-.961-2.05-.547-.717,.415-.962,1.333-.548,2.049,.511,.883,1.381,1.491,2.363,1.683,.399,1.442,2.588,1.375,2.896-.091,1.469-.449,2.54-1.817,2.54-3.431ZM18.5,1H5.5C2.468,1,0,3.467,0,6.5v11c0,3.033,2.468,5.5,5.5,5.5h3c1.972-.034,1.971-2.967,0-3h-3c-1.379,0-2.5-1.122-2.5-2.5V6.5c0-1.378,1.121-2.5,2.5-2.5h13c1.379,0,2.5,1.122,2.5,2.5v2c.034,1.972,2.967,1.971,3,0v-2c0-3.033-2.468-5.5-5.5-5.5Zm-5.205,18.481c-.813,.813-1.269,1.915-1.269,3.064,.044,.422-.21,1.464,.5,1.455,1.446,.094,2.986-.171,4.019-1.269l6.715-6.715c2.194-2.202-.9-5.469-3.157-3.343l-6.808,6.808Z"/></svg>
@@ -393,7 +393,7 @@ use App\Models\User;
                     />
                   </svg>
                 </span>
-            </div>
+            </div> --}}
             <ul class="sub-menu">
               @if(empty($user->menu_permission) || in_array('admin.fee_manager.list', $menu_permission))
               <li><a class="{{ (request()->is('admin/fee_manager')) ? 'active' : '' }}" href="{{ route('admin.fee_manager.list') }}"><span>
@@ -713,7 +713,7 @@ use App\Models\User;
         @endif 
 
 
-        @if(empty($user->menu_permission) || in_array('admin.book.book_list', $menu_permission) || in_array('admin.book_issue.list', $menu_permission) || in_array('admin.noticeboard.list', $menu_permission) || in_array('admin.subscription', $menu_permission) || in_array('admin.events.list', $menu_permission) || in_array('admin.feedback.feedback_list', $menu_permission))
+        {{-- @if(empty($user->menu_permission) || in_array('admin.book.book_list', $menu_permission) || in_array('admin.book_issue.list', $menu_permission) || in_array('admin.noticeboard.list', $menu_permission) || in_array('admin.subscription', $menu_permission) || in_array('admin.events.list', $menu_permission) || in_array('admin.feedback.feedback_list', $menu_permission))
         <li class="nav-links-li {{ request()->is('admin/book*') || request()->is('admin/book_issue*') || request()->is('admin/noticeboard*') || request()->is('admin/subscription') || request()->is('admin/events/list*') || request()->is('admin/feedback-list*') ? 'showMenu':'' }}">
             <div class="iocn-link">
                 <a href="#">
@@ -775,9 +775,9 @@ use App\Models\User;
               @endif
             </ul>
         </li>
-        @endif
+        @endif --}}
 
-        @if(empty($user->menu_permission) || in_array('admin.settings.school', $menu_permission) || in_array('admin.settings.session_manager', $menu_permission) || in_array('admin.settings.payment', $menu_permission) || in_array('admin.profile', $menu_permission))
+        {{-- @if(empty($user->menu_permission) || in_array('admin.settings.school', $menu_permission) || in_array('admin.settings.session_manager', $menu_permission) || in_array('admin.settings.payment', $menu_permission) || in_array('admin.profile', $menu_permission))
         <li class="nav-links-li {{ request()->is('admin/settings/school*') || request()->is('admin/session_manager*') || request()->is('admin/settings/payment*') || request()->is('admin/live_class_settings*') || request()->is('admin/profile*') ? 'showMenu':'' }}">
             <div class="iocn-link">
                 <a href="#">
@@ -844,7 +844,7 @@ use App\Models\User;
               @endif
             </ul>
         </li>
-        @endif
+        @endif --}}
       </ul>
     </div>
 

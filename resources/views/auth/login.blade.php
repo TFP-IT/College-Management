@@ -18,14 +18,16 @@
 <div class="row h-100">
     <div class="col-lg-6 d-none d-lg-block p-0 h-100">
         <div class="bg-image login-image">
+            <img src="./assets/images/login.png" alt="">
         </div>
     </div>
     <div class="col-lg-6 p-0 h-100 position-relative">
         <div class="parent-elem">
             <div class="middle-elem">
                 <div class="primary-form">
-                    <div class="form-logo mb-5">
-                        <img height="60px" src="{{ asset('assets/uploads/logo/'.get_settings('dark_logo')) }}">
+                    <div class="form-logo mb-5 d-flex align-items-center">
+                        <img height="40px" src="{{ asset('assets/images/blue_gradient_logo.png') }}" alt="logo">
+                        <h1 class="ms-3 mb-0" style="font-size: 24px; font-weight: 600;">{{ get_settings('system_name') }}</h1>
                     </div>
                     <div class="row">
                         <div class="col-12">
