@@ -279,7 +279,7 @@
             @if(get_settings('frontend_view') == '1')
             <div class="col float-left">
               <div class="sidebar_menu_icon">
-                <a href="{{ route('landingPage') }}" target="" class="btn btn-outline-primary ml-3 d-none d-md-inline-block"><?php echo get_phrase('Visit Website'); ?></a>
+                <a href="{{ route('login') }}" target="" class="btn btn-outline-primary ml-3 d-none d-md-inline-block"><?php echo get_phrase('Visit Website'); ?></a>
               </div>
             </div>
             @endif

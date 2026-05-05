@@ -2234,3 +2234,31 @@ Stack trace:
 #48 /home/vg/Desktop/College Management/CollegeManagement/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('...')
 #49 {main}
 "} 
+[2026-05-05 12:24:19] local.ERROR: The "--columns" option does not exist. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\RuntimeException(code: 0): The \"--columns\" option does not exist. at /var/www/College-Management/vendor/symfony/console/Input/ArgvInput.php:223)
+[stacktrace]
+#0 /var/www/College-Management/vendor/symfony/console/Input/ArgvInput.php(150): Symfony\\Component\\Console\\Input\\ArgvInput->addLongOption()
+#1 /var/www/College-Management/vendor/symfony/console/Input/ArgvInput.php(85): Symfony\\Component\\Console\\Input\\ArgvInput->parseLongOption()
+#2 /var/www/College-Management/vendor/symfony/console/Input/ArgvInput.php(74): Symfony\\Component\\Console\\Input\\ArgvInput->parseToken()
+#3 /var/www/College-Management/vendor/symfony/console/Input/Input.php(56): Symfony\\Component\\Console\\Input\\ArgvInput->parse()
+#4 /var/www/College-Management/vendor/symfony/console/Command/Command.php(285): Symfony\\Component\\Console\\Input\\Input->bind()
+#5 /var/www/College-Management/vendor/laravel/framework/src/Illuminate/Console/Command.php(152): Symfony\\Component\\Console\\Command\\Command->run()
+#6 /var/www/College-Management/vendor/symfony/console/Application.php(1098): Illuminate\\Console\\Command->run()
+#7 /var/www/College-Management/vendor/symfony/console/Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand()
+#8 /var/www/College-Management/vendor/symfony/console/Application.php(175): Symfony\\Component\\Console\\Application->doRun()
+#9 /var/www/College-Management/vendor/laravel/framework/src/Illuminate/Console/Application.php(102): Symfony\\Component\\Console\\Application->run()
+#10 /var/www/College-Management/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(155): Illuminate\\Console\\Application->run()
+#11 /var/www/College-Management/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle()
+#12 {main}
+"} 
+[2026-05-05 12:25:56] local.ERROR: Uncaught ReflectionException: Class "App\Http\Middleware\AlumniMiddleware" does not exist in Command line code:1
+Stack trace:
+#0 Command line code(1): ReflectionMethod->__construct()
+#1 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught ReflectionException: Class \"App\\Http\\Middleware\\AlumniMiddleware\" does not exist in Command line code:1
+Stack trace:
+#0 Command line code(1): ReflectionMethod->__construct()
+#1 {main}
+  thrown at Command line code:1)
+[stacktrace]
+#0 {main}
+"} 

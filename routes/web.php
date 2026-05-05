@@ -45,13 +45,13 @@ Route::get('/clear-cache', function() {
 Auth::routes();
 
 
-//Landing page routes are here
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
 Route::controller(HomeController::class)->group(function () {
-
-    Route::get('/', 'home')->name('landingPage');
     Route::post('school/create', 'schoolCreate')->name('school.create');
-    Route::get('web_redirect_to_pay_fee', 'webRedirectToPayFee')->name('webRedirectToPayFee');  
-
+    Route::get('web_redirect_to_pay_fee', 'webRedirectToPayFee')->name('webRedirectToPayFee');
 });
 
 // Account Disable Route

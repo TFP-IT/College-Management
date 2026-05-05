@@ -19,7 +19,7 @@ class IsInstalled
     {
         if(DB::connection()->getDatabaseName() != 'db_name')
         {
-            return to_route('landingPage');
+            return to_route('login');
         } else {
             return $next($request);
         }

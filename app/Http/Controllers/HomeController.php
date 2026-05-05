@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\FrontendFeature;
-use App\Models\Package;
 use App\Models\User;
 use App\Models\Session;
 use App\Models\School;
-use App\Models\Faq;
 use Mail;
 use App\Mail\SchoolEmail;
 use Illuminate\Http\Request;
@@ -15,27 +12,6 @@ use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function home(Request $request)
-    {
-        if(get_settings('frontend_view') == '1') {
-            $packages = Package::where('status', 1)->get();
-            $faqs = Faq::all();
-            $users = User::all();
-            $schools = School::all();
-            $frontendFeatures = ($request->has('see_all')) 
-            ? FrontendFeature::all() 
-            : FrontendFeature::limit(8)->get();
-            return view('frontend.landing_page', ['packages' => $packages, 'faqs' => $faqs, 'users' => $users,'schools' => $schools, 'frontendFeatures' => $frontendFeatures]);
-        } else {
-            return redirect(route('login'));
-        }
-    }
-
     /**
      * Show the application dashboard.
      *

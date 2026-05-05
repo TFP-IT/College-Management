@@ -24,7 +24,7 @@ $subscription = DB::table('subscriptions')->where('school_id', auth()->user()->s
                 </div>
                 @if(get_settings('frontend_view') == '1')
 	            <div class="export-btn-area">
-	            	<a href="{{ route('landingPage') }}" target="_blank" class="export_btn"><?php echo get_phrase('Visit Website'); ?></a>
+	            	<a href="{{ route('login') }}" target="_blank" class="export_btn"><?php echo get_phrase('Visit Website'); ?></a>
 	            </div>
 	            @endif
             </div>
