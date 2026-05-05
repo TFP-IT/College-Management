@@ -333,31 +333,31 @@ use App\Models\User;
                 {{ get_phrase('Class List') }}
               </span></a></li>
               @endif
-              {{-- @if(empty($user->menu_permission) || in_array('admin.routine', $menu_permission))
+              @if(empty($user->menu_permission) || in_array('admin.routine', $menu_permission))
               <li><a class="{{ (request()->is('admin/routine*')) ? 'active' : '' }}" href="{{ route('admin.routine') }}"><span>
                 {{ get_phrase('Class Routine') }}
               </span></a></li>
-              @endif --}}
+              @endif
               @if(empty($user->menu_permission) || in_array('admin.subject_list', $menu_permission))
               <li><a class="{{ (request()->is('admin/subject*')) ? 'active' : '' }}" href="{{ route('admin.subject_list') }}"><span>
                 {{ get_phrase('Subjects') }}
               </span></a></li>
               @endif
-              {{-- @if(empty($user->menu_permission) || in_array('admin.gradebook', $menu_permission))
+              @if(empty($user->menu_permission) || in_array('admin.gradebook', $menu_permission))
               <li><a class="{{ (request()->is('admin/gradebook*')) ? 'active' : '' }}" href="{{ route('admin.gradebook') }}"><span>
                 {{ get_phrase('Gradebooks') }}
               </span></a></li>
-              @endif --}}
+              @endif
               {{-- @if(empty($user->menu_permission) || in_array('admin.syllabus', $menu_permission))
               <li><a class="{{ (request()->is('admin/syllabus*')) ? 'active' : '' }}" href="{{ route('admin.syllabus') }}"><span>
                 {{ get_phrase('Syllabus') }}
               </span></a></li>
               @endif --}}
-              {{-- @if(empty($user->menu_permission) || in_array('admin.class_room_list', $menu_permission))
+              @if(empty($user->menu_permission) || in_array('admin.class_room_list', $menu_permission))
               <li><a class="{{ (request()->is('admin/class_room*')) ? 'active' : '' }}" href="{{ route('admin.class_room_list') }}"><span>
                 {{ get_phrase('Class Room') }}
               </span></a></li>
-              @endif --}}
+              @endif
               @if(empty($user->menu_permission) || in_array('admin.department_list', $menu_permission))
               <li><a class="{{ (request()->is('admin/department*')) ? 'active' : '' }}" href="{{ route('admin.department_list') }}"><span>
                 {{ get_phrase('Department') }}
