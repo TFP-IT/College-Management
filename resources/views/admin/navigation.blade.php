@@ -141,36 +141,36 @@ use App\Models\User;
                       {{ get_phrase('Teacher') }}
                   </span></a></li>
                   @endif
-                  @if(empty($user->menu_permission) || in_array('admin.accountant', $menu_permission))
+                  {{-- @if(empty($user->menu_permission) || in_array('admin.accountant', $menu_permission))
                     <li><a class="{{ (request()->is('admin/accountant*')) ? 'active' : '' }}" href="{{ route('admin.accountant') }}"><span>
                       {{ get_phrase('Accountant') }}
                   </span></a></li>
-                  @endif
-                  @if(empty($user->menu_permission) || in_array('admin.librarian', $menu_permission))
+                  @endif --}}
+                  {{-- @if(empty($user->menu_permission) || in_array('admin.librarian', $menu_permission))
                     <li><a class="{{ (request()->is('admin/librarian*')) ? 'active' : '' }}" href="{{ route('admin.librarian') }}"><span>
                       {{ get_phrase('Librarian') }}
                   </span></a></li>
-                  @endif
-                  @if(empty($user->menu_permission) || in_array('admin.parent', $menu_permission))
+                  @endif --}}
+                  {{-- @if(empty($user->menu_permission) || in_array('admin.parent', $menu_permission))
                     <li><a class="{{ (request()->is('admin/parent*')) ? 'active' : '' }}" href="{{ route('admin.parent') }}"><span>
                       {{ get_phrase('Parent') }}
                   </span></a></li>
-                  @endif
-                  @if(empty($user->menu_permission) || in_array('admin.student', $menu_permission))
+                  @endif --}}
+                  {{-- @if(empty($user->menu_permission) || in_array('admin.student', $menu_permission))
                     <li><a class="{{ (request()->is('admin/student')) ? 'active' : '' }}" href="{{ route('admin.student') }}"><span>
                       {{ get_phrase('Student') }}
                   </span></a></li>
-                  @endif
-                  @if(empty($user->menu_permission) || in_array('admin.permission', $menu_permission))
+                  @endif --}}
+                  {{-- @if(empty($user->menu_permission) || in_array('admin.permission', $menu_permission))
                     <li><a class="{{ (request()->is('admin/permission*')) ? 'active' : '' }}" href="{{ route('admin.teacher.permission') }}"><span>
                       {{ get_phrase('Teacher Permission') }}
                   </span></a></li>
-                  @endif
+                  @endif --}}
               </ul>
           </li>
           @endif
 
-          @if(empty($user->menu_permission) || in_array('admin.offline_admission.single', $menu_permission)) 
+          {{-- @if(empty($user->menu_permission) || in_array('admin.offline_admission.single', $menu_permission)) 
           <li class="nav-links-li {{ request()->is('admin/offline_admission*') ? 'showMenu':'' }}">
               <div class="iocn-link">
                   <a class="{{ (request()->is('admin/offline_admission*')) ? 'active' : '' }}" href="{{ route('admin.offline_admission.single', ['type' => 'single']) }}">
@@ -183,7 +183,7 @@ use App\Models\User;
                   </a>
               </div>
           </li>
-        @endif
+        @endif --}}
 
         @if (addon_status('transport') == 1)
         <li
@@ -230,7 +230,7 @@ use App\Models\User;
 
         @if(empty($user->menu_permission) || in_array('admin.exam_category', $menu_permission) || in_array('admin.offline_exam', $menu_permission) || in_array('admin.marks', $menu_permission) || in_array('admin.grade_list', $menu_permission) || in_array('admin.promotion', $menu_permission))
         <li class="nav-links-li {{ request()->is('admin/exam_category*') || request()->is('admin/offline_exam*') || request()->is('admin/marks') || request()->is('admin/grade') || request()->is('admin/promotion*') || request()->is('admin/admit-card-list') || request()->is('admin/admitCardFilter') || request()->is('admin/print-admit-card')? 'showMenu':'' }}">
-            <div class="iocn-link">
+            {{-- <div class="iocn-link">
                 <a href="#">
                     <div class="sidebar_icon">
                         <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="48" height="48"><path d="M18,17.5A1.5,1.5,0,0,1,16.5,19h-1a1.5,1.5,0,0,1,0-3h1A1.5,1.5,0,0,1,18,17.5ZM13.092,14H10.908A1.5,1.5,0,0,1,8,13.5V10a4,4,0,0,1,8,0v3.5a1.5,1.5,0,0,1-2.908.5ZM11,10v1h2V10a1,1,0,0,0-2,0Zm-.569,5.947-.925.941a1.5,1.5,0,0,0-2.139,2.095s.163.187.189.211a2.757,2.757,0,0,0,3.9-.007l1.116-1.134a1.5,1.5,0,1,0-2.138-2.106ZM22,7.157V18.5A5.507,5.507,0,0,1,16.5,24h-9A5.507,5.507,0,0,1,2,18.5V5.5A5.507,5.507,0,0,1,7.5,0h7.343a5.464,5.464,0,0,1,3.889,1.611l1.657,1.657A5.464,5.464,0,0,1,22,7.157ZM18.985,7H17a2,2,0,0,1-2-2V3.015C14.947,3.012,7.5,3,7.5,3A2.5,2.5,0,0,0,5,5.5v13A2.5,2.5,0,0,0,7.5,21h9A2.5,2.5,0,0,0,19,18.5S18.988,7.053,18.985,7Z"/></svg>
@@ -254,7 +254,7 @@ use App\Models\User;
                     />
                   </svg>
                 </span>
-            </div>
+            </div> --}}
             <ul class="sub-menu">
               @if(empty($user->menu_permission) || in_array('admin.exam_category', $menu_permission))
               <li>
@@ -323,41 +323,41 @@ use App\Models\User;
                 </span>
             </div>
             <ul class="sub-menu">
-              @if(empty($user->menu_permission) || in_array('admin.daily_attendance', $menu_permission))
+              {{-- @if(empty($user->menu_permission) || in_array('admin.daily_attendance', $menu_permission))
               <li><a class="{{ (request()->is('admin/attendance*')) ? 'active' : '' }}" href="{{ route('admin.daily_attendance') }}"><span>
                 {{ get_phrase('Daily Attendance') }}
               </span></a></li>
-              @endif
+              @endif --}}
               @if(empty($user->menu_permission) || in_array('admin.class_list', $menu_permission))
               <li><a class="{{ (request()->is('admin/class_list*')) ? 'active' : '' }}" href="{{ route('admin.class_list') }}"><span>
                 {{ get_phrase('Class List') }}
               </span></a></li>
               @endif
-              @if(empty($user->menu_permission) || in_array('admin.routine', $menu_permission))
+              {{-- @if(empty($user->menu_permission) || in_array('admin.routine', $menu_permission))
               <li><a class="{{ (request()->is('admin/routine*')) ? 'active' : '' }}" href="{{ route('admin.routine') }}"><span>
                 {{ get_phrase('Class Routine') }}
               </span></a></li>
-              @endif
+              @endif --}}
               @if(empty($user->menu_permission) || in_array('admin.subject_list', $menu_permission))
               <li><a class="{{ (request()->is('admin/subject*')) ? 'active' : '' }}" href="{{ route('admin.subject_list') }}"><span>
                 {{ get_phrase('Subjects') }}
               </span></a></li>
               @endif
-              @if(empty($user->menu_permission) || in_array('admin.gradebook', $menu_permission))
+              {{-- @if(empty($user->menu_permission) || in_array('admin.gradebook', $menu_permission))
               <li><a class="{{ (request()->is('admin/gradebook*')) ? 'active' : '' }}" href="{{ route('admin.gradebook') }}"><span>
                 {{ get_phrase('Gradebooks') }}
               </span></a></li>
-              @endif
-              @if(empty($user->menu_permission) || in_array('admin.syllabus', $menu_permission))
+              @endif --}}
+              {{-- @if(empty($user->menu_permission) || in_array('admin.syllabus', $menu_permission))
               <li><a class="{{ (request()->is('admin/syllabus*')) ? 'active' : '' }}" href="{{ route('admin.syllabus') }}"><span>
                 {{ get_phrase('Syllabus') }}
               </span></a></li>
-              @endif
-              @if(empty($user->menu_permission) || in_array('admin.class_room_list', $menu_permission))
+              @endif --}}
+              {{-- @if(empty($user->menu_permission) || in_array('admin.class_room_list', $menu_permission))
               <li><a class="{{ (request()->is('admin/class_room*')) ? 'active' : '' }}" href="{{ route('admin.class_room_list') }}"><span>
                 {{ get_phrase('Class Room') }}
               </span></a></li>
-              @endif
+              @endif --}}
               @if(empty($user->menu_permission) || in_array('admin.department_list', $menu_permission))
               <li><a class="{{ (request()->is('admin/department*')) ? 'active' : '' }}" href="{{ route('admin.department_list') }}"><span>
                 {{ get_phrase('Department') }}
@@ -1111,10 +1111,10 @@ use App\Models\User;
         <div class="main_content">
             @yield('content')
             <!-- Start Footer -->
-            <div class="copyright-text">
+            {{-- <div class="copyright-text">
               <?php $active_session = DB::table('sessions')->where('id',  get_settings('running_session'))->value('session_title'); ?>
                 <p>{{ $active_session }} &copy; <span><a class="text-info" target="_blank" href="{{ get_settings('footer_link') }}">{{ get_settings('footer_text') }}</a></span></p>
-            </div>
+            </div> --}}
             <!-- End Footer -->
         </div>
       </div>
