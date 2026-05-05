@@ -29,6 +29,11 @@
         url: url,
         success: function(response){
           $("#offcanvasScrollingRightLabel").html(response);
+          // Re-init plugins for dynamically injected content
+          if ($.fn.select2) {
+            $(".eChoice-multiple-without-remove").select2({ placeholder: "Select a state" });
+            $(".eChoice-multiple-with-remove").select2();
+          }
         }
       });
   }
@@ -145,6 +150,11 @@ function largeModal(url, header)
     {
       jQuery('#large-modal .modal-body').html(response);
       jQuery('#large-modal .modal-title').html(header);
+      // Re-init plugins for dynamically injected content
+      if ($.fn.select2) {
+        $(".eChoice-multiple-without-remove").select2({ placeholder: "Select a state" });
+        $(".eChoice-multiple-with-remove").select2();
+      }
     }
   });
 }
@@ -183,6 +193,11 @@ function largeModal(url, header)
           {
               jQuery('#scrollable-modal .modal-body').html(response);
               jQuery('#scrollable-modal .modal-title').html(header);
+              // Re-init plugins for dynamically injected content
+              if ($.fn.select2) {
+                $(".eChoice-multiple-without-remove").select2({ placeholder: "Select a state" });
+                $(".eChoice-multiple-with-remove").select2();
+              }
           }
       });
   }

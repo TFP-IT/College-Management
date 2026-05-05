@@ -1,0 +1,56 @@
+# Laravel specific
+/vendor
+/node_modules
+/public/build
+/public/hot
+/storage/*.key
+/storage/app/public
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs
+
+# Environment files
+.env
+.env.backup
+.env.production
+.env.local
+.phpunit.result.cache
+
+# Composer
+composer.lock
+
+# NPM / Yarn
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE / Editor
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Testing
+/phpunit.xml
+
+# Logs
+*.log
+
+# Cache
+bootstrap/cache/*.php
+
+# PHPUnit / Pest
+.phpunit.cache
+
+# Docker (optional)
+docker-compose.override.yml
+
+# Misc
+*.swp
+*.bak
+*.tmp

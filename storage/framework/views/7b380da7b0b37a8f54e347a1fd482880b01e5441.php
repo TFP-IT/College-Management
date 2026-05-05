@@ -1,1 +1,0 @@
-<?php /**PATH /var/www/Ekattor8/resources/views/external_plugin.blade.php ENDPATH**/ ?>

@@ -121,7 +121,7 @@
         </div>
       </li>
 
-      <!-- <li class="nav-links-li <?php echo e(request()->is('superadmin/school/add*') ? 'showMenu':''); ?>">
+      <li class="nav-links-li <?php echo e(request()->is('superadmin/school/add*') ? 'showMenu':''); ?>">
         <div class="iocn-link">
           <a href="<?php echo e(route('superadmin.school.add')); ?>">
             <div class="sidebar_icon">
@@ -247,7 +247,7 @@
 					<li><a class="<?php echo e((request()->is('superadmin/settings/smtp*')) ? 'active' : ''); ?>" href="<?php echo e(route('superadmin.smtp_settings')); ?>"><span><?php echo e(get_phrase('Smtp settings')); ?></span></a></li>
 					<li><a class="<?php echo e((request()->is('superadmin/settings/about*')) ? 'active' : ''); ?>" href="<?php echo e(route('superadmin.about')); ?>"><span><?php echo e(get_phrase('About')); ?></span></a></li>
 				</ul>
-			</li> -->
+			</li>
 		</ul>
 	</div>
 
@@ -476,7 +476,11 @@
         </div>
         <div class="main_content">
             <?php echo $__env->yieldContent('content'); ?>
-            
+        
+            <div class="copyright-text">
+              <?php $active_session = DB::table('sessions')->where('id',  get_settings('running_session'))->value('session_title'); ?>
+                <p><?php echo e($active_session); ?> &copy; <span><a class="text-info" target="_blank" href="<?php echo e(get_settings('footer_link')); ?>"><?php echo e(get_settings('footer_text')); ?></a></span></p>
+            </div>            
         </div>
       </div>
       <?php echo $__env->make('modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>

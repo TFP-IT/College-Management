@@ -121,7 +121,7 @@
         </div>
       </li>
 
-      <!-- <li class="nav-links-li {{ request()->is('superadmin/school/add*') ? 'showMenu':'' }}">
+      <li class="nav-links-li {{ request()->is('superadmin/school/add*') ? 'showMenu':'' }}">
         <div class="iocn-link">
           <a href="{{ route('superadmin.school.add') }}">
             <div class="sidebar_icon">
@@ -247,7 +247,7 @@
 					<li><a class="{{ (request()->is('superadmin/settings/smtp*')) ? 'active' : '' }}" href="{{ route('superadmin.smtp_settings') }}"><span>{{ get_phrase('Smtp settings') }}</span></a></li>
 					<li><a class="{{ (request()->is('superadmin/settings/about*')) ? 'active' : '' }}" href="{{ route('superadmin.about') }}"><span>{{ get_phrase('About') }}</span></a></li>
 				</ul>
-			</li> -->
+			</li>
 		</ul>
 	</div>
 
@@ -472,12 +472,11 @@
         </div>
         <div class="main_content">
             @yield('content')
-            {{-- <!-- Start Footer -->
+        
             <div class="copyright-text">
               <?php $active_session = DB::table('sessions')->where('id',  get_settings('running_session'))->value('session_title'); ?>
-                <!-- <p>{{ $active_session }} &copy; <span><a class="text-info" target="_blank" href="{{ get_settings('footer_link') }}">{{ get_settings('footer_text') }}</a></span></p> -->
-            </div>
-            <!-- End Footer --> --}}
+                <p>{{ $active_session }} &copy; <span><a class="text-info" target="_blank" href="{{ get_settings('footer_link') }}">{{ get_settings('footer_text') }}</a></span></p>
+            </div>            
         </div>
       </div>
       @include('modal')
