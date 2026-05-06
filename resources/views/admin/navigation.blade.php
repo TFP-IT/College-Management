@@ -156,11 +156,11 @@ use App\Models\User;
                       {{ get_phrase('Parent') }}
                   </span></a></li>
                   @endif --}}
-                  {{-- @if(empty($user->menu_permission) || in_array('admin.student', $menu_permission))
+                  @if(empty($user->menu_permission) || in_array('admin.student', $menu_permission))
                     <li><a class="{{ (request()->is('admin/student')) ? 'active' : '' }}" href="{{ route('admin.student') }}"><span>
                       {{ get_phrase('Student') }}
                   </span></a></li>
-                  @endif --}}
+                  @endif
                   {{-- @if(empty($user->menu_permission) || in_array('admin.permission', $menu_permission))
                     <li><a class="{{ (request()->is('admin/permission*')) ? 'active' : '' }}" href="{{ route('admin.teacher.permission') }}"><span>
                       {{ get_phrase('Teacher Permission') }}
@@ -170,7 +170,7 @@ use App\Models\User;
           </li>
           @endif
 
-          {{-- @if(empty($user->menu_permission) || in_array('admin.offline_admission.single', $menu_permission)) 
+          @if(empty($user->menu_permission) || in_array('admin.offline_admission.single', $menu_permission)) 
           <li class="nav-links-li {{ request()->is('admin/offline_admission*') ? 'showMenu':'' }}">
               <div class="iocn-link">
                   <a class="{{ (request()->is('admin/offline_admission*')) ? 'active' : '' }}" href="{{ route('admin.offline_admission.single', ['type' => 'single']) }}">
@@ -183,7 +183,7 @@ use App\Models\User;
                   </a>
               </div>
           </li>
-        @endif --}}
+        @endif
 
         @if (addon_status('transport') == 1)
         <li

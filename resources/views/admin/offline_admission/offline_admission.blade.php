@@ -62,7 +62,7 @@
           </button>
       	</a>
       </li>
-      <li class="nav-item" role="presentation">
+      {{-- <li class="nav-item" role="presentation">
       	<a href="{{ route('admin.offline_admission.single', ['type' => 'excel']) }}">
       		<button
               class="nav-link {{ $aria_expand == 'excel' ? 'active':'' }}"
@@ -78,7 +78,7 @@
               <span></span>
           </button>
       	</a>
-      </li>
+      </li> --}}
 	  </ul>
     <!-- Tab content -->
     <div class="tab-content eNav-Tabs-content" id="myTabContent">
