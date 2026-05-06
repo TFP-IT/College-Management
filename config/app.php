@@ -4,9 +4,17 @@ $hostname = $_SERVER['HTTP_HOST'] ?? null;
 $script_name = $_SERVER['SCRIPT_NAME'] ?? '';
 $https = $_SERVER['HTTPS'] ?? null;
 $host_type = ($https === 'on' || $https === '1') ? 'https://' : 'http://';
+$server_host = $hostname ? explode(':', $hostname)[0] : null;
+$is_local_host = in_array($server_host, ['127.0.0.1', 'localhost'], true);
+$is_builtin_php_server = PHP_SAPI === 'cli-server';
 
 // Check if it is valet server, Laravel inbuilt server, or CLI context.
-if ($hostname === null || $hostname === '127.0.0.1:8000' || ($script_name !== '' && str_contains($script_name, 'valet/'))) {
+if (
+    $hostname === null ||
+    $is_local_host ||
+    $is_builtin_php_server ||
+    ($script_name !== '' && str_contains($script_name, 'valet/'))
+) {
     $asset_url = null;
 } else {
     $asset_url = str_replace('index.php', '', $script_name).'public';

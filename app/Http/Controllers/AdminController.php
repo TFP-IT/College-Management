@@ -1498,8 +1498,8 @@ class AdminController extends Controller
             // Upload file
             $file->move(public_path('assets/csv_file/'), $filename);
 
-            // In case the uploaded file path is to be stored in the database
-            $filepath = url('public/assets/csv_file/'.$filename);
+            // Use local filesystem path so imports are independent of host/path config.
+            $filepath = public_path('assets/csv_file/'.$filename);
         }
 
         if (($handle = fopen($filepath, 'r')) !== FALSE) { // Check the resource is valid
