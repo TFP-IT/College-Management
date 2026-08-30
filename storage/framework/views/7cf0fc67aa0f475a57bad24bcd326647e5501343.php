@@ -1,1 +1,0 @@
-<?php /**PATH /home/vg/Desktop/College Management/CollegeManagement/resources/views/external_plugin.blade.php ENDPATH**/ ?>
