@@ -3,12 +3,17 @@
 /node_modules
 /public/build
 /public/hot
+/public/storage
 /storage/*.key
 /storage/app/public
-/storage/framework/cache/data
-/storage/framework/sessions
-/storage/framework/views
-/storage/logs
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+!/storage/framework/cache/.gitkeep
+!/storage/framework/sessions/.gitkeep
+!/storage/framework/views/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
 
 # Environment files
 .env
@@ -16,14 +21,6 @@
 .env.production
 .env.local
 .phpunit.result.cache
-
-# Composer
-composer.lock
-
-# NPM / Yarn
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
 # IDE / Editor
 /.idea
@@ -35,20 +32,11 @@ pnpm-lock.yaml
 .DS_Store
 Thumbs.db
 
-# Testing
-/phpunit.xml
-
 # Logs
 *.log
 
 # Cache
 bootstrap/cache/*.php
-
-# PHPUnit / Pest
-.phpunit.cache
-
-# Docker (optional)
-docker-compose.override.yml
 
 # Misc
 *.swp
