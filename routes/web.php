@@ -45,8 +45,23 @@ Route::get('/clear-cache', function() {
 Auth::routes();
 
 
-Route::get('/', function () {
-    return redirect()->route('login');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('landing');
+
+// Frontend Pages Routes
+Route::controller(App\Http\Controllers\FrontendPageController::class)->group(function () {
+    Route::get('/about', 'about')->name('frontend.about');
+    Route::get('/governing-body', 'governingBody')->name('frontend.governing_body');
+    Route::get('/chairmans-profile', 'chairmanProfile')->name('frontend.chairman_profile');
+    Route::get('/message-of-chairman', 'messageChairman')->name('frontend.message_chairman');
+    Route::get('/message-of-principal', 'messagePrincipal')->name('frontend.message_principal');
+    Route::get('/teacher-information', 'teacherInfo')->name('frontend.teacher_info');
+    Route::get('/staff-information', 'staffInfo')->name('frontend.staff_info');
+    Route::get('/academic-calendar', 'academicCalendar')->name('frontend.academic_calendar');
+    Route::get('/programs', 'programs')->name('frontend.programs');
+    Route::get('/notice', 'noticeBoard')->name('frontend.notice_board');
+    Route::get('/admission', 'admission')->name('frontend.admission');
+    Route::get('/gallery', 'gallery')->name('frontend.gallery');
+    Route::get('/contact', 'contact')->name('frontend.contact');
 });
 
 Route::controller(HomeController::class)->group(function () {
