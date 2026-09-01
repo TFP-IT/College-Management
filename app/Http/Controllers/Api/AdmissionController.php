@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admission;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AdmissionController extends Controller
 {
@@ -49,9 +51,39 @@ class AdmissionController extends Controller
             }
 
             // Generate a temporary application_no to pass unique constraint if needed
-            $tempAppNo = 'TEMP-' . uniqid();
+            $tempAppNo = '2026-' . uniqid();
+
+            // Create temporary guardian account
+            $guardian = User::create([
+                'name' => $request->guardianName,
+                'email' => null,
+                'phone_number' => $request->guardianMobile,
+                'role_id' => 6,
+                'password' => Hash::make((string) mt_rand(10000000, 99999999)),
+                'user_type' => 'temp',
+                'status' => 1,
+                'school_id' => 1,
+            ]);
+
+            // Create temporary student account
+            $studentId = '2026' . time();
+            $studentPassword = (string) mt_rand(10000000, 99999999);
+            $student = User::create([
+                'student_id' => $studentId,
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone_number' => $request->mobile,
+                'role_id' => 7,
+                'parent_id' => $guardian->id,
+                'password' => Hash::make($studentPassword),
+                'user_type' => 'temp',
+                'status' => 1,
+                'school_id' => 1,
+            ]);
 
             $admission = Admission::create([
+                'user_id' => $student->id,
+                'guardian_user_id' => $guardian->id,
                 'application_no' => $tempAppNo,
                 'department' => $request->department,
                 'ssc_board' => $request->sscBoard,
@@ -89,6 +121,8 @@ class AdmissionController extends Controller
                 'data' => [
                     'application_no' => $applicationNo,
                     'id' => $admission->id,
+                    'student_id' => $student->student_id,
+                    'password' => $studentPassword,
                 ]
             ], 201);
             
