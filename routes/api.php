@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Api\AdmissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/login', [ApiController::class, 'login']);
+
+Route::post('/admission/submit', [AdmissionController::class, 'submit']);
 
 Route::group(['middleware', ['auth:sanctum']], function () {
     Route::post('/user_details', [ApiController::class, 'userDetails']);
