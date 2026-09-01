@@ -45,6 +45,14 @@ Route::get('/clear-cache', function() {
 Auth::routes();
 
 
+Route::get('/test-pdf', function() {
+    $admission = \App\Models\Admission::latest()->first();
+    if (!$admission) return "No admission found.";
+    $pdfService = new \App\Services\AdmissionPdfService();
+    $pdfPath = $pdfService->generate($admission);
+    return response()->file(storage_path('app/public/' . $pdfPath));
+});
+
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('landing');
 
 // Frontend Pages Routes

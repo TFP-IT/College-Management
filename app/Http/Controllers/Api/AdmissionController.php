@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Admission;
 use App\Models\User;
+use App\Services\AdmissionPdfService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -115,6 +116,11 @@ class AdmissionController extends Controller
 
             DB::commit();
 
+            // Generate PDF Slip
+            $pdfService = new AdmissionPdfService();
+            $pdfPath = $pdfService->generate($admission);
+            $pdfUrl = $pdfPath ? Storage::disk('public')->url($pdfPath) : null;
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Admission application submitted successfully.',
@@ -123,6 +129,7 @@ class AdmissionController extends Controller
                     'id' => $admission->id,
                     'student_id' => $student->student_id,
                     'password' => $studentPassword,
+                    'pdf_url' => $pdfUrl,
                 ]
             ], 201);
             
@@ -133,5 +140,31 @@ class AdmissionController extends Controller
                 'message' => 'Failed to submit application: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function downloadPdf($application_no)
+    {
+        $admission = Admission::where('application_no', $application_no)->first();
+
+        if (!$admission) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Admission application not found.'
+            ], 404);
+        }
+
+        $pdfService = new AdmissionPdfService();
+        
+        if (!$admission->pdf_path || !Storage::disk('public')->exists($admission->pdf_path)) {
+            $pdfPath = $pdfService->generate($admission);
+            if (!$pdfPath) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to generate PDF.'
+                ], 500);
+            }
+        }
+
+        return Storage::disk('public')->download($admission->pdf_path, 'Admission_Slip_' . $application_no . '.pdf');
     }
 }

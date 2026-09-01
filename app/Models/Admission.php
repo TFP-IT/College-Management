@@ -38,6 +38,7 @@ class Admission extends Model
         'reviewed_at',
         'reviewed_by',
         'rejection_reason',
+        'pdf_path',
     ];
 
     protected $casts = [
