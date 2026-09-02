@@ -68,6 +68,47 @@ class ApiController extends Controller
         }
     }
     
+    // App login function for multi-role
+    public function appLogin(Request $request) {
+        $fields = $request->validate([
+            'role' => 'required|string',
+            'login_id' => 'required|string',
+            'password' => 'required|string'
+        ]);
+
+        $query = User::where('status', 1);
+
+        if ($fields['role'] === 'student') {
+            $query->where('student_id', $fields['login_id']);
+        } elseif ($fields['role'] === 'teacher') {
+            $query->where('teacher_id', $fields['login_id']);
+        } elseif ($fields['role'] === 'guardian') {
+            $query->where('phone_number', $fields['login_id']);
+        } else {
+            return response(['message' => 'Invalid role selected.'], 400);
+        }
+
+        $user = $query->first();
+
+        if (!$user || !Hash::check($fields['password'], $user->password)) {
+            return response([
+                'message' => 'Invalid credentials!'
+            ], 401);
+        }
+
+        $token = $user->createToken('auth-token')->plainTextToken;
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Login successful',
+            'user' => $user,
+            'token' => $token,
+            'role' => $fields['role']
+        ];
+
+        return response($response, 200);
+    }
+    
     //student account remove function
     public function account_delete(Request $request)
     {

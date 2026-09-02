@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/login', [ApiController::class, 'login']);
+Route::post('/app_login', [ApiController::class, 'appLogin']);
 
 Route::post('/admission/submit', [AdmissionController::class, 'submit']);
 Route::get('/admission/{application_no}/pdf', [AdmissionController::class, 'downloadPdf']);
