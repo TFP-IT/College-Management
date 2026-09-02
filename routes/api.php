@@ -27,7 +27,7 @@ Route::post('/admission/submit', [AdmissionController::class, 'submit']);
 Route::get('/admission/{application_no}/pdf', [AdmissionController::class, 'downloadPdf']);
 
 
-Route::group(['middleware', ['auth:sanctum']], function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user_details', [ApiController::class, 'userDetails']);
     Route::post('/routine', [ApiController::class, 'routine']);
     Route::post('/attendance', [ApiController::class, 'attendanceReport']);
@@ -43,4 +43,5 @@ Route::group(['middleware', ['auth:sanctum']], function () {
     Route::post('/logout', [ApiController::class, 'logout']);
     Route::post('/account_delete', [ApiController::class, 'account_delete']);
     Route::post('/change_profile_photo', [ApiController::class, 'change_profile_photo']);
+    Route::post('/my_application', [AdmissionController::class, 'myApplication']);
 });

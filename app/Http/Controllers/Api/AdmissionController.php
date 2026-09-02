@@ -167,4 +167,35 @@ class AdmissionController extends Controller
 
         return Storage::disk('public')->download($admission->pdf_path, 'Admission_Slip_' . $application_no . '.pdf');
     }
+
+    public function myApplication(Request $request)
+    {
+        $user = $request->user();
+        // Since Admission uses user_id, we can find it
+        $admission = Admission::where('user_id', $user->id)->latest()->first();
+
+        if (!$admission) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No application found.'
+            ], 404);
+        }
+
+        $pdfUrl = $admission->pdf_path ? Storage::disk('public')->url($admission->pdf_path) : null;
+        $photoUrl = $admission->photo_path ? Storage::disk('public')->url($admission->photo_path) : null;
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'application_no' => $admission->application_no,
+                'name' => $admission->name,
+                'father_name' => $admission->father_name,
+                'department' => $admission->department,
+                'student_id' => $user->student_id,
+                'photo_url' => $photoUrl,
+                'pdf_url' => $pdfUrl,
+                'status' => $admission->status,
+            ]
+        ], 200);
+    }
 }
