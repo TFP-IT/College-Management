@@ -38,6 +38,7 @@ return new class extends Migration
             $table->text('present_address');
             
             $table->enum('status', ['pending', 'under_review', 'approved', 'rejected', 'waitlisted'])->default('pending');
+            $table->string('pdf_path')->nullable();
             $table->timestamp('submitted_at')->nullable();
             $table->timestamp('reviewed_at')->nullable();
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
