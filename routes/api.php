@@ -24,12 +24,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [ApiController::class, 'login']);
 Route::post('/app_login', [ApiController::class, 'appLogin']);
 
+use App\Http\Controllers\Api\PaymentController;
+
 Route::post('/media/upload', [MediaController::class, 'upload']);
 Route::post('/admission/submit', [AdmissionController::class, 'submit']);
 Route::get('/admission/{application_no}/pdf', [AdmissionController::class, 'downloadPdf']);
 
+// Payment Gateway Routes (SSLCommerz)
+// Callbacks (Without auth middleware because SSLCommerz sends the POST request directly to the server)
+Route::any('/payment/success', [PaymentController::class, 'paymentSuccess']);
+Route::any('/payment/fail', [PaymentController::class, 'paymentFail']);
+Route::any('/payment/cancel', [PaymentController::class, 'paymentCancel']);
+Route::get('/payment/result', function () {
+    return response("Payment Processed. You can close this window.", 200);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/payment/initiate', [PaymentController::class, 'initiatePayment']);
     Route::post('/user_details', [ApiController::class, 'userDetails']);
     Route::post('/routine', [ApiController::class, 'routine']);
     Route::post('/attendance', [ApiController::class, 'attendanceReport']);
