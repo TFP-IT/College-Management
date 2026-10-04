@@ -96,6 +96,7 @@ class AdmissionController extends Controller
                 'passing_year' => $request->passingYear,
                 'gpa' => $request->gpa,
                 'photo_path' => $photoPath,
+                'photo_id' => $request->photo_id,
                 'name' => $request->name,
                 'gender' => $request->gender,
                 'mobile' => $request->mobile,
@@ -185,7 +186,7 @@ class AdmissionController extends Controller
         }
 
         $pdfUrl = $admission->pdf_path ? Storage::disk('public')->url($admission->pdf_path) : null;
-        $photoUrl = $admission->photo_path ? Storage::disk('public')->url($admission->photo_path) : null;
+        $photoUrl = $admission->photo_url;
 
         return response()->json([
             'status' => 'success',

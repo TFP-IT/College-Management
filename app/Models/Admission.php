@@ -23,6 +23,7 @@ class Admission extends Model
         'passing_year',
         'gpa',
         'photo_path',
+        'photo_id',
         'name',
         'gender',
         'mobile',
@@ -46,6 +47,24 @@ class Admission extends Model
         'submitted_at' => 'datetime',
         'reviewed_at' => 'datetime',
     ];
+
+    protected $appends = ['photo_url'];
+
+    public function photo(): BelongsTo
+    {
+        return $this->belongsTo(MediaFile::class, 'photo_id');
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->photo_id && $this->photo) {
+            return asset('storage/' . $this->photo->file_path);
+        }
+        if ($this->photo_path) {
+            return asset('storage/' . $this->photo_path);
+        }
+        return null;
+    }
 
     public function guardianUser(): BelongsTo
     {
