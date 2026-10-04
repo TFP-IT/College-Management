@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Api\AdmissionController;
+use App\Http\Controllers\Api\MediaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [ApiController::class, 'login']);
 Route::post('/app_login', [ApiController::class, 'appLogin']);
 
+Route::post('/media/upload', [MediaController::class, 'upload']);
 Route::post('/admission/submit', [AdmissionController::class, 'submit']);
 Route::get('/admission/{application_no}/pdf', [AdmissionController::class, 'downloadPdf']);
 

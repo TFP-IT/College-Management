@@ -33,7 +33,7 @@ class AdmissionController extends Controller
             'relationWithGuardian' => 'required|string|max:30',
             'guardianMobile' => 'required|string|size:11',
             'presentAddress' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,PNG,JPG,JPEG|max:2048',
+            'photo_id' => 'nullable|exists:media_files,id',
         ]);
 
         if ($validator->fails()) {
@@ -47,8 +47,11 @@ class AdmissionController extends Controller
             DB::beginTransaction();
 
             $photoPath = null;
-            if ($request->hasFile('image')) {
-                $photoPath = $request->file('image')->store('admissions/photos', 'public');
+            if ($request->has('photo_id')) {
+                $media = \App\Models\MediaFile::find($request->photo_id);
+                if ($media) {
+                    $photoPath = $media->file_path;
+                }
             }
 
             // Generate a temporary application_no to pass unique constraint if needed
