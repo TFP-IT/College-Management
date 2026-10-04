@@ -33,7 +33,7 @@ class AdmissionController extends Controller
             'relationWithGuardian' => 'required|string|max:30',
             'guardianMobile' => 'required|string|size:11',
             'presentAddress' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,PNG,JPG,JPEG|max:2048',
         ]);
 
         if ($validator->fails()) {
