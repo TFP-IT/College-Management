@@ -13,7 +13,7 @@ class CreateDailyAttendancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('daily_aatendance', function (Blueprint $table) {
+        Schema::create('daily_attendances', function (Blueprint $table) {
             $table->id();
             $table->integer('class_id');
             $table->integer('section_id');
@@ -22,7 +22,7 @@ class CreateDailyAttendancesTable extends Migration
             $table->integer('session_id');
             $table->integer('school_id');
             $table->integer('timestamp');
-            $table->timestamp();
+            $table->timestamps();
         });
     }
 
@@ -33,6 +33,6 @@ class CreateDailyAttendancesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('daily_aatendance');
+        Schema::dropIfExists('daily_attendances');
     }
 }
