@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDailyAttendancesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,19 @@ class CreateDailyAttendancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('daily_aatendance', function (Blueprint $table) {
-            $table->id();
-            $table->integer('class_id');
-            $table->integer('section_id');
-            $table->integer('student_id');
-            $table->integer('status');
-            $table->integer('session_id');
-            $table->integer('school_id');
-            $table->integer('timestamp');
-            $table->timestamp();
-        });
+        if (!Schema::hasTable('daily_attendances')) {
+            Schema::create('daily_attendances', function (Blueprint $table) {
+                $table->id();
+                $table->integer('class_id');
+                $table->integer('section_id');
+                $table->integer('student_id');
+                $table->integer('status');
+                $table->integer('session_id');
+                $table->integer('school_id');
+                $table->integer('timestamp')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -33,6 +35,6 @@ class CreateDailyAttendancesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('daily_aatendance');
+        Schema::dropIfExists('daily_attendances');
     }
-}
+};

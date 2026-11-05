@@ -15,10 +15,18 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('student_id')->nullable()->after('id');
-            $table->string('teacher_id')->nullable()->after('student_id');
-            $table->string('phone_number')->nullable()->after('email');
-            $table->enum('user_type', ['regular', 'temp'])->default('regular')->after('phone_number');
+            if (!Schema::hasColumn('users', 'student_id')) {
+                $table->string('student_id')->nullable()->after('id');
+            }
+            if (!Schema::hasColumn('users', 'teacher_id')) {
+                $table->string('teacher_id')->nullable()->after('student_id');
+            }
+            if (!Schema::hasColumn('users', 'phone_number')) {
+                $table->string('phone_number')->nullable()->after('email');
+            }
+            if (!Schema::hasColumn('users', 'user_type')) {
+                $table->enum('user_type', ['regular', 'temp'])->default('regular')->after('phone_number');
+            }
         });
         
         DB::statement('ALTER TABLE users MODIFY email VARCHAR(255) NULL;');
@@ -32,7 +40,15 @@ return new class extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['student_id', 'teacher_id', 'phone_number', 'user_type']);
+            $cols = [];
+            foreach (['student_id', 'teacher_id', 'phone_number', 'user_type'] as $c) {
+                if (Schema::hasColumn('users', $c)) {
+                    $cols[] = $c;
+                }
+            }
+            if (!empty($cols)) {
+                $table->dropColumn($cols);
+            }
         });
 
         DB::statement('ALTER TABLE users MODIFY email VARCHAR(255) NOT NULL;');

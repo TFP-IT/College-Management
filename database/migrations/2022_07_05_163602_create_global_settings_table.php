@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class GlobalSettingsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class GlobalSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('global_settings', function (Blueprint $table) {
-            $table->id();
-            $table->string('key')->nullable;
-            $table->longText('value')->nullable;
-        });
+        if (!Schema::hasTable('global_settings')) {
+            Schema::create('global_settings', function (Blueprint $table) {
+                $table->id();
+                $table->string('key')->nullable();
+                $table->longText('value')->nullable();
+            });
+        }
     }
 
     /**

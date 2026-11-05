@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSyllabusesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,19 @@ class CreateSyllabusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('syllabuses', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->integer('class_id');
-            $table->integer('section_id');
-            $table->integer('subject_id');
-            $table->string('file');
-            $table->integer('school_id');
-            $table->integer('session_id');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('syllabuses')) {
+            Schema::create('syllabuses', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->integer('class_id');
+                $table->integer('section_id');
+                $table->integer('subject_id');
+                $table->string('file');
+                $table->integer('school_id');
+                $table->integer('session_id');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -35,4 +37,4 @@ class CreateSyllabusesTable extends Migration
     {
         Schema::dropIfExists('syllabuses');
     }
-}
+};

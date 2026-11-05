@@ -13,16 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('media_files', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id')->nullable();
-            $table->string('title');
-            $table->string('slug');
-            $table->string('file_path');
-            $table->string('thumbnail_path')->nullable();
-            $table->string('extension');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('media_files')) {
+            Schema::create('media_files', function (Blueprint $table) {
+                $table->id();
+                $table->integer('user_id')->nullable();
+                $table->string('title');
+                $table->string('slug');
+                $table->string('file_path');
+                $table->string('thumbnail_path')->nullable();
+                $table->string('extension');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

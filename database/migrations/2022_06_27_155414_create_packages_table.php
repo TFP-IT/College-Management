@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePackagesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,21 @@ class CreatePackagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('packages', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->float('price');
-            $table->string('package_type');
-            $table->string('interval');
-            $table->integer('days');
-            $table->integer('status');
-            $table->string('description');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('packages')) {
+            Schema::create('packages', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('price')->nullable();
+                $table->string('package_type');
+                $table->string('interval')->nullable();
+                $table->integer('days')->nullable();
+                $table->string('studentLimit')->nullable();
+                $table->string('features')->nullable();
+                $table->integer('status')->nullable();
+                $table->string('description')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -35,4 +39,4 @@ class CreatePackagesTable extends Migration
     {
         Schema::dropIfExists('packages');
     }
-}
+};

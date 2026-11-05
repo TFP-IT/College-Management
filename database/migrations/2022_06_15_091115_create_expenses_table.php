@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExpensesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateExpensesTable extends Migration
      */
     public function up()
     {
-        Schema::create('expenses', function (Blueprint $table) {
-            $table->id();
-            $table->integer('expense_category_id');
-            $table->integer('date');
-            $table->string('amount');
-            $table->integer('school_id');
-            $table->integer('session_id');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('expenses')) {
+            Schema::create('expenses', function (Blueprint $table) {
+                $table->id();
+                $table->integer('expense_category_id');
+                $table->integer('date');
+                $table->string('amount');
+                $table->integer('school_id');
+                $table->integer('session_id');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -33,4 +35,4 @@ class CreateExpensesTable extends Migration
     {
         Schema::dropIfExists('expenses');
     }
-}
+};
