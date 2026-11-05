@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery as Middleware;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 class VerifyCsrfToken extends Middleware
 {
@@ -12,7 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        '/paytm-callback*','/success/sent_to_success_url*','/fail/sent_to_fail_ur*','admissions/payments/callback/*','admissions/payments/ipn'
+        '/paytm-callback*','/success/sent_to_success_url*','/fail/sent_to_fail_ur*'
         //
         
     ];
