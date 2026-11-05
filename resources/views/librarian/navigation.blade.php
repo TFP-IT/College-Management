@@ -475,10 +475,10 @@
         <div class="main_content">
             @yield('content')
             <!-- Start Footer -->
-            <div class="copyright-text">
+            {{-- <div class="copyright-text">
               <?php $active_session = DB::table('sessions')->where('id',  get_settings('running_session'))->value('session_title'); ?>
                 <p>{{ $active_session }} &copy; <span><a class="text-info" target="_blank" href="{{ get_settings('footer_link') }}">{{ get_settings('footer_text') }}</a></span></p>
-            </div>
+            </div> --}}
             <!-- End Footer -->
         </div>
       </div>
