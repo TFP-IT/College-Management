@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('admissions', function (Blueprint $table) {
-            $table->unsignedBigInteger('photo_id')->nullable()->after('photo_path');
+            if (!Schema::hasColumn('admissions', 'photo_id')) {
+                $table->unsignedBigInteger('photo_id')->nullable()->after('photo_path');
+            }
         });
     }
 
@@ -26,7 +28,9 @@ return new class extends Migration
     public function down()
     {
         Schema::table('admissions', function (Blueprint $table) {
-            $table->dropColumn('photo_id');
+            if (Schema::hasColumn('admissions', 'photo_id')) {
+                $table->dropColumn('photo_id');
+            }
         });
     }
 };

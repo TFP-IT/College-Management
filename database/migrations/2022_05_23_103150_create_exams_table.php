@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExamsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,24 @@ class CreateExamsTable extends Migration
      */
     public function up()
     {
-        Schema::create('exams', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('exam_type');
-            $table->string('starting_time');
-            $table->string('ending_time');
-            $table->float('total_marks');
-            $table->string('status');
-            $table->integer('class_id');
-            $table->integer('subject_id');
-            $table->integer('school_id');
-            $table->integer('session_id');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('exams')) {
+            Schema::create('exams', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->integer('exam_category_id')->nullable();
+                $table->string('exam_type');
+                $table->string('starting_time');
+                $table->string('ending_time');
+                $table->float('total_marks');
+                $table->string('status');
+                $table->integer('class_id');
+                $table->integer('subject_id');
+                $table->integer('school_id');
+                $table->integer('session_id');
+                $table->string('room_number')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -38,4 +42,4 @@ class CreateExamsTable extends Migration
     {
         Schema::dropIfExists('exams');
     }
-}
+};
