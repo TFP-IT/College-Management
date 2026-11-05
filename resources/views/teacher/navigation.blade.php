@@ -97,7 +97,7 @@
 	        </li>
 			<!-- Sidebar menu -->
 
-			{{-- <li class="nav-links-li {{ request()->is('teacher/attendance*') || request()->is('teacher/routine') || request()->is('teacher/subject') || request()->is('teacher/gradebook') || request()->is('teacher/syllabus') ? 'showMenu':'' }}">
+			<li class="nav-links-li {{ request()->is('teacher/attendance*') || request()->is('teacher/routine') || request()->is('teacher/subject') || request()->is('teacher/gradebook') || request()->is('teacher/syllabus') ? 'showMenu':'' }}">
 				<div class="iocn-link">
 					<a href="#">
 						<div class="sidebar_icon">
@@ -130,9 +130,9 @@
                         <a class="{{ (request()->is('teacher/syllabus')) ? 'active' : '' }}" href="{{ route('teacher.list_of_syllabus') }}"><span>{{ get_phrase('Syllabus') }}</span></a>
                     </li>
 				</ul>
-			</li> --}}
+			</li>
 
-			{{-- <li class="nav-links-li {{ request()->is('teacher/marks') || request()->is('teacher/offline_exam') ? 'showMenu':'' }}">
+			<li class="nav-links-li {{ request()->is('teacher/marks') || request()->is('teacher/offline_exam') ? 'showMenu':'' }}">
                 <div class="iocn-link">
                     <a href="#">
                         <div class="sidebar_icon">
@@ -354,7 +354,7 @@
 	            </ul>
 	        </li>
 
-			<li class="nav-links-li {{ request()->is('teacher/profile*') ? 'showMenu':'' }}"> --}}
+			<li class="nav-links-li {{ request()->is('teacher/profile*') ? 'showMenu':'' }}">
 				<div class="iocn-link">
 					<a href="{{ route('teacher.profile') }}">
 						<div class="sidebar_icon">

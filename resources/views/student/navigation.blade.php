@@ -92,7 +92,7 @@
       </li>
 			<!-- Sidebar menu -->
 
-			{{-- <li class="nav-links-li {{ request()->is('student/teacher*') ? 'showMenu':'' }}">
+			<li class="nav-links-li {{ request()->is('student/teacher*') ? 'showMenu':'' }}">
 				<div class="iocn-link">
 					<a class="{{ (request()->is('student/teacher*')) ? 'active' : '' }}" href="{{ route('student.teacher') }}">
 						<div class="sidebar_icon">
@@ -101,9 +101,9 @@
 						<span class="link_name">{{ get_phrase('Teacher') }}</span>
 					</a>
 				</div>
-			</li> --}}
+			</li>
 
-			{{-- <li class="nav-links-li {{ request()->is('student/attendance*') || request()->is('student/routine*') || request()->is('student/subject*') || request()->is('student/syllabus*') ? 'showMenu':'' }}">
+			<li class="nav-links-li {{ request()->is('student/attendance*') || request()->is('student/routine*') || request()->is('student/subject*') || request()->is('student/syllabus*') ? 'showMenu':'' }}">
 				<div class="iocn-link">
 					<a href="#">
 						<div class="sidebar_icon">
@@ -133,9 +133,9 @@
           <li><a class="{{ (request()->is('student/subject*')) ? 'active' : '' }}" href="{{ route('student.subject_list') }}"><span>{{ get_phrase('Subjects') }}</span></a></li>
           <li><a class="{{ (request()->is('student/syllabus*')) ? 'active' : '' }}" href="{{ route('student.syllabus') }}"><span>{{ get_phrase('Syllabus') }}</span></a></li>
 				</ul>
-			</li> --}}
+			</li>
 
-			{{-- <li class="nav-links-li {{ request()->is('student/marks') || request()->is('student/grade') ? 'showMenu':'' }}">
+			<li class="nav-links-li {{ request()->is('student/marks') || request()->is('student/grade') ? 'showMenu':'' }}">
           <div class="iocn-link">
               <a href="#">
                   <div class="sidebar_icon">
@@ -169,7 +169,7 @@
                   <a class="{{ (request()->is('student/grade')) ? 'active' : '' }}" href="{{ route('student.grade_list') }}"><span>{{ get_phrase('Grades') }}</span></a>
               </li>
           </ul>
-      </li> --}}
+      </li>
 
       @if(addon_status('online_live_class')==1)
       <li class="nav-links-li {{ request()->is('student/list_of_live_class*')   ? 'showMenu':'' }}">
@@ -220,7 +220,7 @@
 
         @endif
 
-      {{-- <li class="nav-links-li {{ request()->is('student/fee_manager*')  ? 'showMenu':'' }}">
+      <li class="nav-links-li {{ request()->is('student/fee_manager*')  ? 'showMenu':'' }}">
           <div class="iocn-link">
               <a class="{{ (request()->is('student/fee_manager*')) ? 'active' : '' }}" href="{{ route('student.fee_manager.list') }}">
                   <div class="sidebar_icon">
@@ -231,9 +231,9 @@
                   </span>
               </a>
           </div>
-      </li> --}}
+      </li>
 
-			{{-- <li class="nav-links-li {{ request()->is('student/book*') || request()->is('student/book_issue*') || request()->is('student/noticeboard*') || request()->is('student/events/list*') ? 'showMenu':'' }}">
+			<li class="nav-links-li {{ request()->is('student/book*') || request()->is('student/book_issue*') || request()->is('student/noticeboard*') || request()->is('student/events/list*') ? 'showMenu':'' }}">
 				<div class="iocn-link">
 					<a href="#">
 						<div class="sidebar_icon">
@@ -280,9 +280,9 @@
 					<li><a class="{{ (request()->is('student/noticeboard*')) ? 'active' : '' }}" href="{{ route('student.noticeboard.list') }}"><span>{{ get_phrase('Noticeboard') }}</span></a></li>
           <li><a class="{{ (request()->is('student/events/list*')) ? 'active' : '' }}" href="{{ route('student.events.list') }}"><span>{{ get_phrase('Events') }}</span></a></li>
 				</ul>
-			</li> --}}
+			</li>
 
-      {{-- <li class="nav-links-li {{ request()->is('student/profile*') ? 'showMenu':'' }}">
+      <li class="nav-links-li {{ request()->is('student/profile*') ? 'showMenu':'' }}">
         <div class="iocn-link">
           <a href="{{ route('student.profile') }}">
             <div class="sidebar_icon">
@@ -296,7 +296,7 @@
             <span class="link_name">{{ get_phrase('Profile') }}</span>
           </a>
         </div>
-      </li> --}}
+      </li>
 		</ul>
 	</div>
 
