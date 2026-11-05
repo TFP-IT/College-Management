@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        if (!Schema::hasTable('application_status_history')) {
+            Schema::create('application_status_history', function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->foreignUuid('application_id')->constrained('applications')->cascadeOnDelete();
+                $table->string('from_status', 50);
+                $table->string('to_status', 50);
+                $table->foreignId('actor_id')->nullable()->constrained('users')->nullOnDelete();
+                $table->text('reason')->nullable();
+                $table->timestamp('created_at')->useCurrent();
+
+                $table->index(['application_id', 'created_at']);
+            });
+        }
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('application_status_history');
+    }
+};

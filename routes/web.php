@@ -995,3 +995,7 @@ Route::controller(InstallController::class)->group(function () {
 
 });
 //Installation routes end here
+
+// MCC-Hello Future Admissions Web Routes
+require __DIR__ . '/admissions_web.php';
+require __DIR__ . '/cms_web.php';

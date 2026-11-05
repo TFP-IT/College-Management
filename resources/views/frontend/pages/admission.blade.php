@@ -46,7 +46,7 @@
                     <p style="margin: 0; color: var(--gray-dk);">* Admission depends on seat availability and interview performance.</p>
                 </div>
                 
-                <a href="{{ route('frontend.contact') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 25px; display: inline-flex; align-items: center; gap: 10px;">
+                <a href="{{ route('admissions.index') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 12px 25px; display: inline-flex; align-items: center; gap: 10px;">
                     Apply Online Now <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>

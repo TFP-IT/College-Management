@@ -37,6 +37,8 @@ class CreateUsersSeeder extends Seeder
             [
                 'name' => 'Teacher User',
                 'email' => 'teacher@gmail.com',
+                'teacher_id' => 'TCH-1001',
+                'phone_number' => '01616122333',
                 'role_id' => 3,
                 'school_id' => 1,
                 'status' => 1,
@@ -64,6 +66,7 @@ class CreateUsersSeeder extends Seeder
             [
                 'name' => 'Parent User',
                 'email' => 'parent@gmail.com',
+                'phone_number' => '01712345678',
                 'role_id' => 6,
                 'school_id' => 1,
                 'status' => 1,
@@ -73,6 +76,8 @@ class CreateUsersSeeder extends Seeder
             [
                 'name' => 'Student User',
                 'email' => 'student@gmail.com',
+                'student_id' => 'STD-1001',
+                'phone_number' => '01812345678',
                 'role_id' => 7,
                 'school_id' => 1,
                 'status' => 1,

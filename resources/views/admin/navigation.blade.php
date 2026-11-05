@@ -52,6 +52,7 @@
     <script src="{{ asset('assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
 
 
+    @stack('head')
 </head>
 
 <body>
@@ -193,6 +194,28 @@
                             <span class="link_name">
                                 {{ get_phrase('Admissions') }}
                             </span>
+                        </a>
+                    </div>
+                </li>
+            @endif
+
+            @if (auth()->user()->can('admission.application.view') || auth()->user()->can('admission.report.view'))
+                <li class="nav-links-li {{ request()->is('admin/admissions*') ? 'showMenu' : '' }}">
+                    <div class="iocn-link">
+                        <a class="{{ request()->is('admin/admissions*') ? 'active' : '' }}" href="{{ route('admissions.admin.dashboard') }}">
+                            <div class="sidebar_icon"><i class="fa-solid fa-user-graduate"></i></div>
+                            <span class="link_name">Admission Council</span>
+                        </a>
+                    </div>
+                </li>
+            @endif
+
+            @if (auth()->user()->can('cms.manage') || auth()->user()->can('admission.program.manage'))
+                <li class="nav-links-li {{ request()->is('admin/cms*') ? 'showMenu' : '' }}">
+                    <div class="iocn-link">
+                        <a class="{{ request()->is('admin/cms*') ? 'active' : '' }}" href="{{ route('cms.admin.index') }}">
+                            <div class="sidebar_icon"><i class="fa-solid fa-globe"></i></div>
+                            <span class="link_name">Website Content</span>
                         </a>
                     </div>
                 </li>
