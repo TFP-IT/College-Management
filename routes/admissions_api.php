@@ -2,6 +2,7 @@
 
 use App\Modules\Admissions\Http\Controllers\Api\V1\ApplicationApiController;
 use App\Modules\Admissions\Http\Controllers\Api\V1\CouncilApiController;
+use App\Modules\Admissions\Http\Controllers\Api\V1\GuardianApiController;
 use App\Modules\Admissions\Http\Controllers\Api\V1\OtpApiController;
 use App\Modules\Admissions\Http\Controllers\Api\V1\PaymentApiController;
 use App\Modules\Admissions\Http\Controllers\Api\V1\ProgramApiController;
@@ -28,6 +29,10 @@ Route::prefix('v1/admissions')->name('api.v1.admissions.')->group(function () {
         Route::post('applicants/otp/verify', [OtpApiController::class, 'verify'])->name('otp.verify');
         Route::post('auth/otp/send', [OtpApiController::class, 'send'])->name('otp.send');
         Route::post('auth/otp/verify', [OtpApiController::class, 'verify'])->name('otp.verify.legacy');
+
+        // Guardian sign-in by email code (same steps as the website). The token can then apply.
+        Route::post('guardian/otp/request', [GuardianApiController::class, 'requestOtp'])->name('guardian.otp.request');
+        Route::post('guardian/otp/verify', [GuardianApiController::class, 'verifyOtp'])->name('guardian.otp.verify');
     });
 
     // Public tracking: application number + phone + OTP code.

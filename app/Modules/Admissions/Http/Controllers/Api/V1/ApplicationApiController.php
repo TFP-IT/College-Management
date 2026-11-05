@@ -22,7 +22,7 @@ use Illuminate\Validation\ValidationException;
 
 class ApplicationApiController extends BaseApiController
 {
-    public function apply(ApplyProgramRequest $request, CreateDraftApplicationAction $action): JsonResponse
+    public function apply(ApplyProgramRequest $request, CreateDraftApplicationAction $action, UpdateDraftApplicationAction $updateDraft): JsonResponse
     {
         $user = $request->user();
 
@@ -32,9 +32,21 @@ class ApplicationApiController extends BaseApiController
         }
 
         $program = AdmissionProgram::where('is_active', true)->findOrFail($request->program_id);
+        $isGuardian = $request->user()->tokenCan('guardian');
 
-        return $this->guard(function () use ($action, $program, $request, $user) {
-            $application = $action->execute($program, $request->validated(), $user);
+        return $this->guard(function () use ($action, $updateDraft, $program, $request, $user, $isGuardian) {
+            $application = $action->execute($program, collect($request->validated())->except('guardian_relation')->all(), $user);
+
+            // A signed-in guardian is the primary guardian, as on the website. No need to send them again.
+            if ($isGuardian) {
+                $updateDraft->execute($application, ['guardians' => [[
+                    'relation' => $request->input('guardian_relation', 'GUARDIAN'),
+                    'full_name' => $user->name,
+                    'phone' => $user->phone_number,
+                    'is_primary' => true,
+                ]]], $user);
+            }
+
             $application->load(['program', 'guardians', 'documents']);
 
             return $this->respondWithSuccess(

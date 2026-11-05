@@ -11,6 +11,9 @@ class OtpService
 {
     public const PURPOSES = ['APPLICATION_AUTH', 'TRACK', 'GUARDIAN_AUTH'];
 
+    /** Purposes the phone-based API accepts. GUARDIAN_AUTH is email-based and used only by the web guardian sign-in. */
+    public const API_PURPOSES = ['APPLICATION_AUTH', 'TRACK'];
+
     protected const EXPIRY_MINUTES = 10;
     protected const MAX_ATTEMPTS = 5;
     protected const MAX_REQUESTS_PER_WINDOW = 5;

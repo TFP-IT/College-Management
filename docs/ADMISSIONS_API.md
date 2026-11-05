@@ -38,7 +38,7 @@ Send the token as `Authorization: Bearer <token>`.
 | GET | `/applications/{id}/documents` | owner or staff | List documents with 10-minute signed links |
 | POST | `/applications/{id}/submit` | owner | Checks everything, then moves to `PENDING_APP_FEE` (or `SUBMITTED` if the fee is 0) |
 | POST | `/applications/{id}/withdraw` | owner | Withdraw (not after enrolment) |
-| POST | `/applications/{id}/pay` | owner | Start a payment. Body: `payment_type` (`APPLICATION_FEE` or `ADMISSION_FEE`), `provider` (`mock` for now). Returns `redirect_url` |
+| POST | `/applications/{id}/pay` | owner | Start a payment. Body: `payment_type` (`APPLICATION_FEE` or `ADMISSION_FEE`), `provider` (`mock` in local and testing only, or `sslcommerz`). Returns `redirect_url` |
 | GET | `/payments/{ref}` | owner or staff | Payment status |
 | POST | `/track` | none | Body: `application_no`, `phone`, `code` (from `applicants/otp/request` with `purpose=TRACK`). Returns the status without the pass |
 
@@ -59,7 +59,41 @@ Send the token as `Authorization: Bearer <token>`.
 
 Mock signature: `HMAC-SHA256(transaction_ref|STATUS|amount, ADMISSIONS_MOCK_SECRET)` in hex.
 
-SSLCommerz is not connected yet: it needs `SSL_STORE_ID` and `SSL_STORE_PASSWORD`, and refuses to run without them.
+SSLCommerz (`provider: sslcommerz`) needs `SSL_STORE_ID` and `SSL_STORE_PASSWORD` in `.env` and refuses to run without them. It is not yet verified against the live gateway.
+
+Mock payments are enabled only when the app runs in `local` or `testing`. On a live server a `mock` request is refused.
+
+## Aliases (kept for the Flutter app)
+
+| Path | Same as |
+| :--- | :--- |
+| `POST /apply` | `POST /applications` |
+| `GET /applications/{id}/status` | `GET /applications/{id}` |
+| `POST /auth/otp/send`, `POST /auth/otp/verify` | `applicants/otp/request`, `applicants/otp/verify` |
+| `POST /payments/initiate` (body: `application_id`, `payment_type`, `provider`) | `POST /applications/{id}/pay` |
+| `POST /council/decision` (body: `application_id`) | `POST /council/applications/{id}/decision` |
+| `POST /documents/{id}/verify` | `POST /officer/applications/{id}/verify-document/{docId}` |
+| `POST /interviews`, `POST /interviews/{id}/score` | `POST /officer/applications/{id}/schedule-assessment`, `.../assessments/{assessmentId}/score` |
+| `POST /enroll` (body: `application_id`) | `POST /officer/applications/{id}/enroll` |
+
+## Guardian flow in the app (same steps as the website)
+
+The website flow is: pick a programme, enter the guardian's details, click **Send OTP**, enter the 6-digit code that arrives by email, then apply. The app does the same with these calls.
+
+| Step | Method and path | Body | Result |
+| :--- | :--- | :--- | :--- |
+| 1. Programme and fees | `GET /programs/{id}` | none | Fees, seats, deadline, `is_open` |
+| 2. Send OTP | `POST /guardian/otp/request` | `program_id`, `guardian_name` (3+ chars), `relation` (`FATHER`, `MOTHER`, `GUARDIAN`), `email`, `phone` (BD mobile) | `sent: true`. The code is emailed. Valid 10 minutes. Call again to resend |
+| 3. Verify OTP | `POST /guardian/otp/verify` | `email`, `code` (6 digits) | `token` with abilities `applicant` and `guardian`, `program_id`, `guardian` details |
+| 4. Apply | `POST /apply` with `Authorization: Bearer <token>` | as for a normal applicant, plus optional `guardian_relation` | 201. The guardian is saved as the primary guardian |
+| 5. Documents, submit, pay | as in the applicant section | | |
+
+Notes:
+- Step 2 is refused with `422` for a closed programme and with `503` if the email cannot be sent.
+- Step 3 with no pending request returns `422`. A wrong code returns `422`.
+- The candidate's `phone` in step 4 must equal the guardian's `phone` from step 2. Otherwise `422`.
+- In local and testing, step 2 also returns `debug_otp`. Test code `123456` is accepted in testing.
+- The OTP purposes accepted by the phone-based endpoints are `APPLICATION_AUTH` and `TRACK` only.
 
 ## Staff endpoints
 

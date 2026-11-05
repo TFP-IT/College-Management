@@ -18,7 +18,7 @@ class SendOtpRequest extends FormRequest
     {
         return [
             'phone' => ['required', new BdMobile],
-            'purpose' => ['nullable', Rule::in(OtpService::PURPOSES)],
+            'purpose' => ['nullable', Rule::in(OtpService::API_PURPOSES)],
         ];
     }
 }

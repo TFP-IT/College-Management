@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => $config['MAIL_MAILER'],
+    'default' => env('MAIL_MAILER', $config['MAIL_MAILER']),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,11 +37,11 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'host' => $config['MAIL_HOST'],
-            'port' => $config['MAIL_PORT'],
-            'encryption' => $config['MAIL_ENCRYPTION'],
-            'username' => $config['MAIL_USERNAME'],
-            'password' => $config['MAIL_PASSWORD'],
+            'host' => env('MAIL_HOST', $config['MAIL_HOST']),
+            'port' => env('MAIL_PORT', $config['MAIL_PORT']),
+            'encryption' => env('MAIL_ENCRYPTION', $config['MAIL_ENCRYPTION']),
+            'username' => env('MAIL_USERNAME', $config['MAIL_USERNAME']),
+            'password' => env('MAIL_PASSWORD', $config['MAIL_PASSWORD']),
             'timeout' => null,
             'auth_mode' => null,
         ],
@@ -93,7 +93,7 @@ return [
     */
 
     'from' => [
-        'address' => $config['MAIL_FROM_ADDRESS'],
+        'address' => env('MAIL_FROM_ADDRESS', $config['MAIL_FROM_ADDRESS']),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 

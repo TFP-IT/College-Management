@@ -27,6 +27,8 @@ class ApplyProgramRequest extends FormRequest
             'previous_school' => 'nullable|string|max:255',
             'previous_gpa' => 'nullable|numeric|between:0,5',
             'academic_history' => 'nullable|array',
+            // Only used when a guardian's token applies: the guardian's relation to the candidate.
+            'guardian_relation' => 'nullable|string|in:FATHER,MOTHER,GUARDIAN',
         ];
     }
 }

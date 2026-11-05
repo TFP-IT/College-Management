@@ -58,7 +58,7 @@
     },
     {
       "key": "otp_code",
-      "value": "",
+      "value": "123456",
       "type": "string"
     },
     {
@@ -115,6 +115,22 @@
       "key": "application_no_legacy",
       "value": "MCC-2026-000017",
       "type": "string"
+    },
+    {
+      "key": "guardian_name",
+      "value": "Karim Rahman"
+    },
+    {
+      "key": "guardian_email",
+      "value": "guardian.test@example.com"
+    },
+    {
+      "key": "guardian_phone",
+      "value": "01755598765"
+    },
+    {
+      "key": "guardian_token",
+      "value": ""
     }
   ],
   "auth": {
@@ -784,6 +800,218 @@
         }
       ],
       "description": "Student accounts with an enrollment only. Teacher, guardian and new-applicant tokens get a 500 here. Log in with 'App Login (Student)' first. A 400 'not found' message means the account has no data yet, not that the request is wrong. (Existing mobile API. See docs/API_DOCUMENTATION.md.)"
+    },
+    {
+      "name": "A0. Guardian flow (app): details, email OTP, apply",
+      "description": "Same steps as the website: programme, guardian details, a 6-digit code by email, then apply. Step 3 saves {{guardian_token}}; step 4 uses it. In testing, code 123456 works; in production use the code from the email.",
+      "item": [
+        {
+          "name": "1. Programme and fees",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/programs/{{program_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "programs",
+                "{{program_id}}"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Shows the fees, seats and deadline on the first guardian screen."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.expect(pm.response.code).to.eql(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Send OTP to guardian email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/guardian/otp/request",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "guardian",
+                "otp",
+                "request"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"program_id\": \"{{program_id}}\",\n  \"guardian_name\": \"{{guardian_name}}\",\n  \"relation\": \"FATHER\",\n  \"email\": \"{{guardian_email}}\",\n  \"phone\": \"{{guardian_phone}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Emails a 6-digit code. Valid 10 minutes. Call again to resend."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('code sent', () => pm.expect(pm.response.code).to.eql(200));",
+                  "pm.test('email echoed', () => pm.expect(pm.response.json().data.email).to.eql(pm.collectionVariables.get('guardian_email')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Verify OTP (get guardian token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/guardian/otp/verify",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "guardian",
+                "otp",
+                "verify"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{guardian_email}}\",\n  \"code\": \"{{otp_code}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Returns a token with the applicant and guardian abilities. Saved to {{guardian_token}}."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.expect(pm.response.code).to.eql(200));",
+                  "pm.collectionVariables.set('guardian_token', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Apply for the student (guardian token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/apply",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "apply"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"program_id\": \"{{program_id}}\",\n  \"candidate_name\": \"Guardian Postman Child\",\n  \"phone\": \"{{guardian_phone}}\",\n  \"candidate_dob\": \"{{candidate_dob}}\",\n  \"gender\": \"MALE\",\n  \"current_address\": \"Radio Colony, Savar, Dhaka\",\n  \"guardian_relation\": \"FATHER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{guardian_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "The candidate phone must equal the guardian phone. The guardian is saved as the primary guardian. Then continue with the documents, submit and pay calls in folder A."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 201', () => pm.expect(pm.response.code).to.eql(201));",
+                  "pm.collectionVariables.set('application_id', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
     },
     {
       "name": "A. Admissions v1 - Applicant (mobile app)",
@@ -2055,7 +2283,7 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/v1/admissions/sections?program_id={{program_id}}?program_id={{program_id}}",
+              "raw": "{{base_url}}/v1/admissions/sections?program_id={{program_id}}",
               "host": [
                 "{{base_url}}"
               ],
@@ -2422,7 +2650,7 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/v1/cms/staff?group=GOVERNING_BODY?group=GOVERNING_BODY",
+              "raw": "{{base_url}}/v1/cms/staff?group=GOVERNING_BODY",
               "host": [
                 "{{base_url}}"
               ],
@@ -2466,7 +2694,7 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/v1/cms/staff?group=TEACHER?group=TEACHER",
+              "raw": "{{base_url}}/v1/cms/staff?group=TEACHER",
               "host": [
                 "{{base_url}}"
               ],

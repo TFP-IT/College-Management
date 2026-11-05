@@ -19,7 +19,7 @@ class VerifyOtpRequest extends FormRequest
         return [
             'phone' => ['required', new BdMobile],
             'code' => 'required|digits:6',
-            'purpose' => ['nullable', Rule::in(OtpService::PURPOSES)],
+            'purpose' => ['nullable', Rule::in(OtpService::API_PURPOSES)],
         ];
     }
 }
