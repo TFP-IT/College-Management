@@ -582,7 +582,7 @@ class AccountantController extends Controller
         return redirect()->back()->with('message', 'You have successfully transleted language.');
     }
 
-    function password($action_type = null, Request $request){
+    function password($action_type, Request $request){
 
 
 

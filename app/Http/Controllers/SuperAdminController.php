@@ -60,6 +60,8 @@ class SuperAdminController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
 
+    private $id;
+    private $school_id;
     private $publicly_user_id;
     public function __construct()
     {
@@ -804,7 +806,6 @@ class SuperAdminController extends Controller
         curl_setopt($ch_verify, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
 
         $cinit_verify_data = curl_exec($ch_verify);
-        curl_close($ch_verify);
 
         $response = json_decode($cinit_verify_data, true);
 
@@ -879,7 +880,6 @@ class SuperAdminController extends Controller
         curl_setopt($ch_verify, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
 
         $cinit_verify_data = curl_exec($ch_verify);
-        curl_close($ch_verify);
 
         $response = json_decode($cinit_verify_data, true);
 
@@ -1108,7 +1108,7 @@ class SuperAdminController extends Controller
         return redirect()->back()->with('message', 'You have successfully transleted language.');
     }
 
-    function password($action_type = null, Request $request){
+    function password($action_type, Request $request){
 
 
 

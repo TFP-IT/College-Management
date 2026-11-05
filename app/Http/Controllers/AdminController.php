@@ -66,7 +66,9 @@ class AdminController extends Controller
     function __construct() {
         $this->middleware(function ($request, $next) {
             $this->user = Auth()->user();
-            $this->check_subscription_status(Auth()->user()->school_id);
+            if ($redirect = $this->check_subscription_status(Auth()->user()->school_id)) {
+                return $redirect;
+            }
             $this->insert_gateways();
             return $next($request);
         });
@@ -96,7 +98,7 @@ class AdminController extends Controller
                 ($current_route != 'admin.subscription.offline_payment' && $expiry_status)
             )
             {
-                redirect()->route('admin.subscription')->send();
+                return redirect()->route('admin.subscription');
             }
 
         } else {
@@ -108,7 +110,7 @@ class AdminController extends Controller
                 ($current_route != 'admin.subscription.offline_payment' && $has_subscription == 0)
             )
             {
-                redirect()->route('admin.subscription')->send();
+                return redirect()->route('admin.subscription');
             }
         }
     }
@@ -4483,7 +4485,7 @@ class AdminController extends Controller
         return redirect()->back()->with('message', 'You have successfully transleted language.');
     }
 
-    function password($action_type = null, Request $request){
+    function password($action_type, Request $request){
 
 
 

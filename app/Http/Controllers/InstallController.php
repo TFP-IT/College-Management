@@ -85,7 +85,6 @@ class InstallController extends Controller
         curl_setopt($ch_verify, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
     
         $cinit_verify_data = curl_exec($ch_verify);
-        curl_close($ch_verify);
     
         $response = json_decode($cinit_verify_data, true);
     
