@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder
             CurrencySeeder::class,
             PaymentMethodsSeeder::class,
             CreateUsersSeeder::class,
+            AdmissionsRbacSeeder::class,
+            AdmissionSeeder::class,
+            CmsSeeder::class,
         ]);
     }
 }

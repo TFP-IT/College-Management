@@ -564,7 +564,7 @@
                         Established in 2014 in Savar, Dhaka, Maestro Crown College is dedicated to nurturing tomorrow's leaders through academic excellence, character development, and a commitment to national progress.
                     </p>
                     <div class="hero-actions">
-                        <a href="{{ route('frontend.admission') }}" class="btn btn-gold">
+                        <a href="{{ route('admissions.index') }}" class="btn btn-gold">
                             <i class="fa-solid fa-file-signature"></i> Apply for Admission 2026
                         </a>
                         <a href="#about" class="btn btn-outline-white">

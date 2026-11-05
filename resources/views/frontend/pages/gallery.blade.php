@@ -12,12 +12,23 @@
 
 <div class="page-content">
     <div class="container">
-        <div class="content-card" style="text-align: center; padding: 60px 20px;">
-            <div style="font-size: 4rem; color: var(--gray-lt); margin-bottom: 20px;">
-                <i class="fa-solid fa-images"></i>
-            </div>
-            <h3 style="color: var(--navy); margin-bottom: 10px;">Gallery Updating Soon</h3>
-            <p style="color: var(--gray); max-width: 500px; margin: 0 auto;">We are currently curating our best campus moments. Please check back later to see our photo gallery.</p>
+        <div class="content-card">
+            @if($items->isEmpty())
+                <div style="text-align: center; padding: 60px 20px;">
+                    <i class="fa-solid fa-images" style="font-size: 4rem; color: var(--gray-lt);"></i>
+                    <h3 style="color: var(--navy); margin: 20px 0 10px;">Gallery updating soon</h3>
+                    <p style="color: var(--gray);">We are curating our best campus moments. Please check back later.</p>
+                </div>
+            @else
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
+                    @foreach($items as $item)
+                        <figure style="margin: 0;">
+                            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" loading="lazy" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px;">
+                            <figcaption style="font-size: .9rem; color: var(--gray-dk); margin-top: 6px;">{{ $item->title }}</figcaption>
+                        </figure>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 </div>

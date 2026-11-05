@@ -1,0 +1,2625 @@
+{
+  "info": {
+    "name": "Maestro Crown College - Mobile App API",
+    "_postman_id": "mcc-college-management-api-v1",
+    "description": "Maestro Crown College API. Folders A-D are the admissions v1 API and the public CMS. Setup, credentials and how-to: docs/ADMISSION_AND_CMS_GUIDE.md. Endpoint reference: docs/ADMISSIONS_API.md. Run the admissions folders in order (A, then B, then C).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "site_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "applicant_phone",
+      "value": "01712345678",
+      "type": "string"
+    },
+    {
+      "key": "candidate_dob",
+      "value": "2022-05-15",
+      "type": "string"
+    },
+    {
+      "key": "mock_secret",
+      "value": "local-only-mock-secret-change-me",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "applicant_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "council_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "officer_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "principal_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "otp_code",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "track_code",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "program_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "application_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "application_no",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "document_photo_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "payment_ref",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "payment_amount",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "signature",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "section_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "qr_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "application_no_legacy",
+      "value": "MCC-2026-000017",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "App Login (Student)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    console.log('Token automatically saved: ' + jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"student\",\n  \"login_id\": \"STD-1001\",\n  \"password\": \"12345678\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app_login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "app_login"
+              ]
+            },
+            "description": "Multi-role app login for Students using student_id."
+          }
+        },
+        {
+          "name": "App Login (Teacher)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    console.log('Teacher Token saved: ' + jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"teacher\",\n  \"login_id\": \"TCH-1001\",\n  \"password\": \"12345678\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app_login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "app_login"
+              ]
+            },
+            "description": "Log in with teacher_id. Saves the token, replacing any earlier one. Student-only endpoints return 500 with this token."
+          }
+        },
+        {
+          "name": "App Login (Guardian)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    console.log('Guardian Token saved: ' + jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"guardian\",\n  \"login_id\": \"01712345678\",\n  \"password\": \"12345678\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/app_login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "app_login"
+              ]
+            },
+            "description": "Log in with phone_number. Saves the token, replacing any earlier one. Student-only endpoints return 500 with this token."
+          }
+        },
+        {
+          "name": "Legacy Email Login (Student)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    console.log('Legacy Token saved: ' + jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@gmail.com\",\n  \"password\": \"12345678\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Email login for student accounts only (role_id 7). Returns 201."
+          }
+        },
+        {
+          "name": "Get Authenticated User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user"
+              ]
+            },
+            "description": "Retrieves the currently authenticated user."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logout"
+              ]
+            },
+            "description": "KNOWN ISSUE: currently returns 500 and the token stays valid. See API_DOCUMENTATION.md section 11."
+          }
+        },
+        {
+          "name": "Account Delete / Deactivate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/account_delete",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "account_delete"
+              ]
+            },
+            "description": "WARNING: sets status to 0 on the logged-in account, so it can no longer log in. Restore seeded accounts with: php artisan db:seed --class=CreateUsersSeeder"
+          }
+        }
+      ],
+      "description": " (Existing mobile API. See docs/API_DOCUMENTATION.md.)"
+    },
+    {
+      "name": "2. User Profile",
+      "item": [
+        {
+          "name": "Get User Details (Student Profile)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user_details",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user_details"
+              ]
+            },
+            "description": "Retrieves full student details: class, section, school, running session."
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Student User\",\n  \"email\": \"student@gmail.com\",\n  \"gender\": \"Male\",\n  \"phone\": \"01812345678\",\n  \"address\": \"Badda, Dhaka\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/profile_update",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile_update"
+              ]
+            },
+            "description": "Send all five fields. Missing name causes a 500; missing gender, phone or address are saved as null."
+          }
+        },
+        {
+          "name": "Change Profile Photo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "user_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Choose an image file in the Value column."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/change_profile_photo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "change_profile_photo"
+              ]
+            },
+            "description": "The field must be named user_image. KNOWN ISSUE: returns 201 but does not save the new photo. See API_DOCUMENTATION.md section 11."
+          }
+        }
+      ],
+      "description": "Student accounts with an enrollment only. Teacher, guardian and new-applicant tokens get a 500 here. Log in with 'App Login (Student)' first. A 400 'not found' message means the account has no data yet, not that the request is wrong. (Existing mobile API. See docs/API_DOCUMENTATION.md.)"
+    },
+    {
+      "name": "3. Academics",
+      "item": [
+        {
+          "name": "Get Class Routine",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/routine",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "routine"
+              ]
+            },
+            "description": "Retrieves student's weekly schedule with room, subject, and teacher."
+          }
+        },
+        {
+          "name": "Get Attendance Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"month\": \"Nov\",\n  \"year\": \"2026\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/attendance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "attendance"
+              ]
+            },
+            "description": "Monthly attendance history for the logged-in student."
+          }
+        },
+        {
+          "name": "Get Enrolled Subjects",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subjects",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subjects"
+              ]
+            },
+            "description": "Lists subjects for student's current class and session."
+          }
+        },
+        {
+          "name": "Get Syllabus List",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/syllabus_list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "syllabus_list"
+              ]
+            },
+            "description": "List of syllabus documents with download links."
+          }
+        },
+        {
+          "name": "Get Teachers & Departments",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"department_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/teacher_list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "teacher_list"
+              ]
+            },
+            "description": "Optional department_id filter. KNOWN ISSUE: returns 500 when any listed teacher has no department."
+          }
+        },
+        {
+          "name": "Get Exam Schedules",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/exam_list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "exam_list"
+              ]
+            },
+            "description": "List of exams with timings and status (Upcoming/Expired)."
+          }
+        },
+        {
+          "name": "Get Exam Marks & Gradebook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exam_category_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/marks",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "marks"
+              ]
+            },
+            "description": "Exam results, mark sheets, and teacher remarks."
+          }
+        }
+      ],
+      "description": "Student accounts with an enrollment only. Teacher, guardian and new-applicant tokens get a 500 here. Log in with 'App Login (Student)' first. A 400 'not found' message means the account has no data yet, not that the request is wrong. (Existing mobile API. See docs/API_DOCUMENTATION.md.)"
+    },
+    {
+      "name": "4. Library",
+      "item": [
+        {
+          "name": "Search Book Catalog",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search_key\": \"English\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/book_list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "book_list"
+              ]
+            },
+            "description": "Searches library books and shows total vs available copies."
+          }
+        },
+        {
+          "name": "Get Issued Books History",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date_range\": \"2026/01/01 - 2026/12/31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/book_issue_list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "book_issue_list"
+              ]
+            },
+            "description": "List of books issued to the student with pending/returned status."
+          }
+        }
+      ],
+      "description": "Student accounts with an enrollment only. Teacher, guardian and new-applicant tokens get a 500 here. Log in with 'App Login (Student)' first. A 400 'not found' message means the account has no data yet, not that the request is wrong. (Existing mobile API. See docs/API_DOCUMENTATION.md.)"
+    },
+    {
+      "name": "5. Fees & Invoices",
+      "item": [
+        {
+          "name": "Get Fee Invoices",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date_range\": \"2026/01/01 - 2026/12/31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/fee_list",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fee_list"
+              ]
+            },
+            "description": "Fee invoice history, payment amounts, and paid/unpaid status."
+          }
+        }
+      ],
+      "description": "Student accounts with an enrollment only. Teacher, guardian and new-applicant tokens get a 500 here. Log in with 'App Login (Student)' first. A 400 'not found' message means the account has no data yet, not that the request is wrong. (Existing mobile API. See docs/API_DOCUMENTATION.md.)"
+    },
+    {
+      "name": "A. Admissions v1 - Applicant (mobile app)",
+      "description": "Full applicant journey. Run top to bottom. Each request saves the values the next one needs.",
+      "item": [
+        {
+          "name": "1. Request OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applicants/otp/request",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applicants",
+                "otp",
+                "request"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{applicant_phone}}\",\n  \"purpose\": \"APPLICATION_AUTH\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Sends a 6-digit code. In local development the code is returned as data.debug_otp (never in production)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const j = pm.response.json(); if (j.data && j.data.debug_otp) pm.collectionVariables.set('otp_code', j.data.debug_otp);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Verify OTP (get applicant token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applicants/otp/verify",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applicants",
+                "otp",
+                "verify"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{applicant_phone}}\",\n  \"code\": \"{{otp_code}}\",\n  \"purpose\": \"APPLICATION_AUTH\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Returns a token with the \"applicant\" ability. It is saved to {{applicant_token}}."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "pm.collectionVariables.set('applicant_token', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. List programmes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/programs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "programs"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Public. Saves the Playgroup programme id to {{program_id}}."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const p = pm.response.json().data.find(x => x.code === 'PG-2026'); if (p) pm.collectionVariables.set('program_id', p.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Start draft application",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/apply",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "apply"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"program_id\": \"{{program_id}}\",\n  \"candidate_name\": \"Postman Child\",\n  \"phone\": \"{{applicant_phone}}\",\n  \"email\": \"child@example.com\",\n  \"candidate_dob\": \"{{candidate_dob}}\",\n  \"gender\": \"MALE\",\n  \"current_address\": \"Radio Colony, Savar, Dhaka\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Phone must be the one verified in steps 1 and 2. Date of birth must suit the programme age limits (Playgroup: 3 to 4)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const d = pm.response.json().data; pm.collectionVariables.set('application_id', d.id); pm.collectionVariables.set('application_no', d.application_number);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Add guardian",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applications/{{application_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applications",
+                "{{application_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"guardians\": [\n    {\"relation\": \"FATHER\", \"full_name\": \"Karim Rahman\", \"phone\": \"01711223344\", \"occupation\": \"Engineer\", \"is_primary\": true},\n    {\"relation\": \"MOTHER\", \"full_name\": \"Shireen Rahman\", \"phone\": \"01811223344\", \"is_primary\": false}\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Every guardian needs a name, relation and an 11-digit phone number."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Upload photo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applications/{{application_id}}/documents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applications",
+                "{{application_id}}",
+                "documents"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "doc_type",
+                  "value": "PHOTO",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Choose a JPG/PNG/WEBP file (max 1 MB) in the file row. Saves the document id."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "pm.collectionVariables.set('document_photo_id', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Upload birth certificate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applications/{{application_id}}/documents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applications",
+                "{{application_id}}",
+                "documents"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "doc_type",
+                  "value": "BIRTH_CERT",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Choose a PDF/JPG/PNG/WEBP file (max 5 MB). Files are checked by their content, not their name."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. Submit application",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applications/{{application_id}}/submit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applications",
+                "{{application_id}}",
+                "submit"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Checks fields, guardian, documents, eligibility and deadline. Moves to PENDING_APP_FEE (fee > 0)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9. Pay application fee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applications/{{application_id}}/pay",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applications",
+                "{{application_id}}",
+                "pay"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_type\": \"APPLICATION_FEE\",\n  \"provider\": \"mock\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "The amount is set by the programme (500 BDT). The request cannot change it. Saves the transaction reference."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const p = pm.response.json().data.payment; pm.collectionVariables.set('payment_ref', p.transaction_ref); pm.collectionVariables.set('payment_amount', Number(p.amount).toFixed(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10. Simulate gateway callback (signed)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/payments/callback",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "payments",
+                "callback"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transaction_ref\": \"{{payment_ref}}\",\n  \"status\": \"SUCCESS\",\n  \"amount\": \"{{payment_amount}}\",\n  \"currency\": \"BDT\",\n  \"signature\": \"{{signature}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Mock gateway only. The pre-request script signs the callback with the shared secret, as the real gateway does. A wrong or missing signature returns 422."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ref = pm.collectionVariables.get('payment_ref');",
+                  "const amount = pm.collectionVariables.get('payment_amount');",
+                  "const secret = pm.collectionVariables.get('mock_secret');",
+                  "const sig = CryptoJS.HmacSHA256([ref, 'SUCCESS', amount].join('|'), secret).toString();",
+                  "pm.collectionVariables.set('signature', sig);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "pm.test('payment confirmed', () => pm.expect(pm.response.json().data.payment_status).to.eql('SUCCESS'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11. Check status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applications/{{application_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applications",
+                "{{application_id}}",
+                "status"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Shows status, documents, payments and (after approval only) the admission pass."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const q = pm.response.json().data.qr;",
+                  "if (q) pm.collectionVariables.set('qr_token', q.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12. Withdraw (optional)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applications/{{application_id}}/withdraw",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applications",
+                "{{application_id}}",
+                "withdraw"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Allowed before enrolment. Use only when you want to test withdrawal."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13. Track by number + phone + code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/track",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "track"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"application_no\": \"{{application_no}}\",\n  \"phone\": \"{{applicant_phone}}\",\n  \"code\": \"{{track_code}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Needs a TRACK code first (see request 14). Wrong details always return the same generic 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14. Request TRACK code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applicants/otp/request",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applicants",
+                "otp",
+                "request"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{applicant_phone}}\",\n  \"purpose\": \"TRACK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Sends a code for tracking. Saves the debug code in local development."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const j = pm.response.json(); if (j.data && j.data.debug_otp) pm.collectionVariables.set('track_code', j.data.debug_otp);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "B. Admissions v1 - Council & Desk (staff)",
+      "description": "Staff sign in first. Each request needs its own permission. Use the matching login.",
+      "item": [
+        {
+          "name": "Staff login: council",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"council@mcc.edu.bd\",\n  \"password\": \"Council@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Sets {{council_token}}. Council members can decide but cannot enrol."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "pm.collectionVariables.set('council_token', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Staff login: admissions officer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"officer@mcc.edu.bd\",\n  \"password\": \"Officer@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Sets {{officer_token}}. Officers verify documents and enrol."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "pm.collectionVariables.set('officer_token', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Staff login: principal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"principal@mcc.edu.bd\",\n  \"password\": \"Principal@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Sets {{principal_token}}. Read-only oversight, plus capacity override."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "pm.collectionVariables.set('principal_token', pm.response.json().data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dashboard counts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/council/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "council",
+                "dashboard"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{council_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Needs admission.report.view."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List applications (filters)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/council/applications?status=SUBMITTED&per_page=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "council",
+                "applications"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "SUBMITTED"
+                },
+                {
+                  "key": "per_page",
+                  "value": "20"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{council_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Optional query: status, program_id, search, from, to, min_score, max_score, per_page."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dossier for one application",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/council/applications/{{application_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "council",
+                "applications",
+                "{{application_id}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{council_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Needs admission.application.view."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify document (officer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/officer/applications/{{application_id}}/verify-document/{{document_photo_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "officer",
+                "applications",
+                "{{application_id}}",
+                "verify-document",
+                "{{document_photo_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"VERIFIED\",\n  \"review_notes\": \"Clear photograph\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{officer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "A rejection needs review_notes. When every required document is verified, the application moves to UNDER_REVIEW."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Record council decision",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/council/applications/{{application_id}}/decision",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "council",
+                "applications",
+                "{{application_id}}",
+                "decision"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"APPROVED\",\n  \"remarks\": \"Selected for Playgroup 2026-27\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{council_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "APPROVED issues the admission pass. Rejected and waitlisted need remarks. A full programme forces WAITLISTED."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List classes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/classes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "classes"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{officer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Needs admission.enroll."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sections with free seats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/sections?program_id={{program_id}}?program_id={{program_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "sections?program_id={{program_id}}"
+              ],
+              "query": [
+                {
+                  "key": "program_id",
+                  "value": "{{program_id}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{officer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Shows capacity and available seats for the programme."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const s = pm.response.json().data[0]; if (s) pm.collectionVariables.set('section_id', s.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Enrol and provision student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/officer/applications/{{application_id}}/enroll",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "officer",
+                "applications",
+                "{{application_id}}",
+                "enroll"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"section_id\": \"{{section_id}}\",\n  \"roll_no\": \"1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{officer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Creates the Student ID (MCC26S...). Calling again returns the same student. The council member who decided cannot enrol."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify admission pass (QR)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/qr/verify",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "qr",
+                "verify"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{qr_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{officer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Checks validity; does not reveal personal data."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "C. Payments",
+      "description": "Payment status and webhooks.",
+      "item": [
+        {
+          "name": "Payment status by reference",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/payments/{{payment_ref}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "payments",
+                "{{payment_ref}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Owner or staff only."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Initiate admission fee (after approval)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admissions/applications/{{application_id}}/pay",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "admissions",
+                "applications",
+                "{{application_id}}",
+                "pay"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_type\": \"ADMISSION_FEE\",\n  \"provider\": \"mock\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{applicant_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Only after approval and while the pass is valid. Amount from the programme (12000 BDT for Playgroup)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));",
+                  "const p = pm.response.json().data.payment; pm.collectionVariables.set('payment_ref', p.transaction_ref); pm.collectionVariables.set('payment_amount', Number(p.amount).toFixed(2));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "D. CMS (public read-only JSON)",
+      "description": "Published website content for apps. No login needed.",
+      "item": [
+        {
+          "name": "Notices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/cms/notices",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "cms",
+                "notices"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Only published notices inside their publish/expiry window."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Gallery",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/cms/gallery",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "cms",
+                "gallery"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Published gallery images."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Governing body",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/cms/staff?group=GOVERNING_BODY?group=GOVERNING_BODY",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "cms",
+                "staff?group=GOVERNING_BODY"
+              ],
+              "query": [
+                {
+                  "key": "group",
+                  "value": "GOVERNING_BODY"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "group: GOVERNING_BODY, TEACHER or STAFF."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Teachers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/cms/staff?group=TEACHER?group=TEACHER",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "cms",
+                "staff?group=TEACHER"
+              ],
+              "query": [
+                {
+                  "key": "group",
+                  "value": "TEACHER"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200,201]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Editable page: about",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/cms/pages/about",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "cms",
+                "pages",
+                "about"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Returns 404 if the page is not published."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 or 404', () => pm.expect(pm.response.code).to.be.oneOf([200,404]));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "E. LEGACY admission endpoints (deprecated)",
+      "description": "Old public endpoints. They create student accounts with random passwords and have no OTP check. Kept only for the existing app. Use folders A to D for new work. Planned removal after the mobile app switches to v1.",
+      "item": [
+        {
+          "name": "Legacy: upload media (deprecated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/media/upload",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "media",
+                "upload"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Public, no login."
+          }
+        },
+        {
+          "name": "Legacy: submit form (deprecated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admission/submit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admission",
+                "submit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"department\": \"Science\",\n  \"sscBoard\": \"Dhaka\",\n  \"sscRoll\": \"123456\",\n  \"registrationNumber\": \"1234567890\",\n  \"passingYear\": \"2026\",\n  \"gpa\": 5.0,\n  \"name\": \"Legacy Candidate\",\n  \"gender\": \"Male\",\n  \"mobile\": \"01799887766\",\n  \"email\": \"legacy@example.com\",\n  \"fatherName\": \"Anwar Hasan\",\n  \"motherName\": \"Rokeya Begum\",\n  \"guardianName\": \"Anwar Hasan\",\n  \"relationWithGuardian\": \"Father\",\n  \"guardianMobile\": \"01799887766\",\n  \"presentAddress\": \"Radio Colony, Savar, Dhaka\",\n  \"photo_id\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Public. Returns a generated password once. Do not use in shared environments."
+          }
+        }
+      ]
+    }
+  ]
+}

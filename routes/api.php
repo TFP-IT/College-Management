@@ -58,3 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/change_profile_photo', [ApiController::class, 'change_profile_photo']);
     Route::post('/my_application', [AdmissionController::class, 'myApplication']);
 });
+
+// MCC-Hello Future Admissions API v1 Routes
+require __DIR__ . '/admissions_api.php';
+require __DIR__ . '/cms_api.php';

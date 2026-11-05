@@ -19,6 +19,7 @@
         "omnipay/paypal": "^3.0",
         "razorpay/razorpay": "^2.8",
         "simplesoftwareio/simple-qrcode": "^4.2",
+        "spatie/laravel-permission": "^8.3",
         "stripe/stripe-php": "^8.11",
         "twilio/sdk": "^7.5"
     },

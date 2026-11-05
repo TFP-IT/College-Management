@@ -540,7 +540,7 @@
                     <a href="{{ route('login') }}" class="btn btn-primary">
                         <i class="fa-solid fa-right-to-bracket"></i> EMS Login
                     </a>
-                    <a href="{{ route('frontend.admission') }}" class="btn btn-gold">
+                    <a href="{{ route('admissions.index') }}" class="btn btn-gold">
                         <i class="fa-solid fa-pen-to-square"></i> Apply
                     </a>
                 </div>
@@ -552,7 +552,16 @@
         </div>
     </nav>
 
+    @if(View::hasSection('guardian_sidebar'))
+    <div class="container" style="display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 24px; align-items: start; padding-top: 30px; padding-bottom: 40px;">
+        <aside>@yield('guardian_sidebar')</aside>
+        <div style="min-width: 0;">
+            @yield('content')
+        </div>
+    </div>
+    @else
     @yield('content')
+    @endif
 
     <!-- ── Contact & Footer ───────────────────────────── -->
     <section id="contact" class="contact-section section-pad">

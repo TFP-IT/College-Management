@@ -12,7 +12,32 @@
 
 <div class="page-content">
     <div class="container">
-        
+
+        @if($programs->isNotEmpty())
+        <div style="margin-bottom: 50px;">
+            <h2 style="color: var(--navy); border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-bottom: 30px;">Admission Programmes 2026–27</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                @foreach($programs as $program)
+                    <div class="content-card" style="padding: 24px;">
+                        <h3 style="margin: 0 0 8px; color: var(--navy);">{{ $program->title }}</h3>
+                        @if($program->description)
+                            <p style="color: var(--gray-dk); white-space: pre-line;">{{ $program->description }}</p>
+                        @endif
+                        <ul style="list-style: none; padding: 0; margin: 12px 0 0; font-size: .9rem; color: var(--gray-dk);">
+                            <li>Application fee: ৳{{ number_format($program->fee_application, 2) }}</li>
+                            <li>Admission fee: ৳{{ number_format($program->fee_admission, 2) }}</li>
+                            <li>Seats: {{ $program->seats }}</li>
+                            @if($program->application_deadline)
+                                <li>Deadline: {{ $program->application_deadline->format('d M Y') }}</li>
+                            @endif
+                        </ul>
+                        <a href="{{ route('admissions.guardian.start', ['program' => $program->id]) }}" class="btn btn-outline" style="margin-top: 16px; display: inline-block;">Apply now</a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         <div style="margin-bottom: 50px;">
             <h2 style="color: var(--navy); border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-bottom: 30px;">Our Academic Groups</h2>
             
