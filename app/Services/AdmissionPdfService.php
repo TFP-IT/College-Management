@@ -19,9 +19,9 @@ class AdmissionPdfService
     public function generate(Admission $admission): string
     {
         try {
-            // Generate QR Code encoding application number
-            $qrCodeImage = QrCode::format('png')->size(200)->margin(1)->generate($admission->application_no);
-            $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrCodeImage);
+            // Generate QR Code encoding application number (SVG format does not require Imagick extension)
+            $qrCodeSvg = QrCode::format('svg')->size(200)->margin(1)->generate($admission->application_no);
+            $qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrCodeSvg);
 
             $logoPath = public_path('assets/logo.png');
 
@@ -48,7 +48,7 @@ class AdmissionPdfService
             $admission->update(['pdf_path' => $pdfPath]);
 
             return $pdfPath;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Admission PDF Generation failed: ' . $e->getMessage(), [
                 'application_no' => $admission->application_no ?? 'unknown',
                 'exception' => $e

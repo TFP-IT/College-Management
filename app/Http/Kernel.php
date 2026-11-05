@@ -53,6 +53,34 @@ class Kernel extends HttpKernel
      *
      * @var array<string, class-string|string>
      */
+    protected $routeMiddleware = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'role_id' => \App\Http\Middleware\RoleId::class,
+        'superAdmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        'student' => \App\Http\Middleware\StudentMiddleware::class,
+        'parent' => \App\Http\Middleware\ParentMiddleware::class,
+        'accountant' => \App\Http\Middleware\AccountantMiddleware::class,
+        'librarian' => \App\Http\Middleware\LibrarianMiddleware::class,
+        'teacher' => \App\Http\Middleware\TeacherMiddleware::class,
+        'is_installed' => \App\Http\Middleware\IsInstalled::class,
+        'alumni' => \App\Http\Middleware\AlumniMiddleware::class,
+        'admin_permission' => \App\Http\Middleware\AdminPermission::class,
+    ];
+
+    /**
+     * Backward/Forward compatibility alias for route middleware.
+     *
+     * @var array<string, class-string|string>
+     */
     protected $middlewareAliases = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
