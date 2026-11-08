@@ -2,14 +2,14 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Admission Application Slip</title>
+    <title>Maestro Crown College - Admission Application Slip</title>
     <style>
         @page {
-            margin: 0.5in;
+            margin: 0.4in;
         }
         body {
             font-family: Arial, sans-serif;
-            font-size: 13px;
+            font-size: 12px;
             color: #1A1A1A;
             margin: 0;
             padding: 0;
@@ -19,117 +19,137 @@
             width: 100%;
             text-align: center;
             border-bottom: 3px solid #C62828;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
             position: relative;
         }
         .header-content {
             margin: 0 auto;
         }
         .logo {
-            width: 160px;
-            margin-bottom: 10px;
+            width: 140px;
+            margin-bottom: 6px;
         }
-        .college-info h1 {
+        .school-info h1 {
             margin: 0;
             color: #C62828;
-            font-size: 26px;
+            font-size: 24px;
             text-transform: uppercase;
             font-weight: 900;
+            letter-spacing: 1px;
         }
-        .college-info p {
-            margin: 5px 0 0 0;
-            font-size: 12px;
-            color: #666666;
+        .school-info p {
+            margin: 3px 0 0 0;
+            font-size: 11px;
+            color: #555555;
         }
         .qr-section {
             position: absolute;
             left: 0;
-            top: 20px;
-            width: 150px;
+            top: 10px;
+            width: 130px;
             text-align: left;
         }
         .photo-section {
             position: absolute;
             right: 0;
-            top: 20px;
+            top: 10px;
             width: 100px;
             text-align: right;
         }
         .qr-code {
-            width: 110px;
-            height: 110px;
+            width: 100px;
+            height: 100px;
         }
         .photo {
-            width: 90px;
-            height: 110px;
+            width: 85px;
+            height: 105px;
             border: 2px solid #D4AF37;
             object-fit: cover;
         }
         
         .title-section {
             text-align: center;
-            margin: 30px 0;
-            padding: 10px;
-            background-color: #F5F7FA;
+            margin: 16px 0 14px 0;
+            padding: 8px;
+            background-color: #F8F9FA;
             border: 1px solid #E2E2E2;
+            border-radius: 4px;
         }
         .title-section h2 {
             margin: 0;
-            font-size: 20px;
+            font-size: 17px;
             color: #C62828;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
         }
         .qr-app-no {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            color: #4A4A4A;
-            margin-top: 5px;
+            color: #333333;
+            margin-top: 4px;
             text-align: center;
-            width: 110px;
+            width: 100px;
         }
 
         .details-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
+            margin-bottom: 14px;
         }
         .details-table th, .details-table td {
             border: 1px solid #E2E2E2;
-            padding: 10px 12px;
+            padding: 7px 10px;
             text-align: left;
+            font-size: 11.5px;
         }
         .details-table th {
-            background-color: #F5F7FA;
-            color: #666666;
-            width: 20%;
+            background-color: #F8F9FA;
+            color: #444444;
+            width: 22%;
             font-weight: bold;
         }
         .details-table td {
-            width: 30%;
-        }
-        .status {
-            text-transform: uppercase;
-            font-weight: bold;
-            color: #C62828;
+            width: 28%;
+            color: #111111;
         }
         .section-heading {
-            background-color: #D4AF37 !important;
+            background-color: #C62828 !important;
             color: #FFFFFF !important;
-            text-align: center;
-            font-size: 14px;
-            padding: 8px !important;
+            text-align: left;
+            font-size: 12px;
+            padding: 6px 10px !important;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
+            font-weight: bold;
+        }
+
+        .portal-notice-box {
+            background-color: #FFF8E1;
+            border: 1px solid #FFE082;
+            border-left: 4px solid #FFA000;
+            padding: 8px 12px;
+            margin-bottom: 14px;
+            border-radius: 4px;
+        }
+        .portal-notice-title {
+            font-weight: bold;
+            color: #C62828;
+            font-size: 11.5px;
+            margin-bottom: 3px;
+        }
+        .portal-notice-text {
+            font-size: 10.5px;
+            color: #555555;
+            line-height: 1.4;
         }
         
         .footer {
-            margin-top: 60px;
+            margin-top: 30px;
             width: 100%;
         }
         .signature-table {
             width: 100%;
-            margin-top: 50px;
+            margin-top: 25px;
         }
         .signature-table td {
             width: 33%;
@@ -139,31 +159,31 @@
         }
         .signature-line {
             border-top: 1px solid #1A1A1A;
-            padding-top: 8px;
+            padding-top: 6px;
             display: inline-block;
-            width: 180px;
+            width: 170px;
             font-weight: bold;
-            color: #666666;
-            font-size: 14px;
+            color: #444444;
+            font-size: 12px;
         }
         .watermark {
             position: fixed;
             top: 25%;
             left: 15%;
-            opacity: 0.04;
+            opacity: 0.035;
             width: 500px;
             z-index: -1;
         }
         .copy-type {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             color: #1A1A1A;
-            margin-top: 5px;
+            margin-top: 4px;
             letter-spacing: 1px;
             background: #D4AF37;
             display: inline-block;
-            padding: 3px 15px;
-            border-radius: 4px;
+            padding: 2px 14px;
+            border-radius: 3px;
         }
         .page-break {
             page-break-after: always;
@@ -174,7 +194,19 @@
 
     <img src="{{ $logoPath }}" class="watermark" alt="Watermark">
 
-    @foreach(['STUDENT COPY', 'OFFICE COPY'] as $index => $copyType)
+    @php
+        $isCollege = $isCollege ?? (!empty($admission->ssc_roll) || stripos((string)$admission->class_name, 'HSC') !== false || stripos((string)$admission->class_name, 'Class XI') !== false);
+        $copies = $isCollege ? ['STUDENT COPY', 'OFFICE COPY'] : ['GUARDIAN COPY', 'OFFICE COPY'];
+        if ($isCollege) {
+            $slipTitle = 'STUDENT ADMISSION APPLICATION SLIP (SESSION 2026)';
+        } elseif ($admission->class_name === 'Guardian Portal Registration' || !$admission->user_id) {
+            $slipTitle = 'GUARDIAN REGISTRATION SLIP (SESSION 2026)';
+        } else {
+            $slipTitle = 'GUARDIAN ADMISSION APPLICATION SLIP (SESSION 2026)';
+        }
+    @endphp
+
+    @foreach($copies as $index => $copyType)
     
     <div class="header">
         <div class="qr-section">
@@ -186,10 +218,11 @@
         
         <div class="header-content">
             <img src="{{ $logoPath }}" class="logo" alt="Logo">
-            <div class="college-info">
+            <div class="school-info">
                 <h1>Maestro Crown College</h1>
-                <p>107/2, Dogormura, Radio Colony, Dhaka Aricha Highway, Savar, Bangladesh, 1343</p>
-                <p>Phone: +880 1309-136876 | Email: admin@maestrocrown.edu.bd</p>
+                <p>Bangladesh National Curriculum (NCTB) · School & College Section</p>
+                <p>107/2, Dogormura, Radio Colony, Dhaka-Aricha Highway, Savar, Dhaka-1343</p>
+                <p>Phone: +880 1309-136876 | Email: info@maestrocrown.edu.bd | Web: maestrocrown.edu.bd</p>
             </div>
         </div>
         
@@ -197,73 +230,62 @@
             @if($photoPath)
                 <img src="{{ $photoPath }}" class="photo" alt="Photo">
             @else
-                <div class="photo" style="line-height: 110px; color: #999; font-size: 12px; text-align: center;">Photo</div>
+                <div class="photo" style="line-height: 105px; color: #999; font-size: 11px; text-align: center;">Student Photo</div>
             @endif
         </div>
     </div>
 
     <div class="title-section">
-        <h2>ADMISSION APPLICATION (2026-2027)</h2>
+        <h2>{{ $slipTitle }}</h2>
         <div class="copy-type">{{ $copyType }}</div>
     </div>
 
+    @if($isCollege)
+    <!-- ================= COLLEGE STUDENT ADMISSION SLIP ================= -->
+    <!-- 1. Candidate / Student Information -->
     <table class="details-table">
         <tr>
-            <th colspan="4" class="section-heading">Applicant Information</th>
+            <th colspan="4" class="section-heading">1. Candidate / Student Information (শিক্ষার্থীর বিবরণ)</th>
         </tr>
         <tr>
-            <th>Name</th>
-            <td colspan="3">{{ $admission->name }}</td>
+            <th>Student Name</th>
+            <td colspan="3"><strong style="font-size: 13px; color: #C62828;">{{ $admission->name }}</strong></td>
         </tr>
         <tr>
-            <th>Gender</th>
-            <td>{{ $admission->gender }}</td>
-            <th>Mobile</th>
-            <td>{{ $admission->mobile }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td colspan="3">{{ $admission->email }}</td>
-        </tr>
-        
-        <tr>
-            <th colspan="4" class="section-heading">Academic Details</th>
-        </tr>
-        <tr>
-            <th>Department</th>
-            <td>{{ $admission->department }}</td>
-            <th>Passing Year</th>
-            <td>{{ $admission->passing_year }}</td>
+            <th>Class Applying For</th>
+            <td><strong>{{ $admission->class_name ?: 'Class XI (HSC)' }}</strong></td>
+            <th>Stream / Group</th>
+            <td><strong style="color: #1976D2;">{{ $admission->department ?: 'General' }}</strong></td>
         </tr>
         <tr>
             <th>SSC Board</th>
-            <td>{{ $admission->ssc_board }}</td>
-            <th>GPA</th>
-            <td>{{ $admission->gpa }}</td>
+            <td>{{ $admission->ssc_board ?: 'N/A' }}</td>
+            <th>SSC Roll Number</th>
+            <td><strong>{{ $admission->ssc_roll ?: 'N/A' }}</strong></td>
         </tr>
         <tr>
-            <th>SSC Roll</th>
-            <td>{{ $admission->ssc_roll }}</td>
-            <th>Reg No</th>
-            <td>{{ $admission->registration_number }}</td>
+            <th>Passing Year</th>
+            <td>{{ $admission->passing_year ?: 'N/A' }}</td>
+            <th>SSC GPA</th>
+            <td><strong style="color: #2E7D32;">{{ $admission->gpa ?: 'N/A' }}</strong></td>
         </tr>
-        
         <tr>
-            <th colspan="4" class="section-heading">Guardian Information</th>
+            <th>Student Mobile</th>
+            <td><strong>{{ $admission->mobile ?: 'N/A' }}</strong></td>
+            <th>Student Email</th>
+            <td>{{ $admission->email ?: 'N/A' }}</td>
+        </tr>
+        <tr>
+            <th>Gender</th>
+            <td>{{ $admission->gender ?: 'N/A' }}</td>
+            <th>Application Status</th>
+            <td><strong style="color: #2E7D32; text-transform: uppercase;">{{ $admission->status }}</strong></td>
         </tr>
         <tr>
             <th>Father's Name</th>
-            <td colspan="3">{{ $admission->father_name }}</td>
-        </tr>
-        <tr>
+            <td>{{ $admission->father_name ?: 'N/A' }}</td>
             <th>Mother's Name</th>
-            <td colspan="3">{{ $admission->mother_name }}</td>
-        </tr>
-        <tr>
-            <th>Guardian</th>
-            <td>{{ $admission->guardian_name }} ({{ $admission->relation_with_guardian }})</td>
-            <th>Mobile</th>
-            <td>{{ $admission->guardian_mobile }}</td>
+            <td>{{ $admission->mother_name ?: 'N/A' }}</td>
         </tr>
         <tr>
             <th>Present Address</th>
@@ -271,19 +293,157 @@
         </tr>
     </table>
 
+    <!-- 2. Guardian Information -->
+    <table class="details-table">
+        <tr>
+            <th colspan="4" class="section-heading">2. Guardian Information (অভিভাবকের তথ্য)</th>
+        </tr>
+        <tr>
+            <th>Guardian Name</th>
+            <td><strong>{{ $admission->guardian_name }}</strong></td>
+            <th>Relationship</th>
+            <td>{{ $admission->relation_with_guardian }}</td>
+        </tr>
+        <tr>
+            <th>Guardian Mobile</th>
+            <td><strong>{{ $admission->guardian_mobile }}</strong></td>
+            <th>Occupation</th>
+            <td>{{ $admission->guardian_occupation ?: 'Service/Business' }}</td>
+        </tr>
+        <tr>
+            <th>National ID (NID)</th>
+            <td>{{ $admission->guardian_nid ?: 'N/A' }}</td>
+            <th>Emergency Contact</th>
+            <td>{{ $admission->guardian_mobile }}</td>
+        </tr>
+    </table>
+
+    <!-- Student Portal Access Notice Box -->
+    <div class="portal-notice-box">
+        <div class="portal-notice-title">★ STUDENT PORTAL ACCESS CREDENTIALS ★</div>
+        <div class="portal-notice-text">
+            <strong>Student ID:</strong> <span style="font-size: 12px; font-weight: bold; color: #C62828;">{{ $studentId ?: ($admission->user?->student_id ?: $admission->student_id) }}</span><br>
+            <strong>Login Identifier:</strong> Use your <strong>Student ID</strong> (or registered mobile <strong>{{ $admission->mobile }}</strong>) to sign in to the <strong>Maestro Crown College Mobile App</strong>.<br>
+            <strong>Curriculum Portal Access:</strong> Once signed in under the <strong>Student</strong> tab, your portal is automatically tailored to your stream (<strong>{{ $admission->department }} — Class XI HSC</strong>). You can view class routines, subject syllabus, attendance records, notices, and <strong>pay college admission & monthly tuition fees</strong> online.
+        </div>
+    </div>
+
     <div class="footer">
         <table class="signature-table">
             <tr>
                 <td><div class="signature-line">Student Signature</div></td>
-                <td>
-                    <div style="font-size: 12px; color: #666;">
-                        Date: {{ $admission->submitted_at ? $admission->submitted_at->format('d M Y, h:i A') : now()->format('d M Y, h:i A') }}
-                    </div>
-                </td>
-                <td><div class="signature-line">Authorized Signature</div></td>
+                <td><div class="signature-line">Guardian Signature</div></td>
+                <td><div class="signature-line">Principal / Authority</div></td>
             </tr>
         </table>
     </div>
+
+    @else
+    <!-- ================= SCHOOL GUARDIAN ADMISSION SLIP ================= -->
+    <!-- 1. Guardian Information -->
+    <table class="details-table">
+        <tr>
+            <th colspan="4" class="section-heading">1. Guardian Information (অভিভাবকের তথ্য)</th>
+        </tr>
+        <tr>
+            <th>Guardian Name</th>
+            <td><strong>{{ $admission->guardian_name }}</strong></td>
+            <th>Relationship</th>
+            <td>{{ $admission->relation_with_guardian }}</td>
+        </tr>
+        <tr>
+            <th>Guardian Mobile</th>
+            <td><strong>{{ $admission->guardian_mobile }}</strong></td>
+            <th>National ID (NID)</th>
+            <td><strong>{{ $admission->guardian_nid ?: 'N/A' }}</strong></td>
+        </tr>
+        <tr>
+            <th>Occupation</th>
+            <td>{{ $admission->guardian_occupation ?: 'Service/Business' }}</td>
+            <th>Email</th>
+            <td>{{ $admission->email ?: 'N/A' }}</td>
+        </tr>
+        <tr>
+            <th>Present Address</th>
+            <td colspan="3">{{ $admission->present_address }}</td>
+        </tr>
+    </table>
+
+    @if($admission->class_name === 'Guardian Portal Registration' || !$admission->user_id)
+    <!-- 2. Enrolled Children / Student Admissions -->
+    <table class="details-table">
+        <tr>
+            <th colspan="4" class="section-heading">2. Enrolled Children / Student Admissions (সংযুক্ত শিক্ষার্থীর তথ্য)</th>
+        </tr>
+        <tr>
+            <td colspan="4" style="padding: 14px; text-align: center; background-color: #F8F9FA;">
+                <strong style="color: #1976D2; font-size: 13px;">Guardian Portal Account Active</strong><br>
+                <span style="font-size: 11px; color: #555; display: inline-block; margin-top: 4px;">
+                    Log in to the <strong>Maestro Crown College Mobile App</strong> using your Guardian Mobile number to add your children and complete school admission (Play through Class 10).
+                </span>
+            </td>
+        </tr>
+    </table>
+    @else
+    <!-- 2. Student Information -->
+    <table class="details-table">
+        <tr>
+            <th colspan="4" class="section-heading">2. Student Information (শিক্ষার্থীর বিবরণ)</th>
+        </tr>
+        <tr>
+            <th>Student Name</th>
+            <td colspan="3"><strong style="font-size: 13px; color: #C62828;">{{ $admission->name }}</strong></td>
+        </tr>
+        <tr>
+            <th>Class Applying For</th>
+            <td><strong>{{ $admission->class_name ?: 'Class 1' }}</strong></td>
+            <th>Stream / Group</th>
+            <td>{{ $admission->department ?: 'General' }}</td>
+        </tr>
+        <tr>
+            <th>Gender</th>
+            <td>{{ $admission->gender }}</td>
+            <th>Date of Birth</th>
+            <td>{{ $admission->date_of_birth ?: 'N/A' }}</td>
+        </tr>
+        <tr>
+            <th>Birth Certificate No</th>
+            <td>{{ $admission->birth_certificate_no ?: 'N/A' }}</td>
+            <th>Application Status</th>
+            <td><strong style="color: #2E7D32; text-transform: uppercase;">{{ $admission->status }}</strong></td>
+        </tr>
+        <tr>
+            <th>Father's Name</th>
+            <td>{{ $admission->father_name }}</td>
+            <th>Mother's Name</th>
+            <td>{{ $admission->mother_name }}</td>
+        </tr>
+    </table>
+    @endif
+
+    <!-- Guardian Portal Access Information -->
+    <div class="portal-notice-box">
+        <div class="portal-notice-title">★ GUARDIAN PORTAL ACCESS CREDENTIALS ★</div>
+        <div class="portal-notice-text">
+            <strong>Login Identifier:</strong> {{ $admission->guardian_mobile }} (Guardian Mobile Number)<br>
+            <strong>Note for Parents:</strong> School students do not have personal phone accounts. Guardians can log in to the <strong>Maestro Crown College Mobile App</strong> using this registered mobile number to monitor academic progress, attendance, exam reports, tuition fee payments, and to add other children.
+        </div>
+    </div>
+
+    <div class="footer">
+        <table class="signature-table">
+            <tr>
+                <td><div class="signature-line">Guardian Signature</div></td>
+                <td>
+                    <div style="font-size: 11px; color: #666;">
+                        Date: {{ $admission->submitted_at ? $admission->submitted_at->format('d M Y, h:i A') : now()->format('d M Y, h:i A') }}
+                    </div>
+                </td>
+                <td><div class="signature-line">Headmaster / Principal</div></td>
+            </tr>
+        </table>
+    </div>
+    @endif
 
     @if($index == 0)
         <div class="page-break"></div>

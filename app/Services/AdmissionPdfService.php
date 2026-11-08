@@ -31,12 +31,27 @@ class AdmissionPdfService
                 $photoPath = storage_path('app/public/' . $admission->photo_path);
             }
 
+            $isCollege = !empty($admission->ssc_roll) 
+                || stripos((string)$admission->class_name, 'HSC') !== false 
+                || stripos((string)$admission->class_name, 'Class XI') !== false;
+
+            $studentId = null;
+            if ($admission->user_id) {
+                $studentUser = \App\Models\User::find($admission->user_id);
+                $studentId = $studentUser?->student_id;
+            }
+            if (!$studentId) {
+                $studentId = $admission->student_id;
+            }
+
             // Render PDF View
             $pdf = PDF::loadView('pdf.admission-slip', [
                 'admission' => $admission,
                 'logoPath' => $logoPath,
                 'photoPath' => $photoPath,
-                'qrCodeBase64' => $qrCodeBase64
+                'qrCodeBase64' => $qrCodeBase64,
+                'isCollege' => $isCollege,
+                'studentId' => $studentId,
             ]);
 
             // Save PDF to public disk

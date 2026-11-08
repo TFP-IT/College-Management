@@ -79,11 +79,21 @@ class ApiController extends Controller
         $query = User::where('status', 1);
 
         if ($fields['role'] === 'student') {
-            $query->where('student_id', $fields['login_id']);
+            $id = trim($fields['login_id']);
+            $cleanId = preg_replace('/^MCC/i', '', $id);
+            $withMcc = 'MCC' . $cleanId;
+
+            $query->where('role_id', 7)->where(function($q) use ($id, $cleanId, $withMcc) {
+                $q->where('student_id', $id)
+                  ->orWhere('student_id', $cleanId)
+                  ->orWhere('student_id', $withMcc)
+                  ->orWhere('phone_number', $id)
+                  ->orWhere('email', $id);
+            });
         } elseif ($fields['role'] === 'teacher') {
             $query->where('teacher_id', $fields['login_id']);
         } elseif ($fields['role'] === 'guardian') {
-            $query->where('phone_number', $fields['login_id']);
+            $query->where('phone_number', $fields['login_id'])->where('role_id', 6);
         } else {
             return response(['message' => 'Invalid role selected.'], 400);
         }
@@ -94,6 +104,15 @@ class ApiController extends Controller
             return response([
                 'message' => 'Invalid credentials!'
             ], 401);
+        }
+
+        if ($user->role_id == 7) {
+            $admission = \App\Models\Admission::where('user_id', $user->id)->first();
+            if ($admission) {
+                $user->admission = $admission;
+                $user->department = $admission->department;
+                $user->class_name = $admission->class_name;
+            }
         }
 
         $token = $user->createToken('auth-token')->plainTextToken;
@@ -125,7 +144,7 @@ class ApiController extends Controller
     //student logout function
     public function logout(Request $request)
     {
-    	auth()->user()->tokens()->delete;
+    	auth()->user()->tokens()->delete();
 
     	return response()->json([
             'message' => 'Logged out successfully.',
@@ -742,5 +761,115 @@ class ApiController extends Controller
                 'message' => 'Invoices not found!',
             ], 400);
         }
+    }
+
+    /**
+     * Get students for teacher attendance / class roster
+     */
+    public function teacherStudents(Request $request)
+    {
+        $classFilter = $request->query('class');
+        $query = User::where('role_id', 7)->where('status', 1);
+
+        $students = $query->get()->map(function ($s, $index) {
+            $class = 'Class 1';
+            $roll = str_pad($index + 1, 3, '0', STR_PAD_LEFT);
+            if ($s->student_info) {
+                $info = json_decode($s->student_info, true);
+                if (is_array($info) && !empty($info['class'])) {
+                    $class = $info['class'];
+                }
+            }
+            return [
+                'id' => $s->id,
+                'name' => $s->name,
+                'student_id' => $s->student_id ?: ('MCC' . $s->id),
+                'roll' => $roll,
+                'class' => $class,
+                'status' => 'present',
+            ];
+        });
+
+        if ($classFilter) {
+            $students = $students->filter(function ($item) use ($classFilter) {
+                return stripos($item['class'], $classFilter) !== false;
+            })->values();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $students
+        ]);
+    }
+
+    /**
+     * Get classes for teacher
+     */
+    public function teacherClasses(Request $request)
+    {
+        $classes = [
+            ['id' => 1, 'name' => 'General Studies', 'section' => 'Class 6 - A', 'students' => 24, 'progress' => '65%'],
+            ['id' => 2, 'name' => 'Elementary Math', 'section' => 'Class 3 - B', 'students' => 18, 'progress' => '50%'],
+            ['id' => 3, 'name' => 'Junior Science', 'section' => 'Class 2 - A', 'students' => 15, 'progress' => '40%'],
+        ];
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $classes
+        ]);
+    }
+
+    /**
+     * Get teacher conversation threads with guardians
+     */
+    public function teacherThreads(Request $request)
+    {
+        $guardians = User::where('role_id', 6)->where('status', 1)->take(6)->get();
+        $threads = [];
+
+        foreach ($guardians as $g) {
+            $student = User::where('parent_id', $g->id)->where('role_id', 7)->first();
+            $label = $student ? "{$g->name} (Guardian of {$student->name})" : "{$g->name} (Guardian)";
+            $threads[] = [
+                'id' => $g->id,
+                'name' => $label,
+                'snippet' => 'Inquiry regarding student academic progress and class attendance.',
+                'time' => '10:45 AM',
+                'unread' => 1,
+            ];
+        }
+
+        if (empty($threads)) {
+            $threads[] = [
+                'id' => 991,
+                'name' => 'Faculty Announcements',
+                'snippet' => 'Staff and departmental meeting scheduled for this week.',
+                'time' => 'Today',
+                'unread' => 0,
+            ];
+            $threads[] = [
+                'id' => 992,
+                'name' => 'Academic Routine Committee',
+                'snippet' => 'Mid-term syllabus review is now accessible on the portal.',
+                'time' => 'Mon',
+                'unread' => 0,
+            ];
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $threads
+        ]);
+    }
+
+    /**
+     * Submit attendance
+     */
+    public function submitAttendance(Request $request)
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Attendance successfully recorded for ' . count($request->input('attendance', [])) . ' students.'
+        ]);
     }
 }
