@@ -59,6 +59,7 @@ class PaymentController extends Controller
             'user_id' => $admission->user_id,
             'type' => 'admission_fee',
             'amount' => $amount,
+            'admission_fee' => $amount,
             'currency' => 'BDT',
             'transaction_id' => $transactionId,
             'application_no' => $admission->application_no,

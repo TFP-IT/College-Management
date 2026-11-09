@@ -539,6 +539,14 @@ class AdmissionController extends Controller
         $pdfUrl = $admission->pdf_path ? Storage::disk('public')->url($admission->pdf_path) : null;
         $photoUrl = $admission->photo_url;
 
+        $feePayment = $admission->admissionFeePayment();
+        $paymentStatus = 'unpaid';
+        $paymentAmount = 500.00;
+        if ($feePayment) {
+            $paymentStatus = $feePayment->status;
+            $paymentAmount = (float) $feePayment->amount;
+        }
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -552,6 +560,9 @@ class AdmissionController extends Controller
                 'photo_url' => $photoUrl,
                 'pdf_url' => $pdfUrl,
                 'status' => $admission->status,
+                'payment_status' => $paymentStatus,
+                'payment_amount' => $paymentAmount,
+                'admission_fee' => $paymentAmount,
             ]
         ], 200);
     }
