@@ -562,6 +562,7 @@ class AdmissionController extends Controller
                 'status' => $admission->status,
                 'payment_status' => $paymentStatus,
                 'payment_amount' => $paymentAmount,
+                'application_fee' => $paymentAmount,
                 'admission_fee' => $paymentAmount,
             ]
         ], 200);

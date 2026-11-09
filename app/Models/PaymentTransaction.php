@@ -19,6 +19,7 @@ class PaymentTransaction extends Model
         'type',
         'period',
         'amount',
+        'application_fee',
         'admission_fee',
         'currency',
         'method',

@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
             }
             $admission->payment_status = $paymentStatus;
             $admission->payment_amount = $paymentAmount;
+            $admission->application_fee = $paymentAmount;
             $admission->admission_fee = $paymentAmount;
 
             $user->admission = $admission;

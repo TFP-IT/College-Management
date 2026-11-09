@@ -84,7 +84,7 @@ class Admission extends Model
     public function admissionFeePayment(): ?PaymentTransaction
     {
         return $this->payments()
-            ->where('type', 'admission_fee')
+            ->whereIn('type', ['application_fee', 'admission_fee'])
             ->latest()
             ->first();
     }
