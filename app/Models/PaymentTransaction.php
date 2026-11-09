@@ -22,6 +22,10 @@ class PaymentTransaction extends Model
         'currency',
         'method',
         'transaction_id',
+        'application_no',
+        'student_id',
+        'student_name',
+        'class_name',
         'status',
         'due_date',
         'paid_at',
@@ -40,7 +44,7 @@ class PaymentTransaction extends Model
         return $this->morphTo();
     }
 
-    public function markPaid(?string $transactionId = null, array $gatewayResponse = []): void
+    public function markPaid(?string $transactionId = null, array $gatewayResponse = [], ?string $method = null): void
     {
         $this->status = 'paid';
         $this->paid_at = now();
@@ -51,6 +55,10 @@ class PaymentTransaction extends Model
         
         if (!empty($gatewayResponse)) {
             $this->gateway_response = $gatewayResponse;
+        }
+
+        if ($method !== null) {
+            $this->method = $method;
         }
         
         $this->save();

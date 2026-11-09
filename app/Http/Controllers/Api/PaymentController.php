@@ -50,6 +50,8 @@ class PaymentController extends Controller
             ? floatval($request->amount) 
             : 500.00;
 
+        $student = \App\Models\User::find($admission->user_id);
+
         // Create Pending Transaction
         $transaction = PaymentTransaction::create([
             'payable_type' => get_class($admission),
@@ -59,6 +61,10 @@ class PaymentController extends Controller
             'amount' => $amount,
             'currency' => 'BDT',
             'transaction_id' => $transactionId,
+            'application_no' => $admission->application_no,
+            'student_id' => $student?->student_id,
+            'student_name' => $admission->name,
+            'class_name' => $admission->class_name,
             'status' => 'pending',
         ]);
 
@@ -125,9 +131,16 @@ class PaymentController extends Controller
         if (isset($result['status']) && ($result['status'] === 'VALID' || $result['status'] === 'VALIDATED')) {
             $transaction = PaymentTransaction::where('transaction_id', $tranId)->first();
 
-            if ($transaction && $transaction->status === 'pending') {
-                DB::transaction(function () use ($transaction, $result) {
-                    $transaction->markPaid($transaction->transaction_id, $result);
+            if ($transaction) {
+                // Determine payment method from gateway response
+                $cardType = strtolower($result['card_type'] ?? '');
+                $method = 'card';
+                if (str_contains($cardType, 'bkash')) $method = 'bkash';
+                elseif (str_contains($cardType, 'nagad')) $method = 'nagad';
+                elseif (str_contains($cardType, 'rocket')) $method = 'rocket';
+
+                DB::transaction(function () use ($transaction, $result, $method) {
+                    $transaction->markPaid($transaction->transaction_id, $result, $method);
                     
                     $admission = Admission::find($transaction->payable_id);
                     if ($admission) {
@@ -147,7 +160,7 @@ class PaymentController extends Controller
     {
         $tranId = $request->tran_id;
         $transaction = PaymentTransaction::where('transaction_id', $tranId)->first();
-        if ($transaction) {
+        if ($transaction && $transaction->status !== 'paid') {
             $transaction->status = 'failed';
             $transaction->save();
         }
@@ -159,7 +172,7 @@ class PaymentController extends Controller
     {
         $tranId = $request->tran_id;
         $transaction = PaymentTransaction::where('transaction_id', $tranId)->first();
-        if ($transaction) {
+        if ($transaction && $transaction->status !== 'paid') {
             $transaction->status = 'failed';
             $transaction->save();
         }
