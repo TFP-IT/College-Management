@@ -449,14 +449,15 @@ class AdmissionController extends Controller
                     ? Storage::disk('public')->url($admission->pdf_path)
                     : null;
 
-                // Check if admission fee payment exists
-                $feePayment = $admission->admissionFeePayment();
-                $paymentStatus = 'unpaid'; // default
-                $paymentAmount = 500; // default admission fee in BDT
-                if ($feePayment) {
-                    $paymentStatus = $feePayment->status; // paid, pending, failed
-                    $paymentAmount = $feePayment->amount;
-                }
+                // Check fees payment status
+                $appFee = $admission->applicationFeePayment();
+                $admFee = $admission->admissionFeePayment();
+
+                $appFeeStatus = $appFee ? $appFee->status : 'unpaid';
+                $appFeeAmount = $appFee ? (float) $appFee->amount : 500.00;
+
+                $admFeeStatus = $admFee ? $admFee->status : 'unpaid';
+                $admFeeAmount = $admFee ? (float) $admFee->amount : 3000.00;
 
                 // Derive exam date from class_name (school admissions get exam within 7 days of submission)
                 $examDate = null;
@@ -473,8 +474,12 @@ class AdmissionController extends Controller
                     'rejection_reason' => $admission->rejection_reason,
                     'exam_date' => $examDate,
                     'pdf_url' => $pdfUrl,
-                    'payment_status' => $paymentStatus,
-                    'payment_amount' => $paymentAmount,
+                    'payment_status' => $appFeeStatus,
+                    'payment_amount' => $appFeeAmount,
+                    'application_fee_status' => $appFeeStatus,
+                    'application_fee' => $appFeeAmount,
+                    'admission_fee_status' => $admFeeStatus,
+                    'admission_fee' => $admFeeAmount,
                 ];
             }
 
@@ -542,13 +547,14 @@ class AdmissionController extends Controller
         $pdfUrl = $admission->pdf_path ? Storage::disk('public')->url($admission->pdf_path) : null;
         $photoUrl = $admission->photo_url;
 
-        $feePayment = $admission->admissionFeePayment();
-        $paymentStatus = 'unpaid';
-        $paymentAmount = 500.00;
-        if ($feePayment) {
-            $paymentStatus = $feePayment->status;
-            $paymentAmount = (float) $feePayment->amount;
-        }
+        $appFee = $admission->applicationFeePayment();
+        $admFee = $admission->admissionFeePayment();
+
+        $appFeeStatus = $appFee ? $appFee->status : 'unpaid';
+        $appFeeAmount = $appFee ? (float) $appFee->amount : 500.00;
+
+        $admFeeStatus = $admFee ? $admFee->status : 'unpaid';
+        $admFeeAmount = $admFee ? (float) $admFee->amount : 3000.00;
 
         return response()->json([
             'status' => 'success',
@@ -563,10 +569,12 @@ class AdmissionController extends Controller
                 'photo_url' => $photoUrl,
                 'pdf_url' => $pdfUrl,
                 'status' => $admission->status,
-                'payment_status' => $paymentStatus,
-                'payment_amount' => $paymentAmount,
-                'application_fee' => $paymentAmount,
-                'admission_fee' => $paymentAmount,
+                'payment_status' => $appFeeStatus,
+                'payment_amount' => $appFeeAmount,
+                'application_fee_status' => $appFeeStatus,
+                'application_fee' => $appFeeAmount,
+                'admission_fee_status' => $admFeeStatus,
+                'admission_fee' => $admFeeAmount,
             ]
         ], 200);
     }

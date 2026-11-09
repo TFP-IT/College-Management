@@ -81,10 +81,24 @@ class Admission extends Model
         return $this->morphMany(PaymentTransaction::class, 'payable');
     }
 
+    public function applicationFeePayment(): ?PaymentTransaction
+    {
+        return $this->payments()
+            ->where(function ($q) {
+                $q->where('type', 'application_fee')
+                  ->orWhereNotNull('application_fee');
+            })
+            ->latest()
+            ->first();
+    }
+
     public function admissionFeePayment(): ?PaymentTransaction
     {
         return $this->payments()
-            ->whereIn('type', ['application_fee', 'admission_fee'])
+            ->where(function ($q) {
+                $q->where('type', 'admission_fee')
+                  ->orWhereNotNull('admission_fee');
+            })
             ->latest()
             ->first();
     }

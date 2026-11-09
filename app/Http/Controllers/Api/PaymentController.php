@@ -33,6 +33,7 @@ class PaymentController extends Controller
         $request->validate([
             'application_no' => 'required|string',
             'amount' => 'nullable|numeric|min:1',
+            'fee_type' => 'nullable|string', // 'admission_fee' or 'application_fee'
         ]);
 
         $admission = Admission::where('application_no', $request->application_no)->first();
@@ -41,14 +42,20 @@ class PaymentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Admission application not found.'], 404);
         }
 
-        if ($admission->status === 'approved') {
+        $feeType = $request->fee_type ?: 'application_fee';
+
+        // Application fee can only be paid when pending/under_review. Once approved, application fee is already verified.
+        if ($feeType === 'application_fee' && $admission->status === 'approved') {
             return response()->json(['status' => 'error', 'message' => 'Application is already approved.'], 400);
         }
 
-        $transactionId = 'MCC_ADM_' . uniqid();
+        // Admission fee can be paid once approved or anytime during enrollment.
+        $defaultAmount = ($feeType === 'admission_fee') ? 3000.00 : 500.00;
         $amount = $request->filled('amount') && floatval($request->amount) > 0 
             ? floatval($request->amount) 
-            : 500.00;
+            : $defaultAmount;
+
+        $transactionId = ($feeType === 'admission_fee' ? 'MCC_ENR_' : 'MCC_ADM_') . uniqid();
 
         $student = \App\Models\User::find($admission->user_id);
 
@@ -57,10 +64,10 @@ class PaymentController extends Controller
             'payable_type' => get_class($admission),
             'payable_id' => $admission->id,
             'user_id' => $admission->user_id,
-            'type' => 'application_fee',
+            'type' => $feeType,
             'amount' => $amount,
-            'application_fee' => $amount,
-            'admission_fee' => $amount,
+            'application_fee' => ($feeType === 'application_fee') ? $amount : null,
+            'admission_fee' => ($feeType === 'admission_fee') ? $amount : null,
             'currency' => 'BDT',
             'transaction_id' => $transactionId,
             'application_no' => $admission->application_no,
@@ -69,6 +76,8 @@ class PaymentController extends Controller
             'class_name' => $admission->class_name,
             'status' => 'pending',
         ]);
+
+        $productName = ($feeType === 'admission_fee') ? 'Admission Fee' : 'Application Fee';
 
         $postData = [
             'store_id' => $this->storeId,
@@ -91,10 +100,11 @@ class PaymentController extends Controller
             'cus_fax' => '01711111111',
             'shipping_method' => 'NO',
             'num_of_item' => 1,
-            'product_name' => 'Admission Fee',
-            'product_category' => 'Admission',
+            'product_name' => $productName,
+            'product_category' => 'Education',
             'product_profile' => 'general',
             'value_a' => $transaction->id, // Store transaction PK here to retrieve later
+            'value_b' => $feeType,
         ];
 
         $response = Http::asForm()->post($this->getBaseUrl() . '/gwprocess/v4/api.php', $postData);
@@ -145,7 +155,7 @@ class PaymentController extends Controller
                     $transaction->markPaid($transaction->transaction_id, $result, $method);
                     
                     $admission = Admission::find($transaction->payable_id);
-                    if ($admission) {
+                    if ($admission && $transaction->type === 'application_fee' && $admission->status === 'pending') {
                         $admission->status = 'under_review';
                         $admission->save();
                     }

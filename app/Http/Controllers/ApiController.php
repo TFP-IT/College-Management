@@ -152,17 +152,21 @@ class ApiController extends Controller
         if ($user->role_id == 7) {
             $admission = \App\Models\Admission::where('user_id', $user->id)->latest()->first();
             if ($admission) {
-                $feePayment = $admission->admissionFeePayment();
-                $paymentStatus = 'unpaid';
-                $paymentAmount = 500.00;
-                if ($feePayment) {
-                    $paymentStatus = $feePayment->status;
-                    $paymentAmount = (float) $feePayment->amount;
-                }
-                $admission->payment_status = $paymentStatus;
-                $admission->payment_amount = $paymentAmount;
-                $admission->application_fee = $paymentAmount;
-                $admission->admission_fee = $paymentAmount;
+                $appFee = $admission->applicationFeePayment();
+                $admFee = $admission->admissionFeePayment();
+
+                $appFeeStatus = $appFee ? $appFee->status : 'unpaid';
+                $appFeeAmount = $appFee ? (float) $appFee->amount : 500.00;
+
+                $admFeeStatus = $admFee ? $admFee->status : 'unpaid';
+                $admFeeAmount = $admFee ? (float) $admFee->amount : 3000.00;
+
+                $admission->payment_status = $appFeeStatus;
+                $admission->payment_amount = $appFeeAmount;
+                $admission->application_fee_status = $appFeeStatus;
+                $admission->application_fee = $appFeeAmount;
+                $admission->admission_fee_status = $admFeeStatus;
+                $admission->admission_fee = $admFeeAmount;
 
                 $user->admission = $admission;
                 $user->department = $admission->department;
