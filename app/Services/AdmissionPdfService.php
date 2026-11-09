@@ -44,6 +44,16 @@ class AdmissionPdfService
                 $studentId = $admission->student_id;
             }
 
+            // Fresh dynamic payment details
+            $feePayment = $admission->admissionFeePayment();
+            $paymentStatus = $feePayment ? strtoupper($feePayment->status) : 'UNPAID';
+            $paymentAmount = $feePayment ? (float) $feePayment->amount : 500.00;
+            $transactionId = $feePayment ? $feePayment->transaction_id : null;
+            $paidAt = ($feePayment && $feePayment->paid_at) 
+                ? \Carbon\Carbon::parse($feePayment->paid_at)->format('d M Y, h:i A') 
+                : null;
+            $paymentMethod = $feePayment ? ($feePayment->method ?: 'SSLCommerz Gateway') : null;
+
             // Render PDF View
             $pdf = PDF::loadView('pdf.admission-slip', [
                 'admission' => $admission,
@@ -52,6 +62,12 @@ class AdmissionPdfService
                 'qrCodeBase64' => $qrCodeBase64,
                 'isCollege' => $isCollege,
                 'studentId' => $studentId,
+                'feePayment' => $feePayment,
+                'paymentStatus' => $paymentStatus,
+                'paymentAmount' => $paymentAmount,
+                'transactionId' => $transactionId,
+                'paidAt' => $paidAt,
+                'paymentMethod' => $paymentMethod,
             ]);
 
             // Save PDF to public disk

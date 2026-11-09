@@ -504,17 +504,20 @@ class AdmissionController extends Controller
 
         $pdfService = new AdmissionPdfService();
         
-        if (!$admission->pdf_path || !Storage::disk('public')->exists($admission->pdf_path)) {
-            $pdfPath = $pdfService->generate($admission);
-            if (!$pdfPath) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to generate PDF.'
-                ], 500);
-            }
+        // Always generate fresh to guarantee dynamic status (approved/pending) and payment status (paid/unpaid)
+        $pdfPath = $pdfService->generate($admission);
+        if (!$pdfPath) {
+            $pdfPath = $admission->pdf_path;
         }
 
-        return Storage::disk('public')->download($admission->pdf_path, 'Admission_Slip_' . $application_no . '.pdf');
+        if (!$pdfPath || !Storage::disk('public')->exists($pdfPath)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to generate PDF.'
+            ], 500);
+        }
+
+        return Storage::disk('public')->download($pdfPath, 'Admission_Slip_' . $application_no . '.pdf');
     }
 
     /**

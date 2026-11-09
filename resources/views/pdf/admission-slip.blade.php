@@ -279,7 +279,35 @@
             <th>Gender</th>
             <td>{{ $admission->gender ?: 'N/A' }}</td>
             <th>Application Status</th>
-            <td><strong style="color: #2E7D32; text-transform: uppercase;">{{ $admission->status }}</strong></td>
+            <td>
+                @if($admission->status === 'approved')
+                    <strong style="color: #2E7D32; background: #E8F5E9; padding: 2px 6px; border-radius: 3px; text-transform: uppercase;">APPROVED</strong>
+                @elseif($admission->status === 'under_review')
+                    <strong style="color: #E65100; background: #FFF3E0; padding: 2px 6px; border-radius: 3px; text-transform: uppercase;">UNDER REVIEW</strong>
+                @elseif($admission->status === 'rejected')
+                    <strong style="color: #C62828; background: #FFEBEE; padding: 2px 6px; border-radius: 3px; text-transform: uppercase;">REJECTED</strong>
+                @else
+                    <strong style="color: #E65100; background: #FFF3E0; padding: 2px 6px; border-radius: 3px; text-transform: uppercase;">PENDING</strong>
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <th>Application Fee</th>
+            <td><strong>৳ {{ number_format($paymentAmount ?? 500, 2) }}</strong></td>
+            <th>Payment Status</th>
+            <td>
+                @if(($paymentStatus ?? 'UNPAID') === 'PAID')
+                    <strong style="color: #2E7D32; background: #E8F5E9; padding: 2px 6px; border-radius: 3px;">PAID (Verified)</strong>
+                    @if(!empty($transactionId))
+                        <br><span style="font-size: 9.5px; color: #555;">Txn ID: {{ $transactionId }}</span>
+                    @endif
+                    @if(!empty($paidAt))
+                        <br><span style="font-size: 9px; color: #777;">Paid At: {{ $paidAt }}</span>
+                    @endif
+                @else
+                    <strong style="color: #C62828; background: #FFEBEE; padding: 2px 6px; border-radius: 3px;">PENDING / UNPAID</strong>
+                @endif
+            </td>
         </tr>
         <tr>
             <th>Father's Name</th>
@@ -410,7 +438,35 @@
             <th>Birth Certificate No</th>
             <td>{{ $admission->birth_certificate_no ?: 'N/A' }}</td>
             <th>Application Status</th>
-            <td><strong style="color: #2E7D32; text-transform: uppercase;">{{ $admission->status }}</strong></td>
+            <td>
+                @if($admission->status === 'approved')
+                    <strong style="color: #2E7D32; background: #E8F5E9; padding: 2px 6px; border-radius: 3px; text-transform: uppercase;">APPROVED</strong>
+                @elseif($admission->status === 'under_review')
+                    <strong style="color: #E65100; background: #FFF3E0; padding: 2px 6px; border-radius: 3px; text-transform: uppercase;">UNDER REVIEW</strong>
+                @elseif($admission->status === 'rejected')
+                    <strong style="color: #C62828; background: #FFEBEE; padding: 2px 6px; border-radius: 3px; text-transform: uppercase;">REJECTED</strong>
+                @else
+                    <strong style="color: #E65100; background: #FFF3E0; padding: 2px 6px; border-radius: 3px; text-transform: uppercase;">PENDING</strong>
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <th>Application Fee</th>
+            <td><strong>৳ {{ number_format($paymentAmount ?? 500, 2) }}</strong></td>
+            <th>Payment Status</th>
+            <td>
+                @if(($paymentStatus ?? 'UNPAID') === 'PAID')
+                    <strong style="color: #2E7D32; background: #E8F5E9; padding: 2px 6px; border-radius: 3px;">PAID (Verified)</strong>
+                    @if(!empty($transactionId))
+                        <br><span style="font-size: 9.5px; color: #555;">Txn ID: {{ $transactionId }}</span>
+                    @endif
+                    @if(!empty($paidAt))
+                        <br><span style="font-size: 9px; color: #777;">Paid At: {{ $paidAt }}</span>
+                    @endif
+                @else
+                    <strong style="color: #C62828; background: #FFEBEE; padding: 2px 6px; border-radius: 3px;">PENDING / UNPAID</strong>
+                @endif
+            </td>
         </tr>
         <tr>
             <th>Father's Name</th>
