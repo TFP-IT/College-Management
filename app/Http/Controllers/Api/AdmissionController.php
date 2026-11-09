@@ -430,7 +430,7 @@ class AdmissionController extends Controller
     }
 
     /**
-     * Get all students linked to the authenticated guardian
+     * Get all students linked to the authenticated guardian, with admission & payment info
      */
     public function guardianStudents(Request $request)
     {
@@ -440,9 +440,51 @@ class AdmissionController extends Controller
             ->where('status', 1)
             ->get();
 
+        $enriched = $students->map(function ($student) {
+            $admission = Admission::where('user_id', $student->id)->latest()->first();
+
+            $admissionData = null;
+            if ($admission) {
+                $pdfUrl = $admission->pdf_path
+                    ? Storage::disk('public')->url($admission->pdf_path)
+                    : null;
+
+                // Check if admission fee payment exists
+                $feePayment = $admission->admissionFeePayment();
+                $paymentStatus = 'unpaid'; // default
+                $paymentAmount = 500; // default admission fee in BDT
+                if ($feePayment) {
+                    $paymentStatus = $feePayment->status; // paid, pending, failed
+                    $paymentAmount = $feePayment->amount;
+                }
+
+                // Derive exam date from class_name (school admissions get exam within 7 days of submission)
+                $examDate = null;
+                if ($admission->submitted_at) {
+                    $examDate = $admission->submitted_at->addDays(7)->format('Y-m-d');
+                }
+
+                $admissionData = [
+                    'application_no' => $admission->application_no,
+                    'class_name' => $admission->class_name,
+                    'status' => $admission->status, // pending, approved, rejected
+                    'submitted_at' => $admission->submitted_at?->toDateTimeString(),
+                    'reviewed_at' => $admission->reviewed_at?->toDateTimeString(),
+                    'rejection_reason' => $admission->rejection_reason,
+                    'exam_date' => $examDate,
+                    'pdf_url' => $pdfUrl,
+                    'payment_status' => $paymentStatus,
+                    'payment_amount' => $paymentAmount,
+                ];
+            }
+
+            $student->admission = $admissionData;
+            return $student;
+        });
+
         return response()->json([
             'status' => 'success',
-            'data' => $students
+            'data' => $enriched
         ], 200);
     }
 

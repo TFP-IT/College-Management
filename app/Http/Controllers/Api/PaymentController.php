@@ -32,6 +32,7 @@ class PaymentController extends Controller
     {
         $request->validate([
             'application_no' => 'required|string',
+            'amount' => 'nullable|numeric|min:1',
         ]);
 
         $admission = Admission::where('application_no', $request->application_no)->first();
@@ -45,7 +46,9 @@ class PaymentController extends Controller
         }
 
         $transactionId = 'MCC_ADM_' . uniqid();
-        $amount = 5000.00; // Fixed admission fee for this example
+        $amount = $request->filled('amount') && floatval($request->amount) > 0 
+            ? floatval($request->amount) 
+            : 500.00;
 
         // Create Pending Transaction
         $transaction = PaymentTransaction::create([

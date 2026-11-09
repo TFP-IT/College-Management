@@ -66,8 +66,45 @@ Route::post('/teacher/attendance/submit', [ApiController::class, 'submitAttendan
 Route::any('/payment/success', [PaymentController::class, 'paymentSuccess']);
 Route::any('/payment/fail', [PaymentController::class, 'paymentFail']);
 Route::any('/payment/cancel', [PaymentController::class, 'paymentCancel']);
-Route::get('/payment/result', function () {
-    return response("Payment Processed. You can close this window.", 200);
+Route::get('/payment/result', function (Request $request) {
+    $status = $request->get('status', 'success');
+    $isSuccess = $status === 'success';
+    $title = $isSuccess ? 'Payment Successful' : 'Payment Failed / Cancelled';
+    $icon = $isSuccess ? '✅' : '❌';
+    $message = $isSuccess 
+        ? 'Your admission fee payment has been successfully processed.' 
+        : 'The transaction could not be completed or was cancelled.';
+
+    $html = <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{$title}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f1f5f9; text-align: center; padding: 20px; box-sizing: border-box; }
+    .card { background: #ffffff; padding: 36px 24px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); max-width: 360px; width: 100%; }
+    .icon { font-size: 50px; margin-bottom: 16px; }
+    h2 { margin: 0 0 10px; color: #0f172a; font-size: 20px; font-weight: 700; }
+    p { margin: 0 0 20px; color: #64748b; font-size: 14px; line-height: 20px; }
+    .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .success { background: #dcfce7; color: #166534; }
+    .failed { background: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">{$icon}</div>
+    <h2>{$title}</h2>
+    <p>{$message}</p>
+    <div class="badge {$status}">Returning to Maestro Crown College App...</div>
+  </div>
+</body>
+</html>
+HTML;
+
+    return response($html, 200)->header('Content-Type', 'text/html');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
