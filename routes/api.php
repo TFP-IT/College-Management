@@ -124,6 +124,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [ApiController::class, 'logout']);
     Route::post('/account_delete', [ApiController::class, 'account_delete']);
     Route::post('/change_profile_photo', [ApiController::class, 'change_profile_photo']);
+    Route::post('/change_password', [ApiController::class, 'changePassword']);
     Route::post('/my_application', [AdmissionController::class, 'myApplication']);
     Route::post('/guardian/add_student', [AdmissionController::class, 'addStudentByGuardian']);
     Route::get('/guardian/students', [AdmissionController::class, 'guardianStudents']);

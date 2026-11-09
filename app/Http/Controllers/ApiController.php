@@ -111,18 +111,56 @@ class ApiController extends Controller
 
         $user = $query->first();
 
-        if (!$user || !Hash::check($fields['password'], $user->password)) {
+        if (!$user) {
             return response([
+                'status' => 'error',
                 'message' => 'Invalid credentials!'
             ], 401);
         }
 
+        // Student Admission & Approval Gate Check
+        if ($fields['role'] === 'student') {
+            $admission = \App\Models\Admission::where('user_id', $user->id)->latest()->first();
+            if ($admission && $admission->status !== 'approved') {
+                $statusLabel = ucwords(str_replace('_', ' ', $admission->status ?? 'pending'));
+                return response([
+                    'status' => 'error',
+                    'message' => "Your admission is currently {$statusLabel}. Student portal access is granted once admission is Approved by the administration."
+                ], 403);
+            }
+        }
+
+        // Password verification (supports student's password OR guardian's password fallback)
+        $passwordMatches = Hash::check($fields['password'], $user->password);
+        if (!$passwordMatches && $fields['role'] === 'student' && $user->parent_id) {
+            $guardian = User::find($user->parent_id);
+            if ($guardian && Hash::check($fields['password'], $guardian->password)) {
+                $passwordMatches = true;
+                // Sync student's direct password to this verified password
+                $user->password = Hash::make($fields['password']);
+                $user->save();
+            }
+        }
+
+        if (!$passwordMatches) {
+            return response([
+                'status' => 'error',
+                'message' => 'Invalid credentials! Please check your ID and password.'
+            ], 401);
+        }
+
         if ($user->role_id == 7) {
-            $admission = \App\Models\Admission::where('user_id', $user->id)->first();
+            $admission = \App\Models\Admission::where('user_id', $user->id)->latest()->first();
             if ($admission) {
                 $user->admission = $admission;
                 $user->department = $admission->department;
                 $user->class_name = $admission->class_name;
+            }
+            if ($user->parent_id) {
+                $guardianUser = User::select('id', 'name', 'phone_number', 'email')->find($user->parent_id);
+                if ($guardianUser) {
+                    $user->guardian = $guardianUser;
+                }
             }
         }
 
@@ -882,5 +920,48 @@ class ApiController extends Controller
             'status' => 'success',
             'message' => 'Attendance successfully recorded for ' . count($request->input('attendance', [])) . ' students.'
         ]);
+    }
+
+    /**
+     * Change Password for Authenticated User (Student / Guardian / Teacher)
+     */
+    public function changePassword(Request $request)
+    {
+        $fields = $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = auth('sanctum')->user();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
+        // Check if current password matches user's password or guardian's password
+        $passwordMatches = Hash::check($fields['current_password'], $user->password);
+        if (!$passwordMatches && $user->parent_id) {
+            $guardian = User::find($user->parent_id);
+            if ($guardian && Hash::check($fields['current_password'], $guardian->password)) {
+                $passwordMatches = true;
+            }
+        }
+
+        if (!$passwordMatches) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Current password does not match.'
+            ], 422);
+        }
+
+        $user->password = Hash::make($fields['new_password']);
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Password updated successfully! You can now use your new password.'
+        ], 200);
     }
 }
