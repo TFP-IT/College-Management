@@ -91,9 +91,20 @@ class ApiController extends Controller
                   ->orWhere('email', $id);
             });
         } elseif ($fields['role'] === 'teacher') {
-            $query->where('teacher_id', $fields['login_id']);
+            $id = trim($fields['login_id']);
+            $query->where(function($q) use ($id) {
+                $q->where('teacher_id', $id)
+                  ->orWhere('email', $id)
+                  ->orWhere('phone_number', $id);
+            })->where(function($q) {
+                $q->where('role_id', 3)->orWhere('user_type', 'teacher');
+            });
         } elseif ($fields['role'] === 'guardian') {
-            $query->where('phone_number', $fields['login_id'])->where('role_id', 6);
+            $id = trim($fields['login_id']);
+            $query->where(function($q) use ($id) {
+                $q->where('phone_number', $id)
+                  ->orWhere('email', $id);
+            })->where('role_id', 6);
         } else {
             return response(['message' => 'Invalid role selected.'], 400);
         }
