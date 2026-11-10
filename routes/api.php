@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AdmissionController;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\TeacherAuthController;
+use App\Http\Controllers\Api\TeacherProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,10 +77,13 @@ Route::post('/admission/submit', [AdmissionController::class, 'submit']);
 Route::get('/admission/{application_no}/pdf', [AdmissionController::class, 'downloadPdf']);
 
 // Teacher & Classroom API Routes
-Route::get('/teacher/students', [ApiController::class, 'teacherStudents']);
-Route::get('/teacher/classes', [ApiController::class, 'teacherClasses']);
-Route::get('/teacher/threads', [ApiController::class, 'teacherThreads']);
-Route::post('/teacher/attendance/submit', [ApiController::class, 'submitAttendance']);
+Route::middleware(['auth:sanctum', 'api.teacher'])->prefix('teacher')->group(function () {
+    Route::get('/profile-360', [TeacherProfileController::class, 'show']);
+    Route::get('/students', [ApiController::class, 'teacherStudents']);
+    Route::get('/classes', [ApiController::class, 'teacherClasses']);
+    Route::get('/threads', [ApiController::class, 'teacherThreads']);
+    Route::post('/attendance/submit', [ApiController::class, 'submitAttendance']);
+});
 
 // Payment Gateway Routes (SSLCommerz)
 // Callbacks (Without auth middleware because SSLCommerz sends the POST request directly to the server)
