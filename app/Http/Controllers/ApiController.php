@@ -93,7 +93,8 @@ class ApiController extends Controller
         } elseif ($fields['role'] === 'teacher') {
             $id = trim($fields['login_id']);
             $query->where(function($q) use ($id) {
-                $q->where('teacher_id', $id)
+                $q->where('username', $id)
+                  ->orWhere('teacher_id', $id)
                   ->orWhere('email', $id)
                   ->orWhere('phone_number', $id);
             })->where(function($q) {

@@ -1,1 +1,1 @@
-{"MAIL_MAILER":"smtp","MAIL_HOST":"smtp.gmail.com","MAIL_PORT":"587","MAIL_USERNAME":"your-email","MAIL_PASSWORD":"email-password","MAIL_ENCRYPTION":"tls","MAIL_FROM_ADDRESS":"admin@example.com","MAIL_FROM_NAME":"Laravel application"}
+{"MAIL_MAILER":"smtp","MAIL_HOST":"versatilo.group","MAIL_PORT":"465","MAIL_USERNAME":"shahed@versatilo.group","MAIL_PASSWORD":".yMzNk9f}CH0","MAIL_ENCRYPTION":"ssl","MAIL_FROM_ADDRESS":"shahed@versatilo.group","MAIL_FROM_NAME":"Maestro Crown College"}

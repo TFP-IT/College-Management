@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Api\AdmissionController;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\TeacherAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +63,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [ApiController::class, 'login']);
 Route::post('/app_login', [ApiController::class, 'appLogin']);
+
+// Teacher First-Time Setup & Password Recovery (Email OTP)
+Route::prefix('auth/teacher')->group(function () {
+    Route::post('/request-setup-otp', [TeacherAuthController::class, 'requestSetupOtp']);
+    Route::post('/verify-setup-otp', [TeacherAuthController::class, 'verifySetupOtp']);
+    Route::post('/complete-setup', [TeacherAuthController::class, 'completeSetup']);
+});
 
 Route::post('/media/upload', [MediaController::class, 'upload']);
 Route::post('/admission/submit', [AdmissionController::class, 'submit']);
