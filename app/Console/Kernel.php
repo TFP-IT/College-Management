@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('admissions:expire-applications')->dailyAt('00:10');
+        $schedule->command('attendance:sync-biometric')->everyMinute()->withoutOverlapping(5);
     }
 
     /**

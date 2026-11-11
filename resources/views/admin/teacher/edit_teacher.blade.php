@@ -32,7 +32,7 @@
 
             <div class="fpb-7">
                 <label for="birthday" class="eForm-label">{{ get_phrase('Birthday') }}<span class="required"></span></label>
-                <input type="text" class="form-control eForm-control inputDate" id="birthday" name="birthday" value="{{ date('m/d/Y', $info->birthday) }}" />
+                <input type="text" class="form-control eForm-control inputDate" id="birthday" name="birthday" value="{{ is_numeric($info->birthday ?? null) ? date('m/d/Y', $info->birthday) : '' }}" />
                 </div>
             </div>
 
@@ -66,7 +66,7 @@
 
             <div class="fpb-7">
                 <label for="address" class="eForm-label">{{ get_phrase('Address') }}</label>
-                <textarea class="form-control eForm-control" id="address" name = "address" rows="5" required>>{{ $info->address }}</textarea>
+                <textarea class="form-control eForm-control" id="address" name="address" rows="5" required>{{ ltrim($info->address ?? '', '>') }}</textarea>
             </div>
 
             <div class="fpb-7">

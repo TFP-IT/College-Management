@@ -48,7 +48,7 @@
 
                                 <div class="fpb-7">
                                     <label for="birthdatepicker" class="eForm-label">{{ get_phrase('Birthday') }}</label>
-                                    <input type="text" class="form-control eForm-control inputDate" id="birthday" name="birthday" value="{{ date('m/d/Y', $info->birthday) }}" />
+                                    <input type="text" class="form-control eForm-control inputDate" id="birthday" name="birthday" value="{{ is_numeric($info->birthday ?? null) ? date('m/d/Y', $info->birthday) : '' }}" />
                                 </div>
 
                                 <div class="row">

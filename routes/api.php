@@ -77,10 +77,15 @@ Route::post('/admission/submit', [AdmissionController::class, 'submit']);
 Route::get('/admission/{application_no}/pdf', [AdmissionController::class, 'downloadPdf']);
 
 // Teacher & Classroom API Routes
+Route::middleware(['auth:sanctum', 'api.student'])->prefix('student')->group(function () {
+    Route::get('/portal', [\App\Http\Controllers\Api\StudentPortalController::class, 'show']);
+});
+
 Route::middleware(['auth:sanctum', 'api.teacher'])->prefix('teacher')->group(function () {
     Route::get('/profile-360', [TeacherProfileController::class, 'show']);
     Route::get('/students', [ApiController::class, 'teacherStudents']);
     Route::get('/classes', [ApiController::class, 'teacherClasses']);
+    Route::get('/routine', [ApiController::class, 'teacherRoutine']);
     Route::get('/threads', [ApiController::class, 'teacherThreads']);
     Route::post('/attendance/submit', [ApiController::class, 'submitAttendance']);
 });

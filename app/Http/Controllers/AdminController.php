@@ -6,6 +6,7 @@ use App\Http\Controllers\CommonController;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Admission;
 use App\Models\User;
 use App\Models\Session;
 use App\Models\School;
@@ -1082,7 +1083,27 @@ class AdminController extends Controller
         });
 
         $users->where('users.school_id', auth()->user()->school_id)
-        ->where('users.role_id', 7);
+        ->where('users.role_id', 7)
+        ->where(function ($query) {
+            $query->whereNotExists(function ($sub) {
+                $sub->select(DB::raw(1))
+                    ->from('admissions')
+                    ->whereColumn('admissions.user_id', 'users.id');
+            })->orWhereExists(function ($sub) {
+                $sub->select(DB::raw(1))
+                    ->from('admissions')
+                    ->join('payment_transactions', function ($join) {
+                        $join->on('payment_transactions.payable_id', '=', 'admissions.id')
+                            ->where('payment_transactions.payable_type', Admission::class)
+                            ->where('payment_transactions.status', 'paid')
+                            ->where(function ($fee) {
+                                $fee->where('payment_transactions.type', 'admission_fee')
+                                    ->orWhereNotNull('payment_transactions.admission_fee');
+                            });
+                    })
+                    ->whereColumn('admissions.user_id', 'users.id');
+            });
+        });
 
         if($section_id == 'all' || $section_id != ""){
             $users->where('section_id', $section_id);
@@ -1208,9 +1229,20 @@ class AdminController extends Controller
             'student_info'     => $data['student_info'],
         ]);
 
+        $sectionId = (int) $data['section_id'];
+        $section = Section::find($sectionId);
+        if (!$section || (int) $section->class_id !== (int) $data['class_id']) {
+            $sameName = $section
+                ? Section::where('class_id', $data['class_id'])->where('name', $section->name)->value('id')
+                : null;
+            if ($sameName) {
+                $sectionId = (int) $sameName;
+            }
+        }
+
         Enrollment::where('user_id', $id)->update([
             'class_id' => $data['class_id'],
-            'section_id' => $data['section_id'],
+            'section_id' => $sectionId,
         ]);
 
         return redirect()->back()->with('message','You have successfully update student.');

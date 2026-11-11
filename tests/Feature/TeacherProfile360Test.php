@@ -39,10 +39,43 @@ class TeacherProfile360Test extends TestCase
         $response = $this->withToken($teacher->createToken('t')->plainTextToken)->getJson('/api/teacher/profile-360')->assertOk();
 
         $response->assertJsonPath('data.teacher.name', 'Profile Teacher')
+            ->assertJsonPath('data.teacher.gender', null)
+            ->assertJsonPath('data.teacher.photo_url', null)
             ->assertJsonPath('data.academic.summary.classes', 0)
             ->assertJsonCount(7, 'data.scorecard.indicators')
             ->assertJsonPath('data.scorecard.indicators.0.status', 'no_data')
             ->assertJsonMissingPath('data.scorecard.overall');
+    }
+
+    public function test_web_profile_edits_are_returned_to_the_app(): void
+    {
+        $departmentId = DB::table('departments')->insertGetId(['name' => 'Science', 'school_id' => 999, 'created_at' => now(), 'updated_at' => now()]);
+        $teacher = $this->teacher([
+            'name' => 'Iftikhar',
+            'designation' => 'teacher',
+            'department_id' => $departmentId,
+            'user_information' => json_encode([
+                'gender' => 'Male',
+                'blood_group' => 'o+',
+                'birthday' => strtotime('2011-11-11'),
+                'phone' => '1788981814',
+                'address' => '>>Hello world, Dhaka, BD',
+                'photo' => 'iftikhar.png',
+            ]),
+        ]);
+
+        $this->withToken($teacher->createToken('t')->plainTextToken)
+            ->getJson('/api/teacher/profile-360')
+            ->assertOk()
+            ->assertJsonPath('data.teacher.name', 'Iftikhar')
+            ->assertJsonPath('data.teacher.designation', 'teacher')
+            ->assertJsonPath('data.teacher.department', 'Science')
+            ->assertJsonPath('data.teacher.gender', 'Male')
+            ->assertJsonPath('data.teacher.blood_group', 'O+')
+            ->assertJsonPath('data.teacher.birthday', '2011-11-11')
+            ->assertJsonPath('data.teacher.phone', '1788981814')
+            ->assertJsonPath('data.teacher.address', 'Hello world, Dhaka, BD')
+            ->assertJsonPath('data.teacher.photo_url', url('assets/uploads/user-images/iftikhar.png'));
     }
 
     public function test_profile_combines_academic_and_employee_records(): void

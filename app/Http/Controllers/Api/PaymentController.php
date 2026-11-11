@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\Admission;
 use App\Models\PaymentTransaction;
@@ -26,6 +28,29 @@ class PaymentController extends Controller
     private function getBaseUrl()
     {
         return $this->isSandbox ? 'https://sandbox.sslcommerz.com' : 'https://securepay.sslcommerz.com';
+    }
+
+    /** Sandbox handshakes often stall; retry before giving up. */
+    private function sslClient(): PendingRequest
+    {
+        return Http::withOptions([
+            'curl' => [CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4],
+        ])->connectTimeout(25)->timeout(40);
+    }
+
+    private function sslSend(callable $send)
+    {
+        $last = null;
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            try {
+                return $send($this->sslClient());
+            } catch (ConnectionException $e) {
+                $last = $e;
+                usleep(400000);
+            }
+        }
+
+        throw $last;
     }
 
     public function initiatePayment(Request $request)
@@ -107,7 +132,18 @@ class PaymentController extends Controller
             'value_b' => $feeType,
         ];
 
-        $response = Http::asForm()->post($this->getBaseUrl() . '/gwprocess/v4/api.php', $postData);
+        try {
+            $response = $this->sslSend(fn ($http) => $http->asForm()->post($this->getBaseUrl() . '/gwprocess/v4/api.php', $postData));
+        } catch (ConnectionException $e) {
+            $transaction->status = 'failed';
+            $transaction->save();
+            Log::warning('SSLCommerz session request timed out', ['transaction_id' => $transactionId]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'SSLCommerz did not respond. Please try the payment again.',
+            ], 504);
+        }
         $result = $response->json();
 
         if (isset($result['status']) && $result['status'] === 'SUCCESS') {
@@ -129,14 +165,31 @@ class PaymentController extends Controller
         $valId = $request->val_id;
         $tranId = $request->tran_id;
 
-        // Validate the transaction with SSLCommerz
-        $validationResponse = Http::get($this->getBaseUrl() . '/validator/api/validationserverAPI.php', [
+        if (!$valId || !$tranId) {
+            return redirect(url('/api/payment/result?status=fail'));
+        }
+
+        // The sandbox stalls when "@" in the store password is percent-encoded.
+        $validationUrl = $this->getBaseUrl() . '/validator/api/validationserverAPI.php?' . http_build_query([
             'val_id' => $valId,
             'store_id' => $this->storeId,
             'store_passwd' => $this->storePass,
             'v' => 1,
-            'format' => 'json'
+            'format' => 'json',
         ]);
+        $validationUrl = str_replace(
+            'store_passwd=' . urlencode($this->storePass),
+            'store_passwd=' . $this->storePass,
+            $validationUrl
+        );
+
+        try {
+            $validationResponse = $this->sslSend(fn ($http) => $http->get($validationUrl));
+        } catch (ConnectionException $e) {
+            Log::warning('SSLCommerz validation timed out', ['tran_id' => $tranId]);
+
+            return redirect(url('/api/payment/result?status=fail'));
+        }
 
         $result = $validationResponse->json();
 
@@ -158,6 +211,13 @@ class PaymentController extends Controller
                     if ($admission && $transaction->type === 'application_fee' && $admission->status === 'pending') {
                         $admission->status = 'under_review';
                         $admission->save();
+                    }
+
+                    if ($admission && $transaction->type === 'admission_fee') {
+                        $student = \App\Models\User::find($admission->user_id);
+                        if ($student) {
+                            app(\App\Services\WebAccountSync::class)->enrollAfterAdmissionFee($student);
+                        }
                     }
                 });
             }

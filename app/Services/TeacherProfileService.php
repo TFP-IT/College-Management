@@ -34,6 +34,7 @@ class TeacherProfileService
 
         return [
             'teacher' => $this->teacherSummary(),
+            'today' => $this->todaySchedule(),
             'academic' => $academic,
             'employee' => $employee,
             'scorecard' => $this->scorecard($academic, $employee),
@@ -41,10 +42,53 @@ class TeacherProfileService
         ];
     }
 
+    /** Today's periods from the class routine the admin maintains on the web. */
+    private function todaySchedule(): array
+    {
+        $day = strtolower(now()->format('l'));
+        $rows = DB::table('routines')
+            ->where('teacher_id', $this->teacher->id)
+            ->where('day', $day)
+            ->when($this->sessionId, fn ($q) => $q->where('session_id', $this->sessionId))
+            ->orderBy('starting_hour')->orderBy('starting_minute')
+            ->get();
+
+        if ($rows->isEmpty()) {
+            return [];
+        }
+
+        $subjects = DB::table('subjects')->whereIn('id', $rows->pluck('subject_id'))->pluck('name', 'id');
+        $classes = DB::table('classes')->whereIn('id', $rows->pluck('class_id'))->pluck('name', 'id');
+        $sections = DB::table('sections')->whereIn('id', $rows->pluck('section_id'))->pluck('name', 'id');
+        $rooms = Schema::hasTable('class_rooms')
+            ? DB::table('class_rooms')->whereIn('id', $rows->pluck('room_id'))->pluck('name', 'id')
+            : collect();
+
+        $clock = fn ($hour, $minute) => sprintf('%02d:%02d', (int) $hour, (int) $minute);
+
+        return $rows->map(fn ($r) => [
+            'id' => $r->id,
+            'start' => $clock($r->starting_hour, $r->starting_minute),
+            'end' => $clock($r->ending_hour, $r->ending_minute),
+            'subject' => $subjects[$r->subject_id] ?? null,
+            'class' => trim(($classes[$r->class_id] ?? '') . (isset($sections[$r->section_id]) ? ' - ' . $sections[$r->section_id] : '')),
+            'room' => $rooms[$r->room_id] ?? null,
+        ])->values()->all();
+    }
+
     private function teacherSummary(): array
     {
         $t = $this->teacher;
+        $info = json_decode((string) $t->user_information, true);
+        $info = is_array($info) ? $info : [];
         $department = $t->department_id ? DB::table('departments')->where('id', $t->department_id)->value('name') : null;
+
+        $photo = trim((string) ($info['photo'] ?? ''));
+        $birthday = is_numeric($info['birthday'] ?? null) && (int) $info['birthday'] > 0
+            ? date('Y-m-d', (int) $info['birthday'])
+            : null;
+        // The web edit form used to prepend ">" to the address on every save.
+        $address = trim(ltrim(trim((string) ($info['address'] ?? '')), '>'));
 
         return [
             'id' => $t->id,
@@ -54,7 +98,12 @@ class TeacherProfileService
             'employee_id' => $t->teacher_id ?: 'MCC-T-' . str_pad((string) $t->id, 4, '0', STR_PAD_LEFT),
             'designation' => $t->designation,
             'department' => $department,
-            'phone' => $t->phone_number,
+            'phone' => ($info['phone'] ?? '') !== '' ? $info['phone'] : $t->phone_number,
+            'gender' => ($info['gender'] ?? '') !== '' ? $info['gender'] : null,
+            'blood_group' => ($info['blood_group'] ?? '') !== '' ? strtoupper($info['blood_group']) : null,
+            'birthday' => $birthday,
+            'address' => $address !== '' ? $address : null,
+            'photo_url' => $photo !== '' ? url('assets/uploads/user-images/' . $photo) : null,
             'joined_on' => optional($t->created_at)->toDateString(),
         ];
     }

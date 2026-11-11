@@ -854,12 +854,12 @@
                                         {{ get_phrase('Noticeboard') }}
                                     </span></a></li>
                         @endif
-                        {{-- @if (empty($user->menu_permission) || in_array('admin.subscription', $menu_permission))
+                        @if (empty($user->menu_permission) || in_array('admin.subscription', $menu_permission))
                             <li><a class="{{ request()->is('admin/subscription') ? 'active' : '' }}"
                                     href="{{ route('admin.subscription') }}"><span>
                                         {{ get_phrase('Subscription') }}
                                     </span></a></li>
-                        @endif --}}
+                        @endif
                         @if (empty($user->menu_permission) || in_array('admin.events.list', $menu_permission))
                             <li>
                                 <a class="{{ request()->is('admin/events/list*') ? 'active' : '' }}"

@@ -21,6 +21,7 @@ use App\Models\Exam;
 use App\Models\ExamCategory;
 use App\Models\Gradebook;
 use App\Models\StudentFeeManager;
+use App\Services\TeacherClassroomService;
 use File;
 
 class ApiController extends Controller
@@ -832,56 +833,39 @@ class ApiController extends Controller
     /**
      * Get students for teacher attendance / class roster
      */
-    public function teacherStudents(Request $request)
+    public function teacherStudents(Request $request, TeacherClassroomService $classroom)
     {
-        $classFilter = $request->query('class');
-        $query = User::where('role_id', 7)->where('status', 1);
-
-        $students = $query->get()->map(function ($s, $index) {
-            $class = 'Class 1';
-            $roll = str_pad($index + 1, 3, '0', STR_PAD_LEFT);
-            if ($s->student_info) {
-                $info = json_decode($s->student_info, true);
-                if (is_array($info) && !empty($info['class'])) {
-                    $class = $info['class'];
-                }
-            }
-            return [
-                'id' => $s->id,
-                'name' => $s->name,
-                'student_id' => $s->student_id ?: ('MCC' . $s->id),
-                'roll' => $roll,
-                'class' => $class,
-                'status' => 'present',
-            ];
-        });
-
-        if ($classFilter) {
-            $students = $students->filter(function ($item) use ($classFilter) {
-                return stripos($item['class'], $classFilter) !== false;
-            })->values();
-        }
-
         return response()->json([
             'status' => 'success',
-            'data' => $students
+            'data' => $classroom->students($request->user(), $request->query('class'))
         ]);
     }
 
     /**
-     * Get classes for teacher
+     * Get classes for teacher, as assigned on the web (class routine and teacher permission)
      */
-    public function teacherClasses(Request $request)
+    public function teacherClasses(Request $request, TeacherClassroomService $classroom)
     {
-        $classes = [
-            ['id' => 1, 'name' => 'General Studies', 'section' => 'Class 6 - A', 'students' => 24, 'progress' => '65%'],
-            ['id' => 2, 'name' => 'Elementary Math', 'section' => 'Class 3 - B', 'students' => 18, 'progress' => '50%'],
-            ['id' => 3, 'name' => 'Junior Science', 'section' => 'Class 2 - A', 'students' => 15, 'progress' => '40%'],
-        ];
+        $classes = $classroom->classes($request->user());
 
         return response()->json([
             'status' => 'success',
             'data' => $classes
+        ]);
+    }
+
+    /**
+     * Class routine for the teacher app, the same class and section view as the web.
+     */
+    public function teacherRoutine(Request $request, TeacherClassroomService $classroom)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $classroom->routine(
+                $request->user(),
+                $request->integer('class_id') ?: null,
+                $request->integer('section_id') ?: null,
+            ),
         ]);
     }
 
