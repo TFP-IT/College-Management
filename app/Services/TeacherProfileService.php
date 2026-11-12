@@ -34,7 +34,7 @@ class TeacherProfileService
 
         return [
             'teacher' => $this->teacherSummary(),
-            'today' => $this->todaySchedule(),
+            'today' => $this->todayClasses($teacher),
             'academic' => $academic,
             'employee' => $employee,
             'scorecard' => $this->scorecard($academic, $employee),
@@ -42,12 +42,31 @@ class TeacherProfileService
         ];
     }
 
-    /** Today's periods from the class routine the admin maintains on the web. */
-    private function todaySchedule(): array
+    public const CLASS_SLOTS = [
+        'ongoing' => 'Ongoing',
+        'upcoming' => 'Upcoming',
+        'earlier' => 'Earlier',
+    ];
+
+    public const CLASS_MODES = [
+        'in_class' => 'In class',
+        'online' => 'Online',
+        'postpone' => 'Postpone',
+        'done' => 'Done',
+    ];
+
+    /**
+     * Today's periods from the class routine on the website.
+     * The slot follows the clock. The mode is set by the teacher.
+     */
+    public function todayClasses(User $teacher): array
     {
+        $this->teacher = $teacher;
+        $this->sessionId = $this->runningSession();
+
         $day = strtolower(now()->format('l'));
         $rows = DB::table('routines')
-            ->where('teacher_id', $this->teacher->id)
+            ->where('teacher_id', $teacher->id)
             ->where('day', $day)
             ->when($this->sessionId, fn ($q) => $q->where('session_id', $this->sessionId))
             ->orderBy('starting_hour')->orderBy('starting_minute')
@@ -63,17 +82,107 @@ class TeacherProfileService
         $rooms = Schema::hasTable('class_rooms')
             ? DB::table('class_rooms')->whereIn('id', $rows->pluck('room_id'))->pluck('name', 'id')
             : collect();
+        $marks = Schema::hasTable('routine_class_statuses')
+            ? DB::table('routine_class_statuses')
+                ->where('teacher_id', $teacher->id)
+                ->whereDate('class_date', now()->toDateString())
+                ->whereIn('routine_id', $rows->pluck('id'))
+                ->pluck('status', 'routine_id')
+            : collect();
 
-        $clock = fn ($hour, $minute) => sprintf('%02d:%02d', (int) $hour, (int) $minute);
+        $nowMinutes = now()->timezone('Asia/Dhaka')->hour * 60 + now()->timezone('Asia/Dhaka')->minute;
+        $clock = function (int $minutes) {
+            $minutes = $minutes % (24 * 60);
+            return Carbon::createFromTime(intdiv($minutes, 60), $minutes % 60, 0, 'Asia/Dhaka')->format('g:i A');
+        };
 
-        return $rows->map(fn ($r) => [
-            'id' => $r->id,
-            'start' => $clock($r->starting_hour, $r->starting_minute),
-            'end' => $clock($r->ending_hour, $r->ending_minute),
-            'subject' => $subjects[$r->subject_id] ?? null,
-            'class' => trim(($classes[$r->class_id] ?? '') . (isset($sections[$r->section_id]) ? ' - ' . $sections[$r->section_id] : '')),
-            'room' => $rooms[$r->room_id] ?? null,
-        ])->values()->all();
+        return $rows->map(function ($r) use ($subjects, $classes, $sections, $rooms, $marks, $clock, $nowMinutes) {
+            $window = $this->periodWindow(
+                (int) $r->starting_hour,
+                (int) $r->starting_minute,
+                (int) $r->ending_hour,
+                (int) $r->ending_minute,
+                $nowMinutes
+            );
+            $slot = $window['slot'];
+
+            $mode = $marks[$r->id] ?? null;
+            if (!isset(self::CLASS_MODES[$mode])) {
+                $mode = null;
+            }
+
+            return [
+                'id' => $r->id,
+                'start' => $clock($window['start']),
+                'end' => $clock($window['end']),
+                'sort' => $window['start'],
+                'subject' => $subjects[$r->subject_id] ?? null,
+                'class' => trim(($classes[$r->class_id] ?? '') . (isset($sections[$r->section_id]) ? ' - ' . $sections[$r->section_id] : '')),
+                'room' => $rooms[$r->room_id] ?? null,
+                'slot' => $slot,
+                'slot_label' => self::CLASS_SLOTS[$slot],
+                'mode' => $mode,
+                'mode_label' => $mode ? self::CLASS_MODES[$mode] : null,
+            ];
+        })->sortBy('sort')->map(function ($row) {
+            unset($row['sort']);
+            return $row;
+        })->values()->all();
+    }
+
+    /**
+     * Routine hours of 1–11 are the morning option in the admin form.
+     * During the afternoon, 3:00–3:50 is the 3 PM period, so 3:37 PM is ongoing.
+     */
+    private function periodWindow(int $startHour, int $startMinute, int $endHour, int $endMinute, int $nowMinutes): array
+    {
+        $start = $startHour * 60 + $startMinute;
+        $end = $endHour * 60 + $endMinute;
+        $afternoon = $nowMinutes >= 12 * 60;
+        if ($afternoon && $startHour > 0 && $startHour < 12 && $endHour < 12) {
+            $start += 12 * 60;
+            $end += 12 * 60;
+        }
+
+        if ($nowMinutes >= $end) {
+            $slot = 'earlier';
+        } elseif ($nowMinutes >= $start) {
+            $slot = 'ongoing';
+        } else {
+            $slot = 'upcoming';
+        }
+
+        return ['start' => $start, 'end' => $end, 'slot' => $slot];
+    }
+
+    public function setClassStatus(User $teacher, int $routineId, string $status): void
+    {
+        if (!isset(self::CLASS_MODES[$status])) {
+            abort(422, 'Choose In class, Online, Postpone, or Done.');
+        }
+
+        $ownsRoutine = DB::table('routines')
+            ->where('id', $routineId)
+            ->where('teacher_id', $teacher->id)
+            ->exists();
+        if (!$ownsRoutine) {
+            abort(403, 'This class is not on your routine.');
+        }
+
+        $where = [
+            'routine_id' => $routineId,
+            'class_date' => now()->toDateString(),
+        ];
+
+        if ($status === 'in_class') {
+            DB::table('routine_class_statuses')->where($where)->where('teacher_id', $teacher->id)->delete();
+            return;
+        }
+
+        DB::table('routine_class_statuses')->updateOrInsert(
+            $where,
+            ['teacher_id' => $teacher->id, 'status' => $status, 'updated_at' => now(), 'created_at' => now()]
+        );
     }
 
     private function teacherSummary(): array

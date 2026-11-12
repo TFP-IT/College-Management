@@ -83,9 +83,11 @@ Route::middleware(['auth:sanctum', 'api.student'])->prefix('student')->group(fun
 
 Route::middleware(['auth:sanctum', 'api.teacher'])->prefix('teacher')->group(function () {
     Route::get('/profile-360', [TeacherProfileController::class, 'show']);
+    Route::post('/class-status', [TeacherProfileController::class, 'updateClassStatus']);
     Route::get('/students', [ApiController::class, 'teacherStudents']);
     Route::get('/classes', [ApiController::class, 'teacherClasses']);
     Route::get('/routine', [ApiController::class, 'teacherRoutine']);
+    Route::get('/student-analytics/{studentId}', [ApiController::class, 'teacherStudentAnalytics']);
     Route::get('/threads', [ApiController::class, 'teacherThreads']);
     Route::post('/attendance/submit', [ApiController::class, 'submitAttendance']);
 });

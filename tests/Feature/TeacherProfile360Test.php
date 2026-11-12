@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -130,5 +131,54 @@ class TeacherProfile360Test extends TestCase
         $this->assertSame('50% on time', $indicators['punctuality']['value']);
         $this->assertSame('watch', $indicators['professional_conduct']['status']);
         $this->assertSame('no_data', $indicators['student_feedback']['status']);
+    }
+
+    public function test_class_stays_ongoing_until_the_teacher_sets_a_status(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-11-12 15:25:00', 'Asia/Dhaka'));
+        try {
+            $teacher = $this->teacher(['email' => 'today.teacher@example.test']);
+            $now = now();
+            $classId = DB::table('classes')->insertGetId(['name' => 'Class 6', 'school_id' => 999, 'created_at' => $now, 'updated_at' => $now]);
+            $sectionId = DB::table('sections')->insertGetId(['name' => 'A', 'class_id' => $classId, 'created_at' => $now, 'updated_at' => $now]);
+            $subjectId = DB::table('subjects')->insertGetId(['name' => 'Mathematics', 'class_id' => $classId, 'school_id' => 999, 'session_id' => 1, 'created_at' => $now, 'updated_at' => $now]);
+            $englishId = DB::table('subjects')->insertGetId(['name' => 'English', 'class_id' => $classId, 'school_id' => 999, 'session_id' => 1, 'created_at' => $now, 'updated_at' => $now]);
+            $routineId = DB::table('routines')->insertGetId([
+                'class_id' => $classId, 'section_id' => $sectionId, 'subject_id' => $subjectId,
+                'starting_hour' => 3, 'starting_minute' => 0, 'ending_hour' => 3, 'ending_minute' => 40,
+                'day' => 'thursday', 'teacher_id' => $teacher->id, 'room_id' => 0,
+                'session_id' => 1, 'school_id' => 999, 'created_at' => $now, 'updated_at' => $now,
+            ]);
+            DB::table('routines')->insert([
+                'class_id' => $classId, 'section_id' => $sectionId, 'subject_id' => $englishId,
+                'starting_hour' => 15, 'starting_minute' => 0, 'ending_hour' => 15, 'ending_minute' => 40,
+                'day' => 'thursday', 'teacher_id' => $teacher->id, 'room_id' => 0,
+                'session_id' => 1, 'school_id' => 999, 'created_at' => $now, 'updated_at' => $now,
+            ]);
+
+            $token = $teacher->createToken('t')->plainTextToken;
+            $today = $this->withToken($token)->getJson('/api/teacher/profile-360')->assertOk()->json('data.today');
+            $bySubject = collect($today)->keyBy('subject');
+            $this->assertSame('ongoing', $bySubject['Mathematics']['slot']);
+            $this->assertSame('3:00 PM', $bySubject['Mathematics']['start']);
+            $this->assertSame('ongoing', $bySubject['English']['slot']);
+            $this->assertNull($bySubject['Mathematics']['mode']);
+
+            $marked = collect($this->withToken($token)->postJson('/api/teacher/class-status', [
+                'routine_id' => $routineId,
+                'status' => 'online',
+            ])->assertOk()->json('data'))->keyBy('subject');
+            $this->assertSame('online', $marked['Mathematics']['mode']);
+            $this->assertSame('ongoing', $marked['Mathematics']['slot']);
+
+            $this->actingAs($teacher)->get('/teacher/dashboard')
+                ->assertOk()
+                ->assertSee('3:00 PM')
+                ->assertSee('Ongoing')
+                ->assertSee('Online')
+                ->assertSee('How do you want to take this class?');
+        } finally {
+            Carbon::setTestNow();
+        }
     }
 }

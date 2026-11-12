@@ -49,6 +49,60 @@
                         <p>Welcome, to {{ DB::table('schools')->where('id', auth()->user()->school_id)->value('title') }}</p>
                 </div>
             </div>
+            <div class="col-lg-12">
+                <div class="dashboard_ShortListItem">
+                    <div class="dsHeader d-flex justify-content-between align-items-center">
+                        <h5 class="title">{{ get_phrase("Today's classes") }}</h5>
+                        <span>{{ now()->format('l, d M Y') }}</span>
+                    </div>
+                    @php
+                        $slotOrder = ['ongoing' => 'Ongoing', 'upcoming' => 'Upcoming', 'earlier' => 'Earlier'];
+                        $bySlot = collect($todayClasses ?? [])->groupBy('slot');
+                    @endphp
+                    @if(collect($todayClasses ?? [])->isEmpty())
+                        <p style="margin:12px 0 0;color:#666666;">No periods on your routine for today. The class routine is set from the admin panel.</p>
+                    @endif
+                    @foreach($slotOrder as $slotKey => $slotTitle)
+                        @if(($bySlot[$slotKey] ?? collect())->isNotEmpty())
+                            <h6 style="margin:16px 0 0;font-weight:800;color:#1A1A1A;">{{ $slotTitle }}</h6>
+                            @foreach($bySlot[$slotKey] as $period)
+                                <button type="button" class="d-flex justify-content-between align-items-center w-100 text-start" data-bs-toggle="modal" data-bs-target="#classMode{{ $period['id'] }}" style="gap:16px;padding:12px 0;border:0;border-top:1px solid #EEEEEE;background:transparent;">
+                                    <div style="width:88px;font-weight:700;color:#1A1A1A;">{{ $period['start'] }}</div>
+                                    <div style="flex:1;">
+                                        <div style="font-weight:700;color:#1A1A1A;">{{ $period['subject'] ?: 'Class' }}</div>
+                                        <div style="font-size:13px;color:#666666;">
+                                            {{ collect([$period['class'], $period['room'], $period['end'] ? 'until '.$period['end'] : null, $period['mode_label']])->filter()->implode(' • ') }}
+                                        </div>
+                                    </div>
+                                    <span style="font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;{{ $slotKey === 'ongoing' ? 'background:#FDECEC;color:#C62828;' : ($slotKey === 'upcoming' ? 'background:#FEF3C7;color:#92400E;' : 'background:#F3F4F6;color:#6B7280;') }}">{{ $period['slot_label'] }}</span>
+                                </button>
+                                <div class="modal fade" id="classMode{{ $period['id'] }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">{{ $period['subject'] ?: 'Class' }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p style="color:#666666;">{{ $period['start'] }} – {{ $period['end'] }} · {{ $period['slot_label'] }}</p>
+                                                <p style="font-weight:700;">How do you want to take this class?</p>
+                                                @foreach(\App\Services\TeacherProfileService::CLASS_MODES as $value => $label)
+                                                    <form method="POST" action="{{ route('teacher.class_status') }}" class="mb-2">
+                                                        @csrf
+                                                        <input type="hidden" name="routine_id" value="{{ $period['id'] }}">
+                                                        <input type="hidden" name="status" value="{{ $value }}">
+                                                        <button type="submit" class="btn w-100 text-start {{ $period['mode'] === $value ? 'btn-dark' : 'btn-outline-secondary' }}">{{ $label }}</button>
+                                                    </form>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                    @endforeach
+                </div>
+            </div>
              <!-- Dashboard Short Details -->
              <div class="col-lg-6">
                <div class="dashboard_ShortListItems">

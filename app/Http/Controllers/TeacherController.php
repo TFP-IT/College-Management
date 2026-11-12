@@ -44,7 +44,25 @@ class TeacherController extends Controller
      */
     public function teacherDashboard()
     {
-        return view('teacher.dashboard');
+        $todayClasses = app(\App\Services\TeacherProfileService::class)->todayClasses(auth()->user());
+
+        return view('teacher.dashboard', compact('todayClasses'));
+    }
+
+    public function updateClassStatus(Request $request)
+    {
+        $data = $request->validate([
+            'routine_id' => 'required|integer',
+            'status' => 'required|in:in_class,online,postpone,done',
+        ]);
+
+        app(\App\Services\TeacherProfileService::class)->setClassStatus(
+            auth()->user(),
+            (int) $data['routine_id'],
+            $data['status']
+        );
+
+        return redirect()->route('teacher.dashboard')->with('message', 'Class status updated.');
     }
 
 

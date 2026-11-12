@@ -586,6 +586,7 @@ Route::controller(AdminController::class)->middleware('admin','auth')->group(fun
 Route::controller(TeacherController::class)->middleware('teacher','auth')->group(function () {
 
     Route::get('teacher/dashboard', 'teacherDashboard')->name('teacher.dashboard')->middleware('role_id');
+    Route::post('teacher/class-status', 'updateClassStatus')->name('teacher.class_status');
 
 
     //Attendance routes

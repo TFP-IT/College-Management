@@ -870,6 +870,17 @@ class ApiController extends Controller
     }
 
     /**
+     * Get detailed analytics for an enrolled student (attendance, leaves, marks)
+     */
+    public function teacherStudentAnalytics(Request $request, TeacherClassroomService $classroom, $studentId)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $classroom->studentAnalytics($request->user(), (int) $studentId),
+        ]);
+    }
+
+    /**
      * Get teacher conversation threads with guardians
      */
     public function teacherThreads(Request $request)
