@@ -50,48 +50,63 @@
                 </div>
             </div>
             <div class="col-lg-12">
-                <div class="dashboard_ShortListItem">
-                    <div class="dsHeader d-flex justify-content-between align-items-center">
-                        <h5 class="title">{{ get_phrase("Today's classes") }}</h5>
-                        <span>{{ now()->format('l, d M Y') }}</span>
+                <div class="dashboard_ShortListItem tp-today">
+                    <div class="tp-today-head">
+                        <div>
+                            <p class="tp-kicker">{{ now()->format('l, d M Y') }}</p>
+                            <h5 class="title mb-0">{{ get_phrase("Today's classes") }}</h5>
+                        </div>
+                        <span class="tp-count">{{ collect($todayClasses ?? [])->count() }} {{ collect($todayClasses ?? [])->count() === 1 ? 'period' : 'periods' }}</span>
                     </div>
                     @php
                         $slotOrder = ['ongoing' => 'Ongoing', 'upcoming' => 'Upcoming', 'earlier' => 'Earlier'];
+                        $modeNotes = [
+                            'in_class' => 'Take the period in the classroom',
+                            'online' => 'Take this period online',
+                            'postpone' => 'Move this period to another time',
+                            'done' => 'This period is finished',
+                        ];
                         $bySlot = collect($todayClasses ?? [])->groupBy('slot');
                     @endphp
                     @if(collect($todayClasses ?? [])->isEmpty())
-                        <p style="margin:12px 0 0;color:#666666;">No periods on your routine for today. The class routine is set from the admin panel.</p>
+                        <p class="tp-empty">No periods on your routine for today. The class routine is set from the admin panel.</p>
                     @endif
                     @foreach($slotOrder as $slotKey => $slotTitle)
                         @if(($bySlot[$slotKey] ?? collect())->isNotEmpty())
-                            <h6 style="margin:16px 0 0;font-weight:800;color:#1A1A1A;">{{ $slotTitle }}</h6>
+                            <p class="tp-slot">{{ $slotTitle }}</p>
                             @foreach($bySlot[$slotKey] as $period)
-                                <button type="button" class="d-flex justify-content-between align-items-center w-100 text-start" data-bs-toggle="modal" data-bs-target="#classMode{{ $period['id'] }}" style="gap:16px;padding:12px 0;border:0;border-top:1px solid #EEEEEE;background:transparent;">
-                                    <div style="width:88px;font-weight:700;color:#1A1A1A;">{{ $period['start'] }}</div>
-                                    <div style="flex:1;">
-                                        <div style="font-weight:700;color:#1A1A1A;">{{ $period['subject'] ?: 'Class' }}</div>
-                                        <div style="font-size:13px;color:#666666;">
-                                            {{ collect([$period['class'], $period['room'], $period['end'] ? 'until '.$period['end'] : null, $period['mode_label']])->filter()->implode(' • ') }}
-                                        </div>
-                                    </div>
-                                    <span style="font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;{{ $slotKey === 'ongoing' ? 'background:#FDECEC;color:#C62828;' : ($slotKey === 'upcoming' ? 'background:#FEF3C7;color:#92400E;' : 'background:#F3F4F6;color:#6B7280;') }}">{{ $period['slot_label'] }}</span>
+                                <button type="button" class="tp-period" data-bs-toggle="modal" data-bs-target="#classMode{{ $period['id'] }}">
+                                    <span class="tp-time">{{ $period['start'] }}</span>
+                                    <span class="tp-copy">
+                                        <span class="tp-subject">{{ $period['subject'] ?: 'Class' }}</span>
+                                        <span class="tp-meta">{{ collect([$period['class'], $period['room'], $period['end'] ? 'until '.$period['end'] : null])->filter()->implode(' · ') }}</span>
+                                        @if($period['mode_label'])
+                                            <span class="tp-mode tp-mode-{{ $period['mode'] }}">{{ $period['mode_label'] }}</span>
+                                        @endif
+                                    </span>
+                                    <span class="tp-pill tp-pill-{{ $slotKey }}">{{ $period['slot_label'] }}</span>
                                 </button>
                                 <div class="modal fade" id="classMode{{ $period['id'] }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
+                                        <div class="modal-content tp-modal">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">{{ $period['subject'] ?: 'Class' }}</h5>
+                                                <div>
+                                                    <h5 class="modal-title">{{ $period['subject'] ?: 'Class' }}</h5>
+                                                    <p class="tp-modal-sub mb-0">{{ $period['start'] }} – {{ $period['end'] }} · {{ $period['slot_label'] }}</p>
+                                                </div>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <p style="color:#666666;">{{ $period['start'] }} – {{ $period['end'] }} · {{ $period['slot_label'] }}</p>
-                                                <p style="font-weight:700;">How do you want to take this class?</p>
+                                                <p class="tp-prompt">How do you want to take this class?</p>
                                                 @foreach(\App\Services\TeacherProfileService::CLASS_MODES as $value => $label)
-                                                    <form method="POST" action="{{ route('teacher.class_status') }}" class="mb-2">
+                                                    <form method="POST" action="{{ route('teacher.class_status') }}">
                                                         @csrf
                                                         <input type="hidden" name="routine_id" value="{{ $period['id'] }}">
                                                         <input type="hidden" name="status" value="{{ $value }}">
-                                                        <button type="submit" class="btn w-100 text-start {{ $period['mode'] === $value ? 'btn-dark' : 'btn-outline-secondary' }}">{{ $label }}</button>
+                                                        <button type="submit" class="tp-choice {{ $period['mode'] === $value ? 'is-selected' : '' }}">
+                                                            <span class="tp-choice-label">{{ $label }}</span>
+                                                            <span class="tp-choice-note">{{ $modeNotes[$value] ?? '' }}</span>
+                                                        </button>
                                                     </form>
                                                 @endforeach
                                             </div>
@@ -103,6 +118,37 @@
                     @endforeach
                 </div>
             </div>
+            <style>
+                .tp-today { padding-bottom: 8px; }
+                .tp-today-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+                .tp-kicker { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .03em; color: #C62828; }
+                .tp-count { font-size: 12px; font-weight: 700; color: #666; }
+                .tp-empty { margin: 14px 0 0; color: #666; font-size: 14px; }
+                .tp-slot { margin: 18px 0 8px; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #666; }
+                .tp-period { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; margin-bottom: 8px; padding: 12px 14px; border: 1px solid #E8ECF1; border-radius: 14px; background: #fff; }
+                .tp-period:hover { border-color: #C62828; }
+                .tp-time { width: 78px; flex: none; font-weight: 800; color: #1A1A1A; }
+                .tp-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+                .tp-subject { font-weight: 800; color: #1A1A1A; }
+                .tp-meta { margin-top: 2px; font-size: 13px; color: #666; }
+                .tp-mode { align-self: flex-start; margin-top: 6px; border-radius: 999px; padding: 2px 8px; font-size: 11px; font-weight: 800; }
+                .tp-mode-in_class { background: #FDECEC; color: #C62828; }
+                .tp-mode-online { background: #E0F2FE; color: #0369A1; }
+                .tp-mode-postpone { background: #FEF3C7; color: #92400E; }
+                .tp-mode-done { background: #F3F4F6; color: #6B7280; }
+                .tp-pill { flex: none; border-radius: 999px; padding: 4px 10px; font-size: 11px; font-weight: 800; }
+                .tp-pill-ongoing { background: #FDECEC; color: #C62828; }
+                .tp-pill-upcoming { background: #FEF3C7; color: #92400E; }
+                .tp-pill-earlier { background: #F3F4F6; color: #6B7280; }
+                .tp-modal { border: 0; border-radius: 18px; }
+                .tp-modal-sub { margin-top: 4px; font-size: 13px; color: #666; }
+                .tp-prompt { margin-bottom: 10px; font-size: 13px; font-weight: 700; color: #666; }
+                .tp-choice { display: block; width: 100%; text-align: left; margin-bottom: 8px; padding: 12px 14px; border: 1px solid #E8ECF1; border-radius: 12px; background: #fff; }
+                .tp-choice.is-selected { border-color: #C62828; background: #FDECEC; }
+                .tp-choice-label { display: block; font-weight: 800; color: #1A1A1A; }
+                .tp-choice.is-selected .tp-choice-label { color: #C62828; }
+                .tp-choice-note { display: block; margin-top: 2px; font-size: 12px; color: #666; }
+            </style>
              <!-- Dashboard Short Details -->
              <div class="col-lg-6">
                <div class="dashboard_ShortListItems">

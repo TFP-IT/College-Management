@@ -155,6 +155,45 @@ class TeacherProfileService
         return ['start' => $start, 'end' => $end, 'slot' => $slot];
     }
 
+    /**
+     * This week's periods already reached, and the ones still ahead.
+     */
+    private function weekProgress(Collection $periods): array
+    {
+        $order = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+        $clock = now()->timezone('Asia/Dhaka');
+        $todayIndex = array_search(strtolower($clock->format('l')), $order, true);
+        $nowMinutes = $clock->hour * 60 + $clock->minute;
+        $taken = 0;
+        $left = 0;
+
+        foreach ($periods as $period) {
+            $dayIndex = array_search(strtolower((string) $period->day), $order, true);
+            if ($dayIndex === false || $todayIndex === false || $dayIndex > $todayIndex) {
+                $left++;
+                continue;
+            }
+            if ($dayIndex < $todayIndex) {
+                $taken++;
+                continue;
+            }
+            $window = $this->periodWindow(
+                (int) $period->starting_hour,
+                (int) $period->starting_minute,
+                (int) $period->ending_hour,
+                (int) $period->ending_minute,
+                $nowMinutes
+            );
+            if ($window['slot'] === 'upcoming') {
+                $left++;
+            } else {
+                $taken++;
+            }
+        }
+
+        return ['taken' => $taken, 'left' => $left];
+    }
+
     public function setClassStatus(User $teacher, int $routineId, string $status): void
     {
         if (!isset(self::CLASS_MODES[$status])) {
@@ -235,6 +274,8 @@ class TeacherProfileService
             'attendance' => $this->studentAttendance($pairs),
             'lesson_plans' => $this->lessonPlans(),
             'syllabus' => $this->syllabusProgress(),
+            'syllabus_files' => $this->syllabusFiles(),
+            'syllabus_topics' => $this->syllabusTopics(),
             'assignments' => $this->assignmentSummary(),
             'exam_questions' => $this->examQuestions(),
             'performance' => $this->studentPerformance(),
@@ -254,12 +295,15 @@ class TeacherProfileService
             ->map(function ($group) {
                 $first = $group->first();
                 $minutes = $group->sum(fn ($r) => max(0, ((int) $r->ending_hour * 60 + (int) $r->ending_minute) - ((int) $r->starting_hour * 60 + (int) $r->starting_minute)));
+                $progress = $this->weekProgress($group);
                 return [
                     'class_id' => (int) $first->class_id,
                     'section_id' => (int) $first->section_id,
                     'subject_id' => (int) $first->subject_id,
                     'weekly_periods' => $group->count(),
                     'weekly_minutes' => $minutes,
+                    'periods_taken' => $progress['taken'],
+                    'periods_left' => $progress['left'],
                 ];
             });
 
@@ -273,6 +317,8 @@ class TeacherProfileService
                     'subject_id' => null,
                     'weekly_periods' => 0,
                     'weekly_minutes' => 0,
+                    'periods_taken' => 0,
+                    'periods_left' => 0,
                 ]);
             }
         }
@@ -381,6 +427,63 @@ class TeacherProfileService
             'percent' => $topics->count() ? round($completed / $topics->count() * 100) : null,
             'by_subject' => $bySubject->all(),
         ];
+    }
+
+    private function syllabusFiles(): array
+    {
+        $matches = $this->assignments->filter(fn ($assignment) => $assignment['subject_id']);
+        if (!Schema::hasTable('syllabuses') || $matches->isEmpty()) {
+            return [];
+        }
+
+        $files = DB::table('syllabuses')
+            ->where(function ($query) use ($matches) {
+                foreach ($matches as $assignment) {
+                    $query->orWhere(function ($match) use ($assignment) {
+                        $match->where('class_id', $assignment['class_id'])
+                            ->where('section_id', $assignment['section_id'])
+                            ->where('subject_id', $assignment['subject_id']);
+                    });
+                }
+            })
+            ->orderByDesc('id')
+            ->get();
+
+        return $files->map(function ($file) {
+            $assignment = $this->assignments->first(fn ($row) => $row['class_id'] == $file->class_id && $row['section_id'] == $file->section_id && $row['subject_id'] == $file->subject_id);
+            return [
+                'id' => $file->id,
+                'title' => $file->title,
+                'class_id' => (int) $file->class_id,
+                'section_id' => (int) $file->section_id,
+                'subject_id' => (int) $file->subject_id,
+                'class_name' => $assignment['class_name'] ?? null,
+                'section_name' => $assignment['section_name'] ?? null,
+                'subject_name' => $assignment['subject_name'] ?? null,
+                'file_url' => $file->file ? url('assets/uploads/syllabus/' . $file->file) : null,
+            ];
+        })->values()->all();
+    }
+
+    private function syllabusTopics(): array
+    {
+        if (!Schema::hasTable('teacher_syllabus_topics')) {
+            return [];
+        }
+
+        return DB::table('teacher_syllabus_topics')
+            ->where('teacher_id', $this->teacher->id)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(fn ($topic) => [
+                'id' => $topic->id,
+                'topic' => $topic->topic,
+                'class_id' => $topic->class_id ? (int) $topic->class_id : null,
+                'section_id' => $topic->section_id ? (int) $topic->section_id : null,
+                'subject_id' => $topic->subject_id ? (int) $topic->subject_id : null,
+                'completed' => $topic->completed_at !== null,
+            ])->values()->all();
     }
 
     private function assignmentSummary(): array
