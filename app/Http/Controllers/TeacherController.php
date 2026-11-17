@@ -625,8 +625,8 @@ class TeacherController extends Controller
         $check_data = DailyAttendances::where(['timestamp' => $data['timestamp'], 'class_id' => $data['class_id'], 'section_id' => $data['section_id'], 'session_id' => $active_session, 'school_id' => auth()->user()->school_id])->get();
         if(count($check_data) > 0){
             foreach($students as $key => $student):
-                $data['status'] = $att_data['status-'.$student];
                 $data['student_id'] = $student;
+                $data = array_merge($data, \App\Models\DailyAttendances::manualAttributes((int) ($att_data['status-'.$student] ?? 0), $att_data['note-'.$student] ?? null));
                 $attendance_id = $att_data['attendance_id'];
 
                 DailyAttendances::where('id', $attendance_id[$key])->update($data);
@@ -634,8 +634,8 @@ class TeacherController extends Controller
             endforeach;
         }else{
             foreach($students as $student):
-                $data['status'] = $att_data['status-'.$student];
                 $data['student_id'] = $student;
+                $data = array_merge($data, \App\Models\DailyAttendances::manualAttributes((int) ($att_data['status-'.$student] ?? 0), $att_data['note-'.$student] ?? null));
 
                 DailyAttendances::create($data);
 

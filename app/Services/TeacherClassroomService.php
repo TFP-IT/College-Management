@@ -275,7 +275,7 @@ class TeacherClassroomService
                 ->get()
                 ->map(fn ($a) => (object)[
                     'date' => date('Y-m-d', $a->timestamp),
-                    'status' => $a->status == 1 ? 'present' : ($a->status == 2 ? 'absent' : 'late'),
+                    'status' => $a->status == 1 ? 'present' : ($a->status == 2 ? 'late' : 'absent'),
                     'check_in' => '09:00:00',
                     'check_out' => '15:30:00',
                     'source' => 'manual',
@@ -408,5 +408,120 @@ class TeacherClassroomService
         $id = DB::table('schools')->where('id', $schoolId)->value('running_session');
 
         return $id ? (int) $id : null;
+    }
+
+    /**
+     * One class section for a day, using the same daily_attendances rows as the website.
+     * Status 1 is present, 2 is late, 0 is absent.
+     */
+    public function attendanceSheet(User $teacher, int $classId, int $sectionId, string $date): array
+    {
+        $this->assertTeaching($teacher, $classId, $sectionId);
+        $sessionId = $this->sessionFor($teacher, $classId, $sectionId);
+        $timestamp = \Carbon\Carbon::parse($date, 'Asia/Dhaka')->startOfDay()->timestamp;
+
+        $students = DB::table('enrollments')
+            ->join('users', 'users.id', '=', 'enrollments.user_id')
+            ->where('enrollments.class_id', $classId)
+            ->where('enrollments.section_id', $sectionId)
+            ->where('users.role_id', WebAccountSync::STUDENT_ROLE)
+            ->where('users.status', 1)
+            ->when($sessionId, fn ($q) => $q->where('enrollments.session_id', $sessionId))
+            ->orderBy('users.name')
+            ->get(['users.id', 'users.name', 'users.student_id']);
+
+        $marks = DB::table('daily_attendances')
+            ->where('class_id', $classId)
+            ->where('section_id', $sectionId)
+            ->where('timestamp', $timestamp)
+            ->when($sessionId, fn ($q) => $q->where('session_id', $sessionId))
+            ->when($teacher->school_id, fn ($q) => $q->where('school_id', $teacher->school_id))
+            ->get()
+            ->keyBy('student_id');
+
+        $className = DB::table('classes')->where('id', $classId)->value('name');
+        $sectionName = DB::table('sections')->where('id', $sectionId)->value('name');
+
+        return [
+            'date' => $date,
+            'class_id' => $classId,
+            'section_id' => $sectionId,
+            'class_name' => $className,
+            'section_name' => $sectionName,
+            'students' => $students->map(function ($student) use ($marks) {
+                $mark = $marks->get($student->id);
+
+                return [
+                    'id' => (int) $student->id,
+                    'name' => $student->name,
+                    'student_id' => $student->student_id ?: ('MCC'.$student->id),
+                    'status' => $mark ? $this->attendanceLabel((int) $mark->status) : null,
+                    'note' => $mark->note ?? null,
+                    'source' => $mark->source ?? null,
+                ];
+            })->values()->all(),
+        ];
+    }
+
+    public function saveAttendance(User $teacher, int $classId, int $sectionId, string $date, array $records): array
+    {
+        $this->assertTeaching($teacher, $classId, $sectionId);
+        $sessionId = $this->sessionFor($teacher, $classId, $sectionId);
+        $timestamp = \Carbon\Carbon::parse($date, 'Asia/Dhaka')->startOfDay()->timestamp;
+        $allowed = collect($this->attendanceSheet($teacher, $classId, $sectionId, $date)['students'])->pluck('id');
+
+        foreach ($records as $record) {
+            $studentId = (int) $record['student_id'];
+            if (!$allowed->contains($studentId)) {
+                abort(422, 'A student on this list is not enrolled in the section.');
+            }
+            $status = ['present' => 1, 'late' => 2, 'absent' => 0][$record['status']];
+            $keys = [
+                'class_id' => $classId,
+                'section_id' => $sectionId,
+                'student_id' => $studentId,
+                'session_id' => $sessionId,
+                'school_id' => $teacher->school_id,
+                'timestamp' => $timestamp,
+            ];
+            \App\Models\DailyAttendances::updateOrCreate($keys, \App\Models\DailyAttendances::manualAttributes($status, $record['note'] ?? null));
+        }
+
+        return $this->attendanceSheet($teacher, $classId, $sectionId, $date);
+    }
+
+    private function sessionFor(User $teacher, int $classId, int $sectionId): int
+    {
+        $session = $this->runningSession($teacher->school_id);
+        if ($session) {
+            return $session;
+        }
+
+        $fromRoutine = DB::table('routines')
+            ->where('teacher_id', $teacher->id)
+            ->where('class_id', $classId)
+            ->where('section_id', $sectionId)
+            ->value('session_id');
+
+        return (int) ($fromRoutine ?: 1);
+    }
+
+    private function assertTeaching(User $teacher, int $classId, int $sectionId): void
+    {
+        $teaches = $this->classes($teacher)->contains(
+            fn ($class) => (int) $class['class_id'] === $classId && (int) $class['section_id'] === $sectionId
+        );
+        if (!$teaches) {
+            abort(403, 'This class is not on your routine.');
+        }
+    }
+
+    private function attendanceLabel(int $status): string
+    {
+        return match ($status) {
+            1 => 'present',
+            2 => 'late',
+            default => 'absent',
+        };
     }
 }

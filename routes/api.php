@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Api\AdmissionController;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\TeacherAttendanceController;
 use App\Http\Controllers\Api\TeacherAuthController;
 use App\Http\Controllers\Api\TeacherProfileController;
 
@@ -89,7 +90,8 @@ Route::middleware(['auth:sanctum', 'api.teacher'])->prefix('teacher')->group(fun
     Route::get('/routine', [ApiController::class, 'teacherRoutine']);
     Route::get('/student-analytics/{studentId}', [ApiController::class, 'teacherStudentAnalytics']);
     Route::get('/threads', [ApiController::class, 'teacherThreads']);
-    Route::post('/attendance/submit', [ApiController::class, 'submitAttendance']);
+    Route::get('/attendance', [TeacherAttendanceController::class, 'show']);
+    Route::post('/attendance/submit', [TeacherAttendanceController::class, 'store']);
 });
 
 // Payment Gateway Routes (SSLCommerz)
@@ -97,6 +99,7 @@ Route::middleware(['auth:sanctum', 'api.teacher'])->prefix('teacher')->group(fun
 Route::any('/payment/success', [PaymentController::class, 'paymentSuccess']);
 Route::any('/payment/fail', [PaymentController::class, 'paymentFail']);
 Route::any('/payment/cancel', [PaymentController::class, 'paymentCancel']);
+Route::any('/payment/ipn', [PaymentController::class, 'paymentIpn']);
 Route::get('/payment/result', function (Request $request) {
     $status = $request->get('status', 'success');
     $isSuccess = $status === 'success';
@@ -105,6 +108,7 @@ Route::get('/payment/result', function (Request $request) {
     $message = $isSuccess 
         ? 'Your admission fee payment has been successfully processed.' 
         : 'The transaction could not be completed or was cancelled.';
+    $badgeClass = $isSuccess ? 'success' : 'failed';
 
     $html = <<<HTML
 <!DOCTYPE html>
@@ -129,7 +133,7 @@ Route::get('/payment/result', function (Request $request) {
     <div class="icon">{$icon}</div>
     <h2>{$title}</h2>
     <p>{$message}</p>
-    <div class="badge {$status}">Returning to Maestro Crown College App...</div>
+    <div class="badge {$badgeClass}">Returning to Maestro Crown College App...</div>
   </div>
 </body>
 </html>

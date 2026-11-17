@@ -356,7 +356,7 @@ class TeacherProfileService
     private function studentAttendance(Collection $pairs): array
     {
         if ($pairs->isEmpty()) {
-            return ['period_days' => 30, 'records' => 0, 'present' => 0, 'absent' => 0, 'rate' => null];
+            return ['period_days' => 30, 'records' => 0, 'present' => 0, 'late' => 0, 'absent' => 0, 'rate' => null];
         }
 
         $records = DB::table('daily_attendances')
@@ -366,17 +366,19 @@ class TeacherProfileService
                     $q->orWhere(fn ($w) => $w->where('class_id', $classId)->where('section_id', $sectionId));
                 }
             })
-            ->selectRaw('COUNT(*) as total, SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as present')
+            ->selectRaw('COUNT(*) as total, SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as present, SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) as late')
             ->first();
 
         $total = (int) $records->total;
         $present = (int) $records->present;
+        $late = (int) $records->late;
 
         return [
             'period_days' => 30,
             'records' => $total,
             'present' => $present,
-            'absent' => $total - $present,
+            'late' => $late,
+            'absent' => $total - $present - $late,
             'rate' => $total ? round($present / $total * 100, 1) : null,
         ];
     }

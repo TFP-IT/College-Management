@@ -263,9 +263,13 @@ $no_of_users = DailyAttendances::where(['class_id' => $student_data['class_id'],
 	                          
 	                          <div class="present"></div>
 
+	                        <?php elseif(isset($attendance_by_id->status) && (int) $attendance_by_id->status === 2): ?>
+
+	                          <div class="late" title="{{ $attendance_by_id->note ?? '' }}"></div>
+
 	                        <?php elseif(isset($attendance_by_id->status) && $attendance_by_id->status == 0): ?>
 
-	                          <div class="absent"></div>
+	                          <div class="absent" title="{{ $attendance_by_id->note ?? '' }}"></div>
 
 	                        <?php else: ?>
 	                            <div class="att-custom_div"></div>

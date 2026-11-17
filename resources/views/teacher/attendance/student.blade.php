@@ -34,16 +34,16 @@ $enrols = Enrollment::where(['class_id' => $page_data['class_id'], 'section_id' 
                     <div class="custom-control custom-radio">
                         <?php $update_attendance = DailyAttendances::where(['timestamp' => strtotime($page_data['attendance_date']), 'class_id' => $page_data['class_id'], 'section_id' => $page_data['section_id'], 'school_id' => auth()->user()->school_id, 'session_id' => $active_session, 'student_id' => $enroll->user_id]); 
                         $count_row = $update_attendance->get();
+                        $row = $count_row->count() > 0 ? $update_attendance->first() : null;
+                        $status = $row ? (int) $row->status : 0;
                         ?>
-                        <?php if($count_row->count() > 0): ?>
-                            <?php $row = $update_attendance->first(); ?>
+                        <?php if($row): ?>
                             <input type="hidden" name="attendance_id[]" value="{{ $row->id }}">
-                            <input type="radio" id="" name="status-{{ $enroll['user_id'] }}" value="1" class="present" {{ $row->status == 1 ? 'checked':'' }} required> {{ get_phrase('present') }} &nbsp;
-                            <input type="radio" id="" name="status-{{ $enroll['user_id'] }}" value="0" class="absent" {{ $row->status != 1 ? 'checked':'' }} required> {{ get_phrase('absent') }}
-                        <?php else: ?>
-                            <input type="radio" id="" name="status-{{ $enroll['user_id'] }}" value="1" class="present" required> {{ get_phrase('present') }} &nbsp;
-                            <input type="radio" id="" name="status-{{ $enroll['user_id'] }}" value="0" class="absent" checked required> {{ get_phrase('absent') }}
                         <?php endif; ?>
+                        <input type="radio" name="status-{{ $enroll['user_id'] }}" value="1" class="present" {{ $status === 1 ? 'checked':'' }} required> {{ get_phrase('present') }} &nbsp;
+                        <input type="radio" name="status-{{ $enroll['user_id'] }}" value="2" class="late" {{ $status === 2 ? 'checked':'' }} required> {{ get_phrase('late') }} &nbsp;
+                        <input type="radio" name="status-{{ $enroll['user_id'] }}" value="0" class="absent" {{ $status === 0 ? 'checked':'' }} required> {{ get_phrase('absent') }}
+                        <input type="text" name="note-{{ $enroll['user_id'] }}" value="{{ $row->note ?? '' }}" class="form-control eForm-control mt-2" placeholder="{{ get_phrase('Reason if late or absent') }}">
                     </div>
                 </td>
             </tr>
