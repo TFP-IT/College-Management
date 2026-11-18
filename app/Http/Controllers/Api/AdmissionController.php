@@ -222,51 +222,7 @@ class AdmissionController extends Controller
                 $guardian->save();
             }
 
-            $tempAppNo = 'MCC-' . date('Y') . '-' . uniqid();
-            $fatherName = $request->fatherName;
-            $motherName = $request->motherName;
-            if (!$fatherName) {
-                $fatherName = ($request->relationWithGuardian === 'Father') ? $guardianName : 'N/A';
-            }
-            if (!$motherName) {
-                $motherName = ($request->relationWithGuardian === 'Mother') ? $guardianName : 'N/A';
-            }
-
-            $admission = Admission::create([
-                'user_id' => null,
-                'guardian_user_id' => $guardian->id,
-                'application_no' => $tempAppNo,
-                'department' => 'General',
-                'class_name' => 'Guardian Portal Registration',
-                'photo_path' => $photoPath,
-                'photo_id' => $request->photo_id,
-                'name' => $guardianName,
-                'gender' => 'Male',
-                'mobile' => $guardianMobile,
-                'email' => $guardianEmail ?: ($guardianMobile . '@guardian.maestrocrown.edu.bd'),
-                'father_name' => $fatherName,
-                'mother_name' => $motherName,
-                'guardian_name' => $guardianName,
-                'relation_with_guardian' => $request->relationWithGuardian ?: 'Guardian',
-                'guardian_mobile' => $guardianMobile,
-                'guardian_nid' => $guardianNid,
-                'guardian_occupation' => $request->guardianOccupation ?: 'Guardian',
-                'present_address' => $presentAddress,
-                'status' => 'pending',
-                'submitted_at' => now(),
-            ]);
-
-            $year = date('Y');
-            $paddedId = str_pad($admission->id, 6, '0', STR_PAD_LEFT);
-            $applicationNo = "MCC-{$year}-{$paddedId}";
-            $admission->update(['application_no' => $applicationNo]);
-
             DB::commit();
-
-            // Generate Registration Slip PDF
-            $pdfService = new AdmissionPdfService();
-            $pdfPath = $pdfService->generate($admission);
-            $pdfUrl = $pdfPath ? Storage::disk('public')->url($pdfPath) : null;
 
             $token = $guardian->createToken('guardian-token')->plainTextToken;
 
@@ -277,15 +233,13 @@ class AdmissionController extends Controller
                 'role' => 'guardian',
                 'user' => $guardian,
                 'data' => [
-                    'application_no' => $applicationNo,
-                    'id' => $admission->id,
+                    'id' => $guardian->id,
                     'guardian_name' => $guardian->name,
                     'guardian_mobile' => $guardian->phone_number,
                     'login_id' => $guardian->phone_number,
                     'password' => $guardianPlainPassword,
                     'role' => 'guardian',
                     'student_name' => null,
-                    'pdf_url' => $pdfUrl,
                 ]
             ], 201);
 
