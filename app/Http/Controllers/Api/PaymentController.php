@@ -20,9 +20,9 @@ class PaymentController extends Controller
 
     public function __construct()
     {
-        $this->storeId = env('SSL_STORE_ID', 'versa6aa14fffc6aef');
-        $this->storePass = env('SSL_STORE_PASSWORD', 'versa6aa14fffc6aef@ssl');
-        $this->isSandbox = env('SSL_IS_SANDBOX', true);
+        $this->storeId = (string) (config('services.sslcommerz.store_id') ?: 'versa6aa14fffc6aef');
+        $this->storePass = (string) (config('services.sslcommerz.store_password') ?: 'versa6aa14fffc6aef@ssl');
+        $this->isSandbox = filter_var(config('services.sslcommerz.sandbox', true), FILTER_VALIDATE_BOOLEAN);
     }
 
     private function getBaseUrl()
@@ -33,7 +33,8 @@ class PaymentController extends Controller
     /** Play Store builds call the live API, so live callbacks must return there. */
     private function appUrl(string $path): string
     {
-        $root = $this->isSandbox ? rtrim(url('/'), '/') : 'https://backendmcc.tocc.world';
+        $callbackRoot = rtrim((string) (config('services.sslcommerz.callback_url') ?: 'https://backendmcc.tocc.world'), '/');
+        $root = $this->isSandbox ? rtrim(url('/'), '/') : $callbackRoot;
 
         return $root . $path;
     }
@@ -162,10 +163,23 @@ class PaymentController extends Controller
             ]);
         }
 
+        $failedReason = is_array($result) ? ($result['failedreason'] ?? null) : null;
+        $transaction->status = 'failed';
+        $transaction->gateway_response = is_array($result) ? $result : ['raw' => $response->body()];
+        $transaction->save();
+
+        Log::warning('SSLCommerz session initiation refused', [
+            'transaction_id' => $transactionId,
+            'amount' => $amount,
+            'sandbox' => $this->isSandbox,
+            'failedreason' => $failedReason,
+            'response' => $result,
+        ]);
+
         return response()->json([
             'status' => 'error',
-            'message' => 'Failed to initiate payment gateway.',
-            'error' => $result
+            'message' => $failedReason ?: 'Failed to initiate payment gateway.',
+            'error' => $result,
         ], 500);
     }
 

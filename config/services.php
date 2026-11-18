@@ -35,5 +35,6 @@ return [
         'store_id' => env('SSL_STORE_ID', ''),
         'store_password' => env('SSL_STORE_PASSWORD', ''),
         'sandbox' => env('SSL_IS_SANDBOX', true),
+        'callback_url' => env('SSL_CALLBACK_URL', 'https://backendmcc.tocc.world'),
     ],
 ];
