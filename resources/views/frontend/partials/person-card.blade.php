@@ -5,7 +5,8 @@
 --}}
 @php
     $isStaff = ($p['group'] ?? 'teacher') === 'staff';
-    $hasPoster = !empty($p['poster']);
+    $photo = $p['photo'] ?? $p['poster'] ?? null;
+    $hasPoster = !empty($photo);
     $hasVideo = !empty($p['video']) && file_exists(public_path($p['video']));
     $linkable = !$isStaff || $hasPoster || $hasVideo || !empty($p['bio']);
     $href = $linkable ? route($isStaff ? 'frontend.staff_profile' : 'frontend.teacher_profile', $p['slug']) : null;
@@ -16,7 +17,7 @@
 <{{ $tagName }} @if($href) href="{{ $href }}" @endif class="pc {{ $hasPoster ? '' : 'pc--placeholder' }} {{ $href ? '' : 'pc--static' }}" data-reveal>
     <span class="pc-photo">
         @if ($hasPoster)
-            @include('frontend.landing.partials._img', ['name' => $p['poster'], 'alt' => $p['name'], 'sizes' => '(max-width: 768px) 90vw, 380px'])
+            @include('frontend.landing.partials._img', ['name' => $photo, 'alt' => $p['name'], 'sizes' => '(max-width: 768px) 90vw, 380px'])
         @else
             @include('frontend.partials.portrait', ['name' => $p['name'], 'class' => 'pc-portrait'])
             <span class="pc-soon">Photo coming soon</span>

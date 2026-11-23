@@ -8,7 +8,7 @@
     $leaders = collect(config('faculty.leadership', []));
     $depts = $people->pluck('department')->filter()->unique()->values();
     $withVideo = $people->filter(fn ($p) => !empty($p['video']))->count();
-    $heroImgs = $people->pluck('poster')->filter()->values();
+    $heroImgs = $people->map(fn ($p) => $p['photo'] ?? $p['poster'] ?? null)->filter()->values();
 @endphp
 
 @push('styles')

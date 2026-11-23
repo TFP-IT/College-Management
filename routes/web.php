@@ -55,6 +55,9 @@ Route::get('/test-pdf', function() {
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('landing');
 
+// Old profile link (name spelling corrected from the official employee list)
+Route::permanentRedirect('/teacher-information/lopa-rani-chowdhuri', '/teacher-information/lupa-rani-chowdhury');
+
 // Frontend Pages Routes
 Route::controller(App\Http\Controllers\FrontendPageController::class)->group(function () {
     Route::get('/about', 'about')->name('frontend.about');

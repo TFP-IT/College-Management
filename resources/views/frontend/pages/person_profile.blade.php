@@ -8,7 +8,8 @@
     $listLabel = $isStaff ? 'Staff' : 'Teachers';
     $hasVideo = !empty($p['video']) && file_exists(public_path($p['video']));
     $dept = $p['department'] ?? null;
-    $hasPoster = !empty($p['poster']);
+    $photo = $p['photo'] ?? $p['poster'] ?? null;
+    $hasPoster = !empty($photo);
     $icon = $dept ? config('faculty.department_icons.' . $dept, 'fa-user') : ($isStaff ? 'fa-id-badge' : 'fa-chalkboard-user');
     $words = preg_split('/\s+/', trim($p['name']));
     $last = array_pop($words);
@@ -60,7 +61,7 @@
 
         <figure class="pf-portrait tp-portrait" data-clip>
             @if ($hasPoster)
-                @include('frontend.landing.partials._img', ['name' => $p['poster'], 'alt' => $p['name'] . ', ' . $p['role'], 'sizes' => '(max-width: 1023px) 90vw, 440px', 'eager' => true])
+                @include('frontend.landing.partials._img', ['name' => $photo, 'alt' => $p['name'] . ', ' . $p['role'], 'sizes' => '(max-width: 1023px) 90vw, 440px', 'eager' => true])
             @else
                 @include('frontend.partials.portrait', ['name' => $p['name'], 'class' => 'portrait--hero'])
             @endif
@@ -93,7 +94,7 @@
             @if ($hasVideo)
                 <div class="tp-player">
                     <video controls playsinline preload="none"
-                           poster="{{ asset('frontend/mcc/img/' . $p['poster'] . '.webp') }}"
+                           poster="{{ asset('frontend/mcc/img/' . ($p['poster'] ?? $photo) . '.webp') }}"
                            aria-label="Introduction video: {{ $p['name'] }}">
                         <source src="{{ asset($p['video']) }}" type="video/mp4">
                     </video>
@@ -101,7 +102,7 @@
                 <p class="tp-media-note"><i class="fa-solid fa-video"></i> Introduction video · {{ $p['name'] }}</p>
             @elseif ($hasPoster)
                 <div class="tp-player tp-player--image">
-                    @include('frontend.landing.partials._img', ['name' => $p['poster'], 'alt' => $p['name'], 'sizes' => '(max-width: 1023px) 90vw, 420px'])
+                    @include('frontend.landing.partials._img', ['name' => $photo, 'alt' => $p['name'], 'sizes' => '(max-width: 1023px) 90vw, 420px'])
                 </div>
             @else
                 <div class="tp-player tp-player--image">
@@ -117,7 +118,7 @@
                 <p class="tp-bio" data-reveal>{{ $p['bio'] }}</p>
             @else
                 <p class="tp-bio" data-reveal>{{ $p['name'] }} is {{ \Illuminate\Support\Str::startsWith(strtolower($p['role']), ['a', 'e', 'i', 'o', 'u']) ? 'an' : 'a' }} {{ $p['role'] }} at Maestro Crown School &amp; College{{ $dept && !$isStaff ? ', in the ' . $dept . ' department' : '' }}.</p>
-                <p class="tp-soon" data-reveal><i class="fa-solid fa-clock"></i> A detailed profile with photo and introduction is coming soon.</p>
+                <p class="tp-soon" data-reveal><i class="fa-solid fa-clock"></i> {{ $hasPoster ? 'A detailed profile is coming soon.' : 'A detailed profile with photo and introduction is coming soon.' }}</p>
             @endif
 
             @if (!empty($p['education']))
