@@ -1,56 +1,88 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Message of Principal | Maestro Crown College')
+@section('title', 'Message from the Principal | Maestro Crown College')
+@section('meta_description', 'A message from Md. Shoeb Khan, Principal of Maestro Crown College, Savar, on academic excellence, discipline and personal growth.')
+
+@php
+    $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
+    $focus = [
+        ['icon' => 'fa-award',         'title' => 'Academic excellence', 'desc' => 'High expectations in every classroom, supported by dedicated teachers.'],
+        ['icon' => 'fa-scale-balanced', 'title' => 'Discipline',         'desc' => 'A focused, respectful campus where every student can do their best work.'],
+        ['icon' => 'fa-seedling',      'title' => 'Personal growth',     'desc' => 'Confidence, capability and responsibility, built step by step.'],
+    ];
+@endphp
+
+@push('styles')
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/motion.css') }}">
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/pages.css') }}">
+@endpush
 
 @section('content')
-<div class="page-header">
-    <div class="container">
-        <h1>Message of Principal</h1>
-        <p>A warm welcome from our Principal, Md. Khalilur Rahman.</p>
-    </div>
-</div>
+@include('frontend.partials.page-hero', [
+    'crumbs'  => [['About', route('frontend.about')], ['Message of Principal']],
+    'eyebrow' => 'Message of Principal',
+    'title'   => 'Education is the foundation of a <em>brighter future</em>',
+    'lead'    => 'A message from our Principal, Md. Shoeb Khan, to every student, parent and friend of Maestro Crown College.',
+    'actions' => [
+        ['label' => 'Read the message', 'href' => '#letter', 'icon' => 'fa-arrow-down', 'style' => 'primary'],
+        ['label' => 'Meet our teachers', 'href' => route('frontend.teacher_info'), 'style' => 'outline'],
+    ],
+    'media'   => ['type' => 'portrait', 'image' => 'campus/principal', 'name' => 'Md. Shoeb Khan', 'caption' => 'Principal'],
+])
 
-<div class="page-content">
-    <div class="container">
-        <div class="content-card">
-            
-            <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; flex-direction: row-reverse;">
-                
-                <div style="flex-grow: 1;">
-                    <h3 style="margin-top: 0; margin-bottom: 20px;">Welcome to Our Educational Family</h3>
-                    <p><strong>Dear All,</strong></p>
-                    <p>I am truly humbled to welcome you to our vibrant learning community. As Principal, I see every day as an opportunity to make a difference in the lives of our students and their families.</p>
-                    <p>Imagine a place where curiosity is celebrated, where dreams are nurtured, and where every child feels seen and valued. That’s the environment we strive to create here every single day. We believe in education that goes beyond textbooks - it’s about shaping minds, building character, and preparing our students for a future that is both exciting and challenging.</p>
-                    <p>At the heart of our mission is a simple yet powerful belief: every student has the potential to change the world. We don’t just teach subjects - we inspire passion, foster creativity, and build confidence. Our dedicated team works tirelessly to create an atmosphere where learning is not just a requirement but a joyful adventure.</p>
-                    
-                    <h3>For our students:</h3>
-                    <p>I want you to know that you are more than just learners. You are innovators, dreamers, and future leaders. This campus is your space to explore, question, and grow. We are here to support you, challenge you, and celebrate your successes - big and small.</p>
+<section class="letter section-pad" id="letter" aria-label="Message">
+    <div class="container letter-grid">
+        <article class="letter-body prose">
+            <p class="salutation" data-reveal>Dear students, parents and friends,</p>
 
-                    <h3>To our parents:</h3>
-                    <p>Thank you for entrusting us with the most precious gift - your children. We understand the hopes and dreams you have for them, and we share those aspirations. Together, we can create an environment where your child can flourish academically, socially, and personally.</p>
-                    
-                    <p>What truly defines us is our commitment to integrity, innovation, and inclusivity. We don’t just talk about these values - we live them every day. From the classroom to the playground, we create opportunities for our students to learn, grow, and become the best versions of themselves.</p>
-                    
-                    <p>I invite all of you to become an active part of our community. Let’s work together to create a future where every student can achieve their dreams. Together, we can build something extraordinary.</p>
-                    
-                    <div style="margin-top: 40px;">
-                        <h3 style="margin-bottom: 5px;">Md. Khalilur Rahman</h3>
-                        <p style="color: var(--gold); font-weight: 600;">Principal, Maestro Crown College</p>
-                        <p style="font-style: italic; color: var(--gray-dk);">"Together, we can create a brighter tomorrow."</p>
+            <p class="lead-p" data-reveal>We are committed to fostering an environment of <mark>academic excellence, discipline and personal growth</mark>.</p>
+
+            <blockquote class="pull" data-reveal>
+                <i class="fa-solid fa-quote-left" aria-hidden="true"></i>
+                <p>I believe education is the foundation of a brighter future.</p>
+            </blockquote>
+
+            <p data-reveal>Our goal is to nurture students into confident, capable and responsible individuals. Through dedication and innovation, we strive to provide quality education and inspire our students to achieve their full potential.</p>
+
+            <div class="focus-grid" data-stagger>
+                @foreach ($focus as $f)
+                    <div class="focus-card" data-reveal>
+                        <span class="focus-icon"><i class="fa-solid {{ $f['icon'] }}"></i></span>
+                        <strong>{{ $f['title'] }}</strong>
+                        <span>{{ $f['desc'] }}</span>
                     </div>
-                </div>
-                
-                <div style="flex-shrink: 0; width: 300px; padding: 24px; background: var(--off-white); border-radius: 12px; border: 1px solid var(--gray-lt); text-align: center;">
-                    <div style="width: 120px; height: 120px; background: var(--navy); color: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; margin: 0 auto 20px;">
-                        <i class="fa-solid fa-user-graduate"></i>
-                    </div>
-                    <h3 style="margin-top: 0; font-size: 1.2rem;">Md. Khalilur Rahman</h3>
-                    <p style="color: var(--gray-dk); font-size: 0.9rem; margin-bottom: 0;">Principal</p>
-                </div>
-                
+                @endforeach
             </div>
-            
-        </div>
+
+            <footer class="signature" data-reveal>
+                <span class="signature-script" aria-hidden="true">Shoeb Khan</span>
+                <strong>Md. Shoeb Khan</strong>
+                <span>Principal, Maestro Crown College</span>
+            </footer>
+        </article>
+
+        <aside class="letter-aside">
+            <div class="author-card" data-reveal>
+                @include('frontend.partials.portrait', ['name' => 'Md. Shoeb Khan', 'image' => 'campus/principal', 'class' => 'author-photo', 'sizes' => '96px'])
+                <strong>Md. Shoeb Khan</strong>
+                <span>Principal<br>Maestro Crown College</span>
+                <a href="{{ route('frontend.teacher_info') }}" class="link-arrow">Our teachers <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="commit-card" data-reveal>
+                <h3>Our goal for every student</h3>
+                <ul>
+                    <li><i class="fa-solid fa-user-check"></i> Confident</li>
+                    <li><i class="fa-solid fa-screwdriver-wrench"></i> Capable</li>
+                    <li><i class="fa-solid fa-hand-holding-heart"></i> Responsible</li>
+                </ul>
+            </div>
+        </aside>
     </div>
-</div>
+</section>
+
+@include('frontend.partials.next-links')
 @endsection
+
+@push('scripts')
+    <script src="{{ $ver('frontend/mcc/js/landing.js') }}" defer></script>
+@endpush

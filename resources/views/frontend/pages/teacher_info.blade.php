@@ -1,42 +1,35 @@
 @extends('frontend.layouts.app')
 
 @section('title', 'Our Teachers | Maestro Crown College')
+@section('meta_description', 'Meet the teachers of Maestro Crown College, Savar: subject experts in science, business studies, humanities and languages, many from Bangladesh’s leading public universities.')
+
+@php $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1'); @endphp
+
+@push('styles')
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/motion.css') }}">
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/pages.css') }}">
+@endpush
 
 @section('content')
-<div class="page-header">
-    <div class="container">
-        <h1>Our Teachers</h1>
-    </div>
-</div>
+@include('frontend.partials.page-hero', [
+    'crumbs'  => [['About', route('frontend.about')], ['Teachers']],
+    'eyebrow' => 'Our teachers',
+    'title'   => 'Teachers who know <em>every student by name</em>',
+    'lead'    => 'Meet the educators behind our classrooms, labs and libraries: subject experts, many from Bangladesh’s leading public universities, who care about character as much as results.',
+    'chips'   => array_values(array_filter([$members->count() ? $members->count() . ' educators' : null, 'Science · Business · Humanities', 'School & College'])),
+    'media'   => ['type' => 'collage', 'images' => ['campus/classroom-exam', 'campus/computer-lab-3']],
+])
 
-<div class="page-content">
+<section class="dir-section section-pad" aria-label="Teacher directory">
     <div class="container">
-        <div class="content-card">
-            @if($members->isEmpty())
-                <p style="text-align: center; color: var(--gray); padding: 40px 0;">Information is being updated. Please check back soon.</p>
-            @else
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
-                    @foreach($members as $member)
-                        <div style="background: var(--off-white); border: 1px solid var(--gray-lt); border-radius: 12px; padding: 24px; text-align: center;">
-                            @if($member->photo_url)
-                                <img src="{{ $member->photo_url }}" alt="{{ $member->name }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 16px;">
-                            @else
-                                <div style="width: 80px; height: 80px; background: var(--navy); color: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-                                    <i class="fa-solid fa-user"></i>
-                                </div>
-                            @endif
-                            <h3 style="margin: 0 0 4px; font-size: 1.1rem;">{{ $member->name }}</h3>
-                            @if($member->designation)
-                                <p style="color: var(--gold); font-weight: 600; margin: 0; font-size: .9rem;">{{ $member->designation }}</p>
-                            @endif
-                            @if($member->department)
-                                <p style="color: var(--gray-dk); margin: 4px 0 0; font-size: .85rem;">{{ $member->department }}</p>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-        </div>
+        @include('frontend.partials.people-directory', ['members' => $members, 'noun' => 'teacher', 'groupBy' => 'faculty'])
     </div>
-</div>
+</section>
+
+@include('frontend.partials.cta-band', ['title' => 'Learn from teachers who care.', 'text' => 'Admission for School and College is open. Apply and track your application in the ' . config('landing.app.name') . ' app.'])
+@include('frontend.partials.next-links')
 @endsection
+
+@push('scripts')
+    <script src="{{ $ver('frontend/mcc/js/landing.js') }}" defer></script>
+@endpush

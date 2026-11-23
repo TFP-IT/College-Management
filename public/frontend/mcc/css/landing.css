@@ -5,40 +5,6 @@
 
 @property --angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 
-/* ── Shared section typography ───────────────────────────────────────── */
-.sec-head { margin-bottom: clamp(36px, 5vw, 60px); }
-.sec-head--center { text-align: center; max-width: 760px; margin-left: auto; margin-right: auto; }
-.sec-head--center .sec-sub { margin: 0 auto; }
-.sec-head--split { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px 48px; flex-wrap: wrap; }
-.sec-head--split .sec-sub { max-width: 420px; }
-
-.eyebrow {
-    display: inline-flex; align-items: center; gap: 12px;
-    font-size: .74rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--mc-brand-700); margin-bottom: 16px;
-}
-.eyebrow::before { content: ''; width: 28px; height: 1.5px; background: linear-gradient(90deg, var(--mc-brand), var(--mc-gold)); }
-.sec-head--center .eyebrow::after { content: ''; width: 28px; height: 1.5px; background: linear-gradient(90deg, var(--mc-gold), var(--mc-brand)); }
-.eyebrow--plain::before, .eyebrow--plain::after { display: none; }
-.eyebrow--light { color: var(--mc-gold); }
-.eyebrow i { font-size: .9rem; }
-
-.sec-title {
-    font-family: var(--f-display); font-weight: 500;
-    font-size: clamp(2rem, 4.2vw, 3.4rem); line-height: 1.06; letter-spacing: -.025em;
-    color: var(--mc-ink); margin-bottom: 18px;
-    font-variation-settings: 'opsz' 144;
-}
-.sec-title em, .hero-title em, .cta-title em { font-style: italic; color: var(--mc-brand); font-weight: 500; }
-.sec-title--light { color: #fff; }
-.sec-title--light em { color: var(--mc-gold); }
-.sec-sub { color: var(--mc-muted); font-size: clamp(1rem, 1.3vw, 1.1rem); line-height: 1.7; max-width: 620px; }
-.sec-sub--light { color: rgba(255, 255, 255, .7); }
-
-.link-arrow { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; color: var(--mc-brand-700); text-decoration: none; }
-.link-arrow i { transition: transform .4s var(--ease-out); }
-.link-arrow:hover i { transform: translateX(5px); }
-
 /* ── Intro curtain (CSS only, once per session) ──────────────────────── */
 .mc-intro { display: none; }
 .intro-play .mc-intro {
@@ -132,21 +98,6 @@
 .hero-stores p { font-size: .88rem; color: rgba(255, 255, 255, .8); max-width: 380px; }
 .hero-stores strong { color: #fff; }
 .hero-stores-dot { display: inline-block; vertical-align: middle; margin: -2px 8px 0 0; width: 8px; height: 8px; border-radius: 50%; background: #7CF0A4; box-shadow: 0 0 0 0 rgba(124, 240, 164, .6); animation: mc-ping 1.8s infinite; flex-shrink: 0; }
-
-/* Store badges (hero + app section) */
-.store-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-.app-cta .store-row { justify-content: flex-start; }
-.store-badge {
-    display: inline-flex; align-items: center; gap: 12px; min-width: 182px; padding: 10px 20px 10px 16px; border-radius: 14px;
-    background: #000; color: #fff; text-decoration: none; border: 1px solid rgba(255, 255, 255, .28);
-    box-shadow: 0 14px 30px -12px rgba(0, 0, 0, .6);
-    transition: transform .35s var(--ease-out), box-shadow .35s, border-color .3s;
-}
-.store-badge > span { display: grid; font-size: 1.18rem; font-weight: 700; line-height: 1.1; letter-spacing: -.01em; text-align: left; }
-.store-badge small { font-size: .6rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
-.store-badge .fa-apple { font-size: 1.75rem; width: 26px; text-align: center; }
-a.store-badge:hover { border-color: rgba(255, 255, 255, .6); box-shadow: 0 20px 40px -12px rgba(0, 0, 0, .7); }
-.store-badge.is-soon { opacity: .6; cursor: default; box-shadow: none; }
 
 .hero-scroll {
     position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);
@@ -292,7 +243,7 @@ a.store-badge:hover { border-color: rgba(255, 255, 255, .6); box-shadow: 0 20px 
 .about-quote blockquote { font-family: var(--f-display); font-style: italic; font-size: 1.2rem; line-height: 1.5; color: var(--mc-ink); margin-bottom: 16px; }
 .about-quote figcaption { display: flex; align-items: center; gap: 12px; font-size: .84rem; color: var(--mc-muted); }
 .about-quote figcaption strong { display: block; color: var(--mc-ink); font-size: .95rem; }
-.about-quote-img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; object-position: 70% 30%; border: 2px solid var(--mc-gold); }
+.about-quote-img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; object-position: center; border: 2px solid var(--mc-gold); }
 
 /* ── Why MCC bento ───────────────────────────────────────────────────── */
 .why { background: linear-gradient(180deg, var(--mc-bg), #fff); }
@@ -482,7 +433,7 @@ a.store-badge:hover { border-color: rgba(255, 255, 255, .6); box-shadow: 0 20px 
 .leader-card figcaption strong { display: block; color: var(--mc-ink); font-size: 1rem; }
 .leader-avatar { width: 58px; height: 58px; flex-shrink: 0; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 3px var(--mc-bg), 0 0 0 5px var(--mc-gold), 0 0 24px rgba(212, 175, 55, .45); }
 .leader-avatar picture { display: contents; }
-.leader-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 70% 30%; }
+.leader-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .leader-initials { width: 100%; height: 100%; display: grid; place-items: center; background: linear-gradient(135deg, var(--mc-brand), var(--mc-brand-700)); color: #fff; font-family: var(--f-display); font-size: 1.3rem; }
 .leader-link { margin-left: auto; width: 46px; height: 46px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--mc-line); color: var(--mc-ink); text-decoration: none; transition: background-color .3s, color .3s, transform .4s var(--ease-out); }
 .leader-link:hover { background: var(--mc-brand); color: #fff; border-color: var(--mc-brand); transform: rotate(-45deg); }

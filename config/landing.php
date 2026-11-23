@@ -14,6 +14,15 @@ return [
 
     'session' => '2027',
 
+    // Local photo fallbacks for people (used until a photo is uploaded in the CMS).
+    // Drop e.g. public/frontend/mcc/img/campus/principal.jpg and it appears everywhere automatically.
+    'people_photos' => [
+        'Dr. Kamrul Ahsan'   => 'campus/chairman-face',
+        'Md. Shoeb Khan'     => 'campus/principal',
+        'Md Shoeb Khan'      => 'campus/principal',
+        'MD SHOEB KHAN'      => 'campus/principal',
+    ],
+
     'contact' => [
         'phone'       => '+880 1309-136876',
         'phone_href'  => 'tel:+8801309136876',
@@ -185,14 +194,14 @@ return [
             'name'  => 'Dr. Kamrul Ahsan',
             'role'  => 'Chairman',
             'quote' => 'Shaping minds and guiding young people is one of the most powerful ways to build a nation. At MCC, every child is known, challenged and cared for.',
-            'image' => 'chairman-smiling-face',
+            'image' => 'campus/chairman-face',
             'route' => 'frontend.message_chairman',
         ],
         [
-            'name'  => 'Md. Khalilur Rahman',
+            'name'  => 'Md. Shoeb Khan',
             'role'  => 'Principal',
-            'quote' => 'I am truly humbled to welcome you to our vibrant learning community, where discipline, curiosity and kindness grow side by side.',
-            'image' => null,
+            'quote' => 'I believe education is the foundation of a brighter future. Our goal is to nurture students into confident, capable and responsible individuals.',
+            'image' => 'campus/principal',
             'route' => 'frontend.message_principal',
         ],
     ],

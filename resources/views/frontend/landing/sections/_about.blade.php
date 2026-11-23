@@ -20,7 +20,7 @@
             <figure class="about-quote" data-reveal>
                 <blockquote>“{{ $about['quote'] }}”</blockquote>
                 <figcaption>
-                    @include('frontend.landing.partials._img', ['name' => 'chairman-smiling-face', 'alt' => $about['quote_by'], 'class' => 'about-quote-img'])
+                    @include('frontend.landing.partials._img', ['name' => 'campus/chairman-face', 'alt' => $about['quote_by'], 'class' => 'about-quote-img'])
                     <span><strong>{{ $about['quote_by'] }}</strong>{{ $about['quote_role'] }}</span>
                 </figcaption>
             </figure>

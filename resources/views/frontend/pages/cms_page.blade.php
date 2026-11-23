@@ -2,18 +2,31 @@
 
 @section('title', $page->title . ' | Maestro Crown College')
 
-@section('content')
-<div class="page-header">
-    <div class="container">
-        <h1>{{ $page->title }}</h1>
-    </div>
-</div>
+@php $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1'); @endphp
 
-<div class="page-content">
+@push('styles')
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/motion.css') }}">
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/pages.css') }}">
+@endpush
+
+@section('content')
+@include('frontend.partials.page-hero', [
+    'crumbs'  => [[$page->title]],
+    'eyebrow' => 'Maestro Crown College',
+    'title'   => e($page->title),
+])
+
+<section class="section-pad" aria-label="{{ $page->title }}">
     <div class="container">
-        <div class="content-card cms-body">
+        <article class="cms-article prose" data-reveal>
             {!! $body !!}
-        </div>
+        </article>
     </div>
-</div>
+</section>
+
+@include('frontend.partials.next-links')
 @endsection
+
+@push('scripts')
+    <script src="{{ $ver('frontend/mcc/js/landing.js') }}" defer></script>
+@endpush

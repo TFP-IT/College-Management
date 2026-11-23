@@ -369,6 +369,54 @@
         });
     }
 
+    /* ── People directory: search + faculty filter ────────────────── */
+    $$('[data-directory]').forEach(function (dir) {
+        var cards = $$('.dir-card', dir);
+        var search = $('[data-dir-search]', dir);
+        var count = $('[data-dir-count]', dir);
+        var none = $('[data-dir-none]', dir);
+        var filters = $$('[data-dir-filter]', dir);
+        var state = { q: '', faculty: 'all' };
+        var apply = function () {
+            var shown = 0;
+            cards.forEach(function (card) {
+                var okFaculty = state.faculty === 'all' || card.getAttribute('data-faculty') === state.faculty;
+                var okQuery = !state.q || card.getAttribute('data-search').indexOf(state.q) > -1;
+                var show = okFaculty && okQuery;
+                if (show && card.hidden && !RM) {
+                    card.classList.remove('is-in');
+                    requestAnimationFrame(function () { card.classList.add('is-in'); });
+                }
+                card.hidden = !show;
+                if (show) shown++;
+            });
+            if (count) count.textContent = shown;
+            if (none) none.hidden = shown > 0;
+        };
+        var timer = null;
+        if (search) search.addEventListener('input', function () {
+            clearTimeout(timer);
+            timer = setTimeout(function () { state.q = search.value.trim().toLowerCase(); apply(); }, 120);
+        });
+        filters.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                state.faculty = btn.getAttribute('data-dir-filter');
+                filters.forEach(function (b) {
+                    var on = b === btn;
+                    b.classList.toggle('is-active', on);
+                    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+                });
+                apply();
+            });
+        });
+        var reset = $('[data-dir-reset]', dir);
+        if (reset) reset.addEventListener('click', function () {
+            state.q = '';
+            if (search) { search.value = ''; search.focus(); }
+            apply();
+        });
+    });
+
     /* ── Fallback "lit" states when GSAP is unavailable ───────────── */
     function litAll() {
         $$('[data-journey-step]').forEach(function (s) { s.classList.add('is-lit'); });
