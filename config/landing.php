@@ -29,7 +29,7 @@ return [
         'email'       => 'admin@maestrocrown.edu.bd',
         'address'     => '107/2, Dogormura, Radio Colony, Dhaka–Aricha Highway, Savar, Dhaka 1343',
         'facebook'    => 'https://www.facebook.com/Maestrocrown',
-        'map_embed'   => 'https://www.google.com/maps?q=Maestro+Crown+College+Savar+Dhaka&output=embed',
+        'map_embed'   => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3648.51410769363!2d90.257007!3d23.871363!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755e9c0b1160a2b%3A0xc3c942cd894e7561!2sMaestro%20Crown%20College!5e0!3m2!1sen!2sbd!4v1700000000000!5m2!1sen!2sbd',
         'map_link'    => 'https://maps.google.com/?q=Maestro+Crown+College+Savar+Dhaka',
     ],
 

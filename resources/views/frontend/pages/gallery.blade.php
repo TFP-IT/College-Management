@@ -1,35 +1,57 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Gallery | Maestro Crown College')
+@section('title', 'Photo Gallery | Maestro Crown College')
+@section('meta_description', 'Photos of campus life at Maestro Crown College, Savar: classrooms and labs, sports, Pohela Boishakh, Pitha Utshob, study tours and more.')
+
+@php
+    $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
+    $mc = config('landing');
+    $total = $items->filter(fn ($i) => !empty($i->image_url))->count() + count($mc['gallery']['items']);
+    $catCount = count($mc['gallery']['categories']);
+@endphp
+
+@push('styles')
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/motion.css') }}">
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/pages.css') }}">
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/gallery.css') }}">
+@endpush
 
 @section('content')
-<div class="page-header">
-    <div class="container">
-        <h1>Gallery</h1>
-        <p>Explore our campus moments and vibrant college life.</p>
-    </div>
-</div>
+@include('frontend.partials.page-hero', [
+    'crumbs'  => [['Gallery']],
+    'eyebrow' => 'Photo gallery',
+    'title'   => 'Life at MCC, <em>in pictures</em>',
+    'lead'    => 'Classrooms and labs, match days, Pohela Boishakh and Pitha Utshob, study tours and friendships that last. Explore the moments that make our campus feel like home.',
+    'chips'   => [$total . ' photos', $catCount . ' categories', 'Updated regularly'],
+    'actions' => [
+        ['label' => 'Browse photos', 'href' => '#photos', 'icon' => 'fa-arrow-down', 'style' => 'primary'],
+        ['label' => 'Follow on Facebook', 'href' => $mc['contact']['facebook'], 'icon' => 'fa-brands fa-facebook-f', 'style' => 'outline', 'external' => true],
+    ],
+    'media'   => ['type' => 'collage', 'images' => ['campus/boishakh-1', 'campus/cricket-team'], 'badge' => [$total, 'campus<br>moments']],
+])
 
-<div class="page-content">
+<section class="gallery-page section-pad" id="photos" aria-label="Photos" data-gallery data-initial="24">
     <div class="container">
-        <div class="content-card">
-            @if($items->isEmpty())
-                <div style="text-align: center; padding: 60px 20px;">
-                    <i class="fa-solid fa-images" style="font-size: 4rem; color: var(--gray-lt);"></i>
-                    <h3 style="color: var(--navy); margin: 20px 0 10px;">Gallery updating soon</h3>
-                    <p style="color: var(--gray);">We are curating our best campus moments. Please check back later.</p>
-                </div>
-            @else
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;">
-                    @foreach($items as $item)
-                        <figure style="margin: 0;">
-                            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" loading="lazy" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px;">
-                            <figcaption style="font-size: .9rem; color: var(--gray-dk); margin-top: 6px;">{{ $item->title }}</figcaption>
-                        </figure>
-                    @endforeach
-                </div>
-            @endif
+        @include('frontend.partials.gallery-grid', ['gallery' => $items, 'initial' => 24, 'fullLink' => false])
+    </div>
+</section>
+
+<section class="gp-follow" aria-label="More photos">
+    <div class="container">
+        <div class="gp-follow-card" data-reveal>
+            <span class="gp-follow-icon"><i class="fa-brands fa-facebook-f"></i></span>
+            <div>
+                <h2>See the latest moments first</h2>
+                <p>New photos from events, sports and celebrations are shared on our Facebook page.</p>
+            </div>
+            <a href="{{ $mc['contact']['facebook'] }}" target="_blank" rel="noopener" class="btn btn-primary" data-magnetic>Follow MCC <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
         </div>
     </div>
-</div>
+</section>
+
+@include('frontend.partials.cta-band')
 @endsection
+
+@push('scripts')
+    <script src="{{ $ver('frontend/mcc/js/landing.js') }}" defer></script>
+@endpush

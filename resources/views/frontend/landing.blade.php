@@ -15,6 +15,7 @@
     <link rel="preload" as="image" href="{{ asset('frontend/mcc/img/hero-poster.webp') }}" type="image/webp" fetchpriority="high">
     <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/landing.css') }}">
     <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/motion.css') }}">
+    <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/gallery.css') }}">
 @endpush
 
 @section('content')

@@ -460,6 +460,18 @@
         });
     });
 
+    /* ── Contact form: compose a pre-filled email (no server endpoint) ── */
+    $$('[data-mail-form]').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            if (!form.checkValidity()) return;
+            e.preventDefault();
+            var v = function (n) { var el = form.elements[n]; return el ? el.value.trim() : ''; };
+            var subject = (v('topic') || 'Enquiry') + ' – ' + (v('name') || 'Website visitor');
+            var body = v('message') + '\n\n—\nName: ' + v('name') + (v('phone') ? '\nPhone: ' + v('phone') : '') + '\nSent from the MCC website';
+            window.location.href = 'mailto:' + form.getAttribute('data-to') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        });
+    });
+
     /* ── Fallback "lit" states when GSAP is unavailable ───────────── */
     function litAll() {
         $$('[data-journey-step]').forEach(function (s) { s.classList.add('is-lit'); });
