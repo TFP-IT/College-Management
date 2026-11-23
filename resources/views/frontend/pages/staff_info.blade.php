@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Our Staff | Maestro Crown College')
-@section('meta_description', 'Meet the administrative and support staff of Maestro Crown College, Savar, who keep every school day safe, organised and welcoming.')
+@section('title', 'Our Staff | Maestro Crown School & College')
+@section('meta_description', 'Meet the administrative and support staff of Maestro Crown School & College, Savar, who keep every school day safe, organised and welcoming.')
 
 @php $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1'); @endphp
 

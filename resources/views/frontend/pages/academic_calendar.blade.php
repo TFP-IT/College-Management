@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Academic Calendar ' . config('academics.calendar.year') . ' | Maestro Crown College')
-@section('meta_description', 'The ' . config('academics.calendar.year') . ' academic calendar of Maestro Crown College, Savar: term dates, examinations, holidays, national days and campus events.')
+@section('title', 'Academic Calendar ' . config('academics.calendar.year') . ' | Maestro Crown School & College')
+@section('meta_description', 'The ' . config('academics.calendar.year') . ' academic calendar of Maestro Crown School & College, Savar: term dates, examinations, holidays, national days and campus events.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');

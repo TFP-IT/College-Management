@@ -23,7 +23,7 @@
                     <li data-reveal>
                         <a href="{{ $app['play_store'] }}" target="_blank" rel="noopener" class="notice-item">
                             <span class="notice-date"><b>{{ now()->format('d') }}</b>{{ now()->format('M') }}</span>
-                            <span class="notice-text"><span class="notice-new">New</span><strong>Admission {{ $mc['session'] }} is now open</strong><span>Apply for School (Play Group–Class 10) or College (HSC) in the {{ $app['name'] }} app.</span></span>
+                            <span class="notice-text"><span class="notice-new">New</span><strong>Admission {{ $mc['session'] }} is now open</strong><span>Apply for School (Play Group–Class 9) or College (HSC) in the {{ $app['name'] }} app.</span></span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </li>

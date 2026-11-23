@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', $page->title . ' | Maestro Crown College')
+@section('title', $page->title . ' | Maestro Crown School & College')
 
 @php $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1'); @endphp
 
@@ -12,7 +12,7 @@
 @section('content')
 @include('frontend.partials.page-hero', [
     'crumbs'  => [[$page->title]],
-    'eyebrow' => 'Maestro Crown College',
+    'eyebrow' => 'Maestro Crown School & College',
     'title'   => e($page->title),
 ])
 

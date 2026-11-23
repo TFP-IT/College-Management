@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Admission ' . config('landing.session') . ' | Maestro Crown College')
-@section('meta_description', 'Admission is open at Maestro Crown College, Savar, for School (Play Group to Class 10) and College (HSC). Apply in the MCC Hello Future app. Documents, eligibility, fees and FAQs.')
+@section('title', 'Admission ' . config('landing.session') . ' | Maestro Crown School & College')
+@section('meta_description', 'Admission is open at Maestro Crown School & College, Savar, for School (Play Group to Class 9) and College (HSC). Apply in the MCC Hello Future app. Documents, eligibility, fees and FAQs.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -34,8 +34,8 @@
     'crumbs'  => [['Admission']],
     'eyebrow' => 'Admission ' . $mc['session'] . ' · Now open',
     'title'   => 'Your journey at MCC <em>starts here</em>',
-    'lead'    => 'Admission is open for School (Play Group to Class 10) and College (HSC). Apply in a few minutes from the ' . $app['name'] . ' app, then follow every step in real time.',
-    'chips'   => ['School: Play Group – Class 10', 'College: HSC', 'Apply in the app'],
+    'lead'    => 'Admission is open for School (Play Group to Class 9) and College (HSC). Apply in a few minutes from the ' . $app['name'] . ' app, then follow every step in real time.',
+    'chips'   => ['School: Play Group – Class 9', 'College: HSC', 'Apply in the app'],
     'actions' => [
         ['label' => 'Apply in the app', 'href' => $app['play_store'], 'icon' => 'fa-brands fa-google-play', 'style' => 'primary', 'external' => true],
         ['label' => 'Requirements', 'href' => '#requirements', 'style' => 'outline'],
@@ -55,7 +55,7 @@
                 <div class="ad-path-img">@include('frontend.landing.partials._img', ['name' => 'campus/classroom-hall-1', 'alt' => '', 'sizes' => '(max-width: 768px) 100vw, 50vw'])</div>
                 <div class="ad-path-body">
                     <span class="ad-path-kicker"><i class="fa-solid fa-shapes"></i> School section</span>
-                    <h3>Play Group – Class 10</h3>
+                    <h3>Play Group – Class 9</h3>
                     <p>{{ $mc['school']['body'] }}</p>
                     <ul class="ad-path-list">
                         @foreach ($mc['school']['stages'] as $st)<li><strong>{{ $st['title'] }}</strong> {{ $st['classes'] }}</li>@endforeach

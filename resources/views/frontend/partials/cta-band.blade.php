@@ -7,7 +7,7 @@
             <div class="cta-band-copy">
                 <span class="eyebrow eyebrow--light">Admission {{ config('landing.session') }}</span>
                 <h2 id="cta-band-title">{{ $title ?? 'Become part of the MCC family.' }}</h2>
-                <p>{{ $text ?? 'School (Play Group–Class 10) and College (HSC) admission is open. Apply and track your application in the ' . $mcApp['name'] . ' app.' }}</p>
+                <p>{{ $text ?? 'School (Play Group–Class 9) and College (HSC) admission is open. Apply and track your application in the ' . $mcApp['name'] . ' app.' }}</p>
             </div>
             <div class="cta-band-actions">
                 @include('frontend.landing.partials._stores')

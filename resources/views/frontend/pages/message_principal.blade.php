@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Message from the Principal | Maestro Crown College')
-@section('meta_description', 'A message from Md. Shoeb Khan, Principal of Maestro Crown College, Savar, on academic excellence, discipline and personal growth.')
+@section('title', 'Message from the Principal | Maestro Crown School & College')
+@section('meta_description', 'A message from Md. Shoeb Khan, Principal of Maestro Crown School & College, Savar, on academic excellence, discipline and personal growth.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -22,7 +22,7 @@
     'crumbs'  => [['About', route('frontend.about')], ['Message of Principal']],
     'eyebrow' => 'Message of Principal',
     'title'   => 'Education is the foundation of a <em>brighter future</em>',
-    'lead'    => 'A message from our Principal, Md. Shoeb Khan, to every student, parent and friend of Maestro Crown College.',
+    'lead'    => 'A message from our Principal, Md. Shoeb Khan, to every student, parent and friend of Maestro Crown School & College.',
     'actions' => [
         ['label' => 'Read the message', 'href' => '#letter', 'icon' => 'fa-arrow-down', 'style' => 'primary'],
         ['label' => 'Meet our teachers', 'href' => route('frontend.teacher_info'), 'style' => 'outline'],
@@ -57,7 +57,7 @@
             <footer class="signature" data-reveal>
                 <span class="signature-script" aria-hidden="true">Shoeb Khan</span>
                 <strong>Md. Shoeb Khan</strong>
-                <span>Principal, Maestro Crown College</span>
+                <span>Principal, Maestro Crown School & College</span>
             </footer>
         </article>
 
@@ -65,7 +65,7 @@
             <div class="author-card" data-reveal>
                 @include('frontend.partials.portrait', ['name' => 'Md. Shoeb Khan', 'image' => 'campus/principal', 'class' => 'author-photo', 'sizes' => '96px'])
                 <strong>Md. Shoeb Khan</strong>
-                <span>Principal<br>Maestro Crown College</span>
+                <span>Principal<br>Maestro Crown School & College</span>
                 <a href="{{ route('frontend.teacher_info') }}" class="link-arrow">Our teachers <i class="fa-solid fa-arrow-right"></i></a>
             </div>
             <div class="commit-card" data-reveal>

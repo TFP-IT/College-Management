@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Dr. Kamrul Ahsan, Chairman | Maestro Crown College')
-@section('meta_description', 'Dr. Kamrul Ahsan is the Founder and Chairman of Kamrul Group and Chairman of Maestro Crown College, Savar. Learn about his leadership, vision and the enterprises he has built since 2011.')
+@section('title', 'Dr. Kamrul Ahsan, Chairman | Maestro Crown School & College')
+@section('meta_description', 'Dr. Kamrul Ahsan is the Founder and Chairman of Kamrul Group and Chairman of Maestro Crown School & College, Savar. Learn about his leadership, vision and the enterprises he has built since 2011.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -22,7 +22,7 @@
 
     $portfolio = [
         ['icon' => 'fa-graduation-cap', 'sector' => 'Education', 'companies' => [
-            'Maestro Crown College',
+            'Maestro Crown School & College',
             'Malaysia University of Science and Technology, Bangladesh Campus',
         ]],
         ['icon' => 'fa-credit-card', 'sector' => 'Financial technology & payments', 'companies' => [
@@ -63,7 +63,7 @@
             </nav>
             <span class="eyebrow" data-reveal>Chairman’s Profile</span>
             <h1 class="pf-name" id="pf-name" data-split>Dr. Kamrul <em>Ahsan</em></h1>
-            <p class="pf-role" data-reveal>Founder &amp; Chairman, Kamrul Group <span aria-hidden="true">·</span> Chairman, Maestro Crown College</p>
+            <p class="pf-role" data-reveal>Founder &amp; Chairman, Kamrul Group <span aria-hidden="true">·</span> Chairman, Maestro Crown School & College</p>
             <p class="pf-lead" data-reveal>
                 An entrepreneur who believes institutions should outlive their founders. Since 2011, Dr. Ahsan has built a diversified group of enterprises,
                 with education at its heart, to serve people and strengthen Bangladesh’s path to self-reliance.
@@ -75,7 +75,7 @@
         </div>
 
         <figure class="pf-portrait" data-clip>
-            @include('frontend.landing.partials._img', ['name' => 'campus/chairman', 'alt' => 'Dr. Kamrul Ahsan speaking at a Maestro Crown College event', 'sizes' => '(max-width: 1023px) 90vw, 440px', 'eager' => true])
+            @include('frontend.landing.partials._img', ['name' => 'campus/chairman', 'alt' => 'Dr. Kamrul Ahsan speaking at a Maestro Crown School & College event', 'sizes' => '(max-width: 1023px) 90vw, 440px', 'eager' => true])
             <figcaption class="pf-portrait-card">
                 <img src="{{ asset('frontend/mcc/img/logo-256.webp') }}" alt="" width="44" height="44">
                 <span><strong>Dr. Kamrul Ahsan</strong>Founder, Kamrul Group · Since 2011</span>
@@ -106,7 +106,7 @@
             <dl>
                 <div><dt>Name</dt><dd>Dr. Kamrul Ahsan</dd></div>
                 <div><dt>Role</dt><dd>Founder &amp; Chairman, Kamrul Group</dd></div>
-                <div><dt>At MCC</dt><dd>Chairman, Maestro Crown College</dd></div>
+                <div><dt>At MCC</dt><dd>Chairman, Maestro Crown School & College</dd></div>
                 <div><dt>Group founded</dt><dd>2011</dd></div>
                 <div><dt>Operations</dt><dd>Bangladesh, Malaysia, Bahrain &amp; the United Kingdom</dd></div>
             </dl>
@@ -159,7 +159,7 @@
                 <span class="eyebrow">Kamrul Group</span>
                 <h2 class="sec-title" id="pf-portfolio-title">A portfolio of <em>16 enterprises</em></h2>
             </div>
-            <p class="sec-sub">Across seven sectors and four countries, with education, including Maestro Crown College, at the heart of the group.</p>
+            <p class="sec-sub">Across seven sectors and four countries, with education, including Maestro Crown School & College, at the heart of the group.</p>
         </header>
         <div class="pf-sector-grid" data-stagger>
             @foreach ($portfolio as $group)
@@ -171,9 +171,9 @@
                     </header>
                     <ul>
                         @foreach ($group['companies'] as $company)
-                            <li @if($company === 'Maestro Crown College') class="is-home" @endif>
+                            <li @if($company === 'Maestro Crown School & College') class="is-home" @endif>
                                 {{ $company }}
-                                @if($company === 'Maestro Crown College')<span class="pf-here">You are here</span>@endif
+                                @if($company === 'Maestro Crown School & College')<span class="pf-here">You are here</span>@endif
                             </li>
                         @endforeach
                     </ul>

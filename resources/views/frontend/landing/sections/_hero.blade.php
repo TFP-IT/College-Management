@@ -21,7 +21,7 @@
                 @foreach ($hero['meta'] as $m)<li>{{ $m }}</li>@endforeach
             </ul>
             <ul class="hero-levels" data-hero-item aria-label="Admission open for">
-                <li><i class="fa-solid fa-shapes"></i><span><b>School</b>Play Group – Class 10</span></li>
+                <li><i class="fa-solid fa-shapes"></i><span><b>School</b>Play Group – Class 9</span></li>
                 <li><i class="fa-solid fa-graduation-cap"></i><span><b>College</b>HSC · Science, Business, Humanities</span></li>
             </ul>
         </div>

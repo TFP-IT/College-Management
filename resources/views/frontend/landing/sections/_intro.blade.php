@@ -4,7 +4,7 @@
     <div class="mc-intro-panel mc-intro-panel--gold"></div>
     <div class="mc-intro-mark">
         <img src="{{ asset('frontend/mcc/img/logo-256.png') }}" alt="" width="96" height="96">
-        <span>Maestro Crown College</span>
+        <span>Maestro Crown School & College</span>
     </div>
 </div>
 <script>

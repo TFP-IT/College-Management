@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Photo Gallery | Maestro Crown College')
-@section('meta_description', 'Photos of campus life at Maestro Crown College, Savar: classrooms and labs, sports, Pohela Boishakh, Pitha Utshob, study tours and more.')
+@section('title', 'Photo Gallery | Maestro Crown School & College')
+@section('meta_description', 'Photos of campus life at Maestro Crown School & College, Savar: classrooms and labs, sports, Pohela Boishakh, Pitha Utshob, study tours and more.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/gallery.css') }}">
 @endpush
 
-@section('content')
+@section('content') 
 @include('frontend.partials.page-hero', [
     'crumbs'  => [['Gallery']],
     'eyebrow' => 'Photo gallery',

@@ -282,7 +282,7 @@ html.no-announce .mc-announce { display: none; }
 .mc-brand img { width: 70px; height: 70px; object-fit: contain; transition: transform .6s var(--ease-out), width .45s var(--ease-out), height .45s var(--ease-out); }
 .mc-brand:hover img { transform: rotate(-6deg) scale(1.05); }
 .mc-header.is-scrolled .mc-brand img { width: 56px; height: 56px; }
-.mc-brand-name { display: block; font-family: var(--f-display); font-weight: 600; font-size: 1.45rem; line-height: 1.05; color: var(--mc-ink); letter-spacing: -.01em; white-space: nowrap; }
+.mc-brand-name { display: block; font-family: var(--f-display); font-weight: 600; font-size: 1.32rem; line-height: 1.05; color: var(--mc-ink); letter-spacing: -.01em; white-space: nowrap; }
 .mc-brand-sub { display: block; font-size: .7rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--mc-gold-600); margin-top: 4px; white-space: nowrap; }
 
 .mc-links { display: flex; align-items: center; gap: 2px; list-style: none; margin-left: auto; }
@@ -439,6 +439,7 @@ body.is-locked { overflow: hidden; }
 .mc-footer-brand img { width: 150px; height: 150px; object-fit: contain; margin: -10px 0 18px -8px; filter: drop-shadow(0 12px 28px rgba(0, 0, 0, .35)); }
 .mc-footer-brand h2 { font-family: var(--f-display); font-weight: 600; color: #fff; font-size: 1.5rem; letter-spacing: -.01em; margin-bottom: 10px; }
 .mc-footer-brand p { font-size: .92rem; max-width: 360px; margin-bottom: 18px; }
+.mc-footer-brand .mc-footer-tagline { font-family: var(--f-display); font-style: italic; font-size: 1.08rem; color: var(--mc-gold); margin-bottom: 10px; }
 .mc-footer-codes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
 .mc-footer-codes span { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--mc-gold); border: 1px solid rgba(212, 175, 55, .35); padding: 5px 10px; border-radius: 999px; }
 .mc-social { display: flex; gap: 10px; }
@@ -477,7 +478,7 @@ body.is-locked { overflow: hidden; }
 .mc-applybar .btn { padding: 11px 16px; font-size: .84rem; }
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
-@media (max-width: 1240px) {
+@media (max-width: 1280px) {
     .mc-links { display: none; }
     .mc-burger { display: block; }
     .mc-actions { margin-left: auto; }
@@ -495,13 +496,13 @@ body.is-locked { overflow: hidden; }
     .mc-footer-brand img { width: 120px; height: 120px; }
     .mc-brand { gap: 10px; }
     .mc-brand img, .mc-header.is-scrolled .mc-brand img { width: 54px; height: 54px; }
-    .mc-brand-name { font-size: 1.18rem; }
+    .mc-brand-name { font-size: 1.05rem; white-space: normal; max-width: 10em; line-height: 1.12; }
     .mc-brand-sub { display: none; }
     .mc-actions .mc-apply > .btn span { display: none; }
     .mc-actions .mc-apply > .btn { padding: 12px 16px; }
 }
 @media (max-width: 400px) {
-    .mc-brand-name { white-space: normal; max-width: 8.5em; font-size: 1.08rem; line-height: 1.1; }
+    .mc-brand-name { max-width: 9em; font-size: 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

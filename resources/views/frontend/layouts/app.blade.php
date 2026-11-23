@@ -12,16 +12,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Maestro Crown College | School & College Admission ' . $mc['session'] . ' – Savar, Dhaka')</title>
-    <meta name="description" content="@yield('meta_description', 'Maestro Crown College, Savar, Dhaka: a joint UK–Bangladesh institution since 2014. Admission ' . $mc['session'] . ' is open for School (Play Group to Class 10) and College (HSC: Science, Business Studies, Humanities). Apply in the MCC Hello Future app. EIIN 136876 · College Code 1933.')">
+    <title>@yield('title', 'Maestro Crown School & College | Admission ' . $mc['session'] . ' – Savar, Dhaka')</title>
+    <meta name="description" content="@yield('meta_description', 'Maestro Crown School & College, Savar, Dhaka: a joint UK–Bangladesh institution since 2014. Admission ' . $mc['session'] . ' is open for School (Play Group to Class 9) and College (HSC: Science, Business Studies, Humanities). Apply in the MCC Hello Future app. EIIN 136876 · College Code 1933.')">
     <meta name="theme-color" content="#E45551">
     <link rel="icon" href="{{ asset('frontend/mcc/img/logo-256.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('frontend/mcc/img/logo-256.png') }}">
 
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Maestro Crown College">
-    <meta property="og:title" content="@yield('title', 'Maestro Crown College | Admission ' . $mc['session'] . ' Open')">
-    <meta property="og:description" content="School (Play Group–Class 10) and College (HSC) admission {{ $mc['session'] }} is open. Apply in the MCC Hello Future app.">
+    <meta property="og:site_name" content="Maestro Crown School & College">
+    <meta property="og:title" content="@yield('title', 'Maestro Crown School & College | Admission ' . $mc['session'] . ' Open')">
+    <meta property="og:description" content="School (Play Group–Class 9) and College (HSC) admission {{ $mc['session'] }} is open. Apply in the MCC Hello Future app.">
     <meta property="og:image" content="{{ asset('frontend/mcc/img/campus/classroom-hall-1.jpg') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta name="twitter:card" content="summary_large_image">
@@ -42,12 +42,13 @@
     {!! json_encode([
         '@context' => 'https://schema.org',
         '@type' => 'EducationalOrganization',
-        'name' => 'Maestro Crown College',
+        'name' => 'Maestro Crown School & College',
         'alternateName' => 'MCC',
         'foundingDate' => '2014',
         'url' => url('/'),
         'logo' => asset('frontend/mcc/img/logo-256.png'),
-        'telephone' => '+8801309136876',
+        'telephone' => '+8801335252581',
+        'slogan' => $c['tagline'],
         'email' => $c['email'],
         'address' => [
             '@type' => 'PostalAddress',
@@ -93,10 +94,10 @@
 
         <nav class="mc-nav" aria-label="Main">
             <div class="container mc-nav-inner">
-                <a href="{{ route('landing') }}" class="mc-brand" aria-label="Maestro Crown College, home">
+                <a href="{{ route('landing') }}" class="mc-brand" aria-label="Maestro Crown School & College, home">
                     <img src="{{ $logo }}" alt="" width="70" height="70">
                     <span>
-                        <span class="mc-brand-name">Maestro Crown College</span>
+                        <span class="mc-brand-name">Maestro Crown School & College</span>
                     </span>
                 </a>
 
@@ -133,7 +134,7 @@
                             <i class="fa-solid fa-pen-nib"></i><span>Apply Now</span> <i class="fa-solid fa-chevron-down" style="font-size:.6rem"></i>
                         </button>
                         <div class="mc-menu mc-apply-menu" role="menu">
-                            <a role="menuitem" href="{{ $app['play_store'] }}" target="_blank" rel="noopener"><i class="fa-solid fa-shapes"></i><span><strong>School Admission</strong><span>Play Group to Class 10 · in the app</span></span></a>
+                            <a role="menuitem" href="{{ $app['play_store'] }}" target="_blank" rel="noopener"><i class="fa-solid fa-shapes"></i><span><strong>School Admission</strong><span>Play Group to Class 9 · in the app</span></span></a>
                             <a role="menuitem" href="{{ $app['play_store'] }}" target="_blank" rel="noopener"><i class="fa-solid fa-graduation-cap"></i><span><strong>College Admission</strong><span>HSC: Science · Business · Humanities · in the app</span></span></a>
                             <hr>
                             <a role="menuitem" href="{{ $app['play_store'] }}" target="_blank" rel="noopener"><i class="fa-brands fa-google-play"></i><span><strong>Get the {{ $app['name'] }} app</strong><span>Apply &amp; track your application in real time</span></span></a>
@@ -156,7 +157,7 @@
             <div class="mc-drawer-head">
                 <a href="{{ route('landing') }}" class="mc-brand">
                     <img src="{{ $logo }}" alt="" width="40" height="40">
-                    <span><span class="mc-brand-name">Maestro Crown College</span></span>
+                    <span><span class="mc-brand-name">Maestro Crown School & College</span></span>
                 </a>
                 <button class="mc-drawer-close" type="button" aria-label="Close menu" data-drawer-close><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -218,9 +219,10 @@
                 <div class="mc-footer-brand">
                     <picture>
                         <source type="image/webp" srcset="{{ asset('frontend/mcc/img/logo-512.webp') }}">
-                        <img src="{{ $logo }}" alt="Maestro Crown College crest" width="150" height="150" loading="lazy">
+                        <img src="{{ $logo }}" alt="Maestro Crown School & College crest" width="150" height="150" loading="lazy">
                     </picture>
-                    <h2>Maestro Crown College</h2>
+                    <h2>Maestro Crown School & College</h2>
+                    <p class="mc-footer-tagline">{{ $c['tagline'] }}</p>
                     <p>A joint UK–Bangladesh institution for School and Higher Secondary education in Savar, Dhaka, since 2014.</p>
                     <div class="mc-footer-codes"><span>EIIN 136876</span><span>College Code 1933</span></div>
                     <div class="mc-social">
@@ -254,7 +256,7 @@
                     <h3>Contact</h3>
                     <ul class="mc-footer-contact">
                         <li><i class="fa-solid fa-location-dot"></i><a href="{{ $c['map_link'] }}" target="_blank" rel="noopener">{{ $c['address'] }}</a></li>
-                        <li><i class="fa-solid fa-phone"></i><a href="{{ $c['phone_href'] }}">{{ $c['phone'] }}</a></li>
+                        <li><i class="fa-solid fa-phone"></i><span><a href="{{ $c['phone_href'] }}">{{ $c['phone'] }}</a><br><a href="{{ $c['phone_alt_href'] }}">{{ $c['phone_alt'] }}</a></span></li>
                         <li><i class="fa-solid fa-envelope"></i><a href="mailto:{{ $c['email'] }}">{{ $c['email'] }}</a></li>
                     </ul>
                 </div>
@@ -263,7 +265,7 @@
         <div class="mc-footer-word" aria-hidden="true">Maestro Crown</div>
         <div class="mc-footer-bottom">
             <div class="container">
-                <div>&copy; {{ date('Y') }} Maestro Crown College. All rights reserved.</div>
+                <div>&copy; {{ date('Y') }} Maestro Crown School & College. All rights reserved.</div>
                 <div class="mc-gov">
                     <a href="https://dhakaeducationboard.gov.bd/site/" target="_blank" rel="noopener">Dhaka Education Board</a>
                     <a href="https://moedu.gov.bd/" target="_blank" rel="noopener">Ministry of Education</a>

@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Message from the Chairman | Maestro Crown College')
-@section('meta_description', 'A message from Dr. Kamrul Ahsan, Founder and Chairman of Maestro Crown College, on why MCC was founded and what it stands for: mastery, honour, character and fairness.')
+@section('title', 'Message from the Chairman | Maestro Crown School & College')
+@section('meta_description', 'A message from Dr. Kamrul Ahsan, Founder and Chairman of Maestro Crown School & College, on why MCC was founded and what it stands for: mastery, honour, character and fairness.')
 
 @php $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1'); @endphp
 
@@ -53,7 +53,7 @@
             <footer class="signature" data-reveal>
                 <span class="signature-script" aria-hidden="true">Kamrul Ahsan</span>
                 <strong>Dr. Kamrul Ahsan</strong>
-                <span>Founder &amp; Chairman, Maestro Crown College</span>
+                <span>Founder &amp; Chairman, Maestro Crown School & College</span>
             </footer>
         </article>
 
@@ -61,7 +61,7 @@
             <div class="author-card" data-reveal>
                 @include('frontend.partials.portrait', ['name' => 'Dr. Kamrul Ahsan', 'image' => 'campus/chairman-face', 'class' => 'author-photo', 'sizes' => '96px'])
                 <strong>Dr. Kamrul Ahsan</strong>
-                <span>Founder &amp; Chairman<br>Kamrul Group · Maestro Crown College</span>
+                <span>Founder &amp; Chairman<br>Kamrul Group · Maestro Crown School & College</span>
                 <a href="{{ route('frontend.chairman_profile') }}" class="link-arrow">Full profile <i class="fa-solid fa-arrow-right"></i></a>
             </div>
             <div class="commit-card" data-reveal>

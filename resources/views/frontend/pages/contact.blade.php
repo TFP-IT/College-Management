@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Contact Us | Maestro Crown College, Savar')
-@section('meta_description', 'Contact Maestro Crown College, 107/2 Dogormura, Radio Colony, Dhaka–Aricha Highway, Savar, Dhaka 1343. Phone +880 1309-136876, email admin@maestrocrown.edu.bd.')
+@section('title', 'Contact Us | Maestro Crown School & College, Savar')
+@section('meta_description', 'Contact Maestro Crown School & College, 107/2 Dogormura, Radio Colony, Dhaka–Aricha Highway, Savar, Dhaka 1343. Phone +880 1335-252581, email admin@maestrocrown.edu.bd.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -50,7 +50,7 @@
                 <a href="{{ $c['phone_href'] }}">
                     <span class="ct-icon"><i class="fa-solid fa-phone"></i></span>
                     <small>Call us</small>
-                    <strong>{{ $c['phone'] }}</strong>
+                    <strong>{{ $c['phone'] }}<br>{{ $c['phone_alt'] }}</strong>
                 </a>
             </li>
             <li data-reveal>
@@ -99,11 +99,11 @@
 
         <div class="ct-map-card" data-reveal>
             <div class="ct-map">
-                <iframe src="{{ $c['map_embed'] }}" title="Maestro Crown College on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                <iframe src="{{ $c['map_embed'] }}" title="Maestro Crown School & College on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
             </div>
             <div class="ct-map-foot">
                 <div>
-                    <strong>Maestro Crown College</strong>
+                    <strong>Maestro Crown School & College</strong>
                     <span>{{ $c['address'] }}</span>
                 </div>
                 <a href="{{ $c['map_link'] }}" target="_blank" rel="noopener" class="btn btn-outline btn-sm"><i class="fa-solid fa-diamond-turn-right"></i> Directions</a>

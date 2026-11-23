@@ -10,7 +10,7 @@
         <div class="paths-tabs" role="tablist" aria-label="Admission section" data-tabs data-reveal>
             <span class="paths-pill" data-tabs-pill aria-hidden="true"></span>
             <button role="tab" id="tab-school" aria-controls="panel-school" aria-selected="true" class="is-active" data-tab="school">
-                <i class="fa-solid fa-shapes"></i> School <small>Play Group – Class 10</small>
+                <i class="fa-solid fa-shapes"></i> School <small>Play Group – Class 9</small>
             </button>
             <button role="tab" id="tab-college" aria-controls="panel-college" aria-selected="false" tabindex="-1" data-tab="college">
                 <i class="fa-solid fa-graduation-cap"></i> College <small>HSC · Class XI</small>

@@ -17,7 +17,7 @@
                 </ul>
             </div>
             <div class="cta-map" data-reveal>
-                <iframe src="{{ $contact['map_embed'] }}" title="Maestro Crown College on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <iframe src="{{ $contact['map_embed'] }}" title="Maestro Crown School & College on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 <a href="{{ $contact['map_link'] }}" target="_blank" rel="noopener" class="cta-map-label"><i class="fa-solid fa-location-dot"></i> {{ $contact['address'] }}</a>
             </div>
         </div>

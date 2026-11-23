@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Notice Board | Maestro Crown College')
-@section('meta_description', 'Latest notices, circulars and announcements from Maestro Crown College, Savar: admission, examinations, routines, results and campus news.')
+@section('title', 'Notice Board | Maestro Crown School & College')
+@section('meta_description', 'Latest notices, circulars and announcements from Maestro Crown School & College, Savar: admission, examinations, routines, results and campus news.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -21,7 +21,7 @@
     'crumbs'  => [['Academics', route('frontend.programs')], ['Notice Board']],
     'eyebrow' => 'Notice board',
     'title'   => 'News &amp; notices, <em>straight from campus</em>',
-    'lead'    => 'Official circulars, exam routines, results and announcements from the Maestro Crown College office, all in one place.',
+    'lead'    => 'Official circulars, exam routines, results and announcements from the Maestro Crown School & College office, all in one place.',
     'chips'   => array_values(array_filter([$notices->count() . ' ' . \Illuminate\Support\Str::plural('notice', $notices->count()), $newCount ? $newCount . ' new this week' : null, 'Updated by the MCC office'])),
     'actions' => [
         ['label' => 'Latest notices', 'href' => '#notices', 'icon' => 'fa-arrow-down', 'style' => 'primary'],

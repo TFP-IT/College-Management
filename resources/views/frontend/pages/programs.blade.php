@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Programs & Curriculum | Maestro Crown College')
-@section('meta_description', 'Explore programs at Maestro Crown College, Savar: School from Play Group to Class 10 and HSC in Science, Business Studies and Humanities. Subjects, fees and academic guidelines.')
+@section('title', 'Programs & Curriculum | Maestro Crown School & College')
+@section('meta_description', 'Explore programs at Maestro Crown School & College, Savar: School from Play Group to Class 9 and HSC in Science, Business Studies and Humanities. Subjects, fees and academic guidelines.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -25,7 +25,7 @@
     'eyebrow' => 'Programs & curriculum',
     'title'   => 'One journey, from <em>Play Group to HSC</em>',
     'lead'    => 'A clear path through every stage of school and college, following the national curriculum with an international outlook, small-group attention and plenty of life beyond the classroom.',
-    'chips'   => ['Play Group – Class 10', 'HSC: 3 groups', 'National curriculum'],
+    'chips'   => ['Play Group – Class 9', 'HSC: 3 groups', 'National curriculum'],
     'actions' => [
         ['label' => 'Explore programs', 'href' => '#stages', 'icon' => 'fa-arrow-down', 'style' => 'primary'],
         ['label' => 'Fees & seats', 'href' => '#fees', 'style' => 'outline'],
@@ -39,7 +39,7 @@
         <header class="sec-head sec-head--split" data-reveal>
             <div>
                 <span class="eyebrow">School section</span>
-                <h2 class="sec-title" id="school-title">Play Group to <em>Class 10</em></h2>
+                <h2 class="sec-title" id="school-title">Play Group to <em>Class 9</em></h2>
             </div>
             <p class="sec-sub">{{ $school['body'] }}</p>
         </header>

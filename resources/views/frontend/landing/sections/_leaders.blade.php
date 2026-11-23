@@ -17,7 +17,7 @@
                                 <span class="leader-initials">{{ collect(explode(' ', str_replace(['Dr. ', 'Md. '], '', $l['name'])))->map(fn ($w) => mb_substr($w, 0, 1))->take(2)->implode('') }}</span>
                             @endif
                         </span>
-                        <span><strong>{{ $l['name'] }}</strong>{{ $l['role'] }}, Maestro Crown College</span>
+                        <span><strong>{{ $l['name'] }}</strong>{{ $l['role'] }}, Maestro Crown School & College</span>
                         <a href="{{ route($l['route']) }}" class="leader-link" aria-label="Read the full message from {{ $l['name'] }}"><i class="fa-solid fa-arrow-right"></i></a>
                     </figcaption>
                 </figure>

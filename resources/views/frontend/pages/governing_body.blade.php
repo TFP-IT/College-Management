@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Governing Body | Maestro Crown College')
-@section('meta_description', 'Meet the Governing Body of Maestro Crown College, Savar: the leaders who set strategic direction, safeguard academic standards and keep MCC accountable to families.')
+@section('title', 'Governing Body | Maestro Crown School & College')
+@section('meta_description', 'Meet the Governing Body of Maestro Crown School & College, Savar: the leaders who set strategic direction, safeguard academic standards and keep MCC accountable to families.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -37,7 +37,7 @@
     'crumbs'  => [['About', route('frontend.about')], ['Governing Body']],
     'eyebrow' => 'Governing Body',
     'title'   => 'Guided by experience, <em>accountable to families</em>',
-    'lead'    => 'The Governing Body sets Maestro Crown College’s strategic direction, safeguards academic standards and makes sure every decision serves our students.',
+    'lead'    => 'The Governing Body sets Maestro Crown School & College’s strategic direction, safeguards academic standards and makes sure every decision serves our students.',
     'chips'   => [$members->count() . ' members', 'EIIN 136876', 'College Code 1933'],
     'media'   => ['type' => 'crest'],
 ])
@@ -84,7 +84,7 @@
                     <div class="gb-featured-body">
                         <span class="gb-role"><i class="fa-solid {{ $roleIcon($featured->designation) }}"></i> {{ $featured->designation }}</span>
                         <h3>{{ $featured->name }}</h3>
-                        <p>Founder of Kamrul Group and Maestro Crown College, leading the board’s vision for an institution built on mastery, honour and fairness.</p>
+                        <p>Founder of Kamrul Group and Maestro Crown School & College, leading the board’s vision for an institution built on mastery, honour and fairness.</p>
                         <div class="gb-featured-links">
                             <a href="{{ route('frontend.chairman_profile') }}" class="link-arrow">Profile <i class="fa-solid fa-arrow-right"></i></a>
                             <a href="{{ route('frontend.message_chairman') }}" class="link-arrow">Message <i class="fa-solid fa-arrow-right"></i></a>

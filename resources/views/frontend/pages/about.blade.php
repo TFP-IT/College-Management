@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'About Us | Maestro Crown College, Savar')
-@section('meta_description', 'Founded in 2014, Maestro Crown College in Savar, Dhaka is a joint UK–Bangladesh institution for School (Play Group–Class 10) and College (HSC). Discover our story, mission, values and campus life.')
+@section('title', 'About Us | Maestro Crown School & College, Savar')
+@section('meta_description', 'Founded in 2014, Maestro Crown School & College in Savar, Dhaka is a joint UK–Bangladesh institution for School (Play Group–Class 9) and College (HSC). Discover our story, mission, values and campus life.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -44,7 +44,7 @@
     'crumbs'  => [['About MCC']],
     'eyebrow' => 'About MCC',
     'title'   => 'Built on <em>mastery</em> and <em>honour.</em>',
-    'lead'    => 'Since 2014, Maestro Crown College has guided students in Savar from their first day of school to their HSC, with an international outlook, a national curriculum and a deep respect for character.',
+    'lead'    => 'Since 2014, Maestro Crown School & College has guided students in Savar from their first day of school to their HSC, with an international outlook, a national curriculum and a deep respect for character.',
     'chips'   => ['Est. 2014', 'EIIN 136876', 'College Code 1933', 'Savar, Dhaka'],
     'actions' => [
         ['label' => 'Our story', 'href' => '#story', 'icon' => 'fa-arrow-down', 'style' => 'primary'],
@@ -74,7 +74,7 @@
             <span class="eyebrow" data-reveal>Our story</span>
             <h2 class="sec-title" id="story-title" data-reveal>A teacher’s dream, <em>a nation’s future</em></h2>
             <div class="prose">
-                <p class="lead-p" data-reveal>Maestro Crown College began with a simple conviction from our founder, Dr. Kamrul Ahsan: shaping minds and guiding young people is one of the most powerful ways to build a nation.</p>
+                <p class="lead-p" data-reveal>Maestro Crown School & College began with a simple conviction from our founder, Dr. Kamrul Ahsan: shaping minds and guiding young people is one of the most powerful ways to build a nation.</p>
                 <p data-reveal>Established in 2014 as a joint venture between England and Bangladesh, MCC has grown from a single campus into two, welcoming more than 1,300 learners from Play Group to Class XII. Our teachers combine an international approach with full compliance with the national board curriculum.</p>
                 <p data-reveal>Today we remain committed to the same promise we made on day one: a disciplined, transparent and caring place to learn, where academic excellence and moral integrity grow side by side.</p>
             </div>
