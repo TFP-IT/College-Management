@@ -671,10 +671,6 @@
 .media-track .poster { flex: 0 0 calc((100% - 3 * 20px) / 4); scroll-snap-align: start; }
 .media-track .poster:hover .poster-frame, .media-track .poster:focus-visible .poster-frame,
 .media-track .poster:nth-child(even):hover .poster-frame { transform: translateY(-6px); }
-.media-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: -4px; font-size: .88rem; font-weight: 700; color: var(--mc-muted); }
-.media-sub span { display: inline-flex; align-items: center; gap: 7px; }
-.media-sub i { color: var(--mc-brand); }
-.media-sub-note { padding: 3px 10px; border-radius: 999px; background: var(--mc-bg); border: 1px solid var(--mc-line); font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--mc-subtle); }
 .poster-tag i { font-size: .62rem; margin-right: 2px; }
 
 /* Video cards share the poster-card look, plus a play badge */

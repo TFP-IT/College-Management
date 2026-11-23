@@ -6,8 +6,6 @@
 --}}
 @php
     $feed = \App\Support\MediaFeed::all();
-    $videoCount = $feed->where('type', 'video')->count();
-    $imageCount = $feed->where('type', 'image')->count();
 @endphp
 <section class="media section-pad" id="media" aria-labelledby="media-title" data-media>
     <div class="container">
@@ -15,11 +13,6 @@
             <div>
                 <span class="eyebrow">MCC Media</span>
                 <h2 class="sec-title" id="media-title">Watch, read &amp; <em>stay updated</em></h2>
-                <p class="media-sub">
-                    <span><i class="fa-solid fa-circle-play"></i> {{ $videoCount }} {{ \Illuminate\Support\Str::plural('video', $videoCount) }}</span>
-                    <span><i class="fa-solid fa-bullhorn"></i> {{ $imageCount }} {{ \Illuminate\Support\Str::plural('announcement', $imageCount) }}</span>
-                    <span class="media-sub-note">Newest first</span>
-                </p>
             </div>
             <div class="carousel-nav" aria-label="Carousel controls">
                 <button type="button" class="carousel-btn" data-carousel-prev aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
