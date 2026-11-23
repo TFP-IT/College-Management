@@ -535,29 +535,69 @@
         });
     });
 
-    /* ── MCC Media: carousel arrows ─────────────────────────────────── */
+    /* ── MCC Media: looping carousel with autoplay ─────────────────────
+       Advances one step every few seconds; from the last card it returns to the first.
+       Pauses on hover/focus, while the lightbox is open, when off-screen or the tab is
+       hidden, and for a while after the user scrolls, swipes or clicks an arrow. */
     var media = $('[data-media]');
     if (media) {
         var track = $('[data-carousel-track]', media);
         var prevBtn = $('[data-carousel-prev]', media), nextBtn = $('[data-carousel-next]', media);
-        var syncArrows = function () {
-            if (!track || !prevBtn) return;
-            var max = track.scrollWidth - track.clientWidth - 8;
-            prevBtn.disabled = track.scrollLeft <= 8;
-            nextBtn.disabled = track.scrollLeft >= max;
-            prevBtn.parentNode.classList.toggle('is-idle', max <= 0);
-        };
-        var step = function (dir) {
+        var lbModal = $('[data-lightbox-modal]');
+        var AUTOPLAY_MS = 4500, RESUME_AFTER_MS = 8000;
+        var hovering = false, focused = false, visible = false, lastUser = 0, programmatic = false;
+
+        var maxScroll = function () { return track.scrollWidth - track.clientWidth; };
+        var stepSize = function () {
             var card = $('.poster', track);
-            var by = card ? card.getBoundingClientRect().width + 20 : track.clientWidth * 0.8;
-            var perView = Math.max(1, Math.floor(track.clientWidth / by));
-            track.scrollBy({ left: dir * by * Math.max(1, perView - 1), behavior: RM ? 'auto' : 'smooth' });
+            var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 20;
+            return card ? card.getBoundingClientRect().width + gap : track.clientWidth * 0.8;
         };
-        if (prevBtn) prevBtn.addEventListener('click', function () { step(-1); });
-        if (nextBtn) nextBtn.addEventListener('click', function () { step(1); });
-        if (track) track.addEventListener('scroll', function () { window.requestAnimationFrame(syncArrows); }, { passive: true });
-        window.addEventListener('resize', syncArrows);
-        syncArrows();
+        var scrollToX = function (x) {
+            programmatic = true;
+            track.scrollTo({ left: x, behavior: RM ? 'auto' : 'smooth' });
+            clearTimeout(scrollToX.t);
+            scrollToX.t = setTimeout(function () { programmatic = false; }, 900);
+        };
+        var go = function (dir) {
+            var max = maxScroll();
+            if (max <= 0) return;
+            var x = track.scrollLeft;
+            if (dir > 0 && x >= max - 8) return scrollToX(0);          // last → first
+            if (dir < 0 && x <= 8) return scrollToX(max);               // first → last
+            scrollToX(Math.min(max, Math.max(0, x + dir * stepSize())));
+        };
+        var syncIdle = function () {
+            if (prevBtn) prevBtn.parentNode.classList.toggle('is-idle', maxScroll() <= 8);
+        };
+        var userActed = function () { lastUser = Date.now(); };
+
+        if (prevBtn) prevBtn.addEventListener('click', function () { userActed(); go(-1); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { userActed(); go(1); });
+        track.addEventListener('pointerenter', function () { hovering = true; });
+        track.addEventListener('pointerleave', function () { hovering = false; });
+        track.addEventListener('focusin', function () { focused = true; });
+        track.addEventListener('focusout', function () { focused = false; });
+        ['pointerdown', 'touchstart', 'wheel'].forEach(function (ev) {
+            track.addEventListener(ev, userActed, { passive: true });
+        });
+        track.addEventListener('scroll', function () { if (!programmatic) userActed(); }, { passive: true });
+        if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; }, { threshold: 0.35 }).observe(track);
+        } else {
+            visible = true;
+        }
+        window.addEventListener('resize', syncIdle);
+        syncIdle();
+
+        if (!RM) {
+            setInterval(function () {
+                var lightboxOpen = lbModal && !lbModal.hidden;
+                if (!visible || hovering || focused || lightboxOpen || document.hidden) return;
+                if (Date.now() - lastUser < RESUME_AFTER_MS) return;
+                go(1);
+            }, AUTOPLAY_MS);
+        }
     }
 
     /* ── Fallback "lit" states when GSAP is unavailable ───────────── */

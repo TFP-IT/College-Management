@@ -217,12 +217,13 @@ return [
     |
     | type:  image | video
     | date:  used for ordering (newest first), Y-m-d
+    | position: optional 'first' or 'last' to pin an item to the start/end of the carousel
     | image: (image) file under public/frontend/mcc/img, no extension
     | src:   (video) mp4 under public/ — downloads only when played
     | poster:(video) thumbnail under public/frontend/mcc/img, no extension
     */
     'media' => [
-        ['type' => 'image', 'date' => '2026-11-21', 'image' => 'campus/school-2-teaser',          'tag' => 'Coming soon', 'title' => 'Maestro Crown School 2.0 is coming'],
+        ['type' => 'image', 'date' => '2026-11-21', 'image' => 'campus/school-2-teaser',          'tag' => 'Coming soon', 'title' => 'Maestro Crown School 2.0 is coming', 'position' => 'last'],
         ['type' => 'image', 'date' => '2026-11-18', 'image' => 'campus/admission-poster-2026-27', 'tag' => 'Admission',   'title' => 'Admissions open: Session 2026–27'],
         ['type' => 'image', 'date' => '2026-11-08', 'image' => 'campus/admission-poster-bn-1',    'tag' => 'Admission',   'title' => 'Class XI admission: Science, Business & Humanities'],
         ['type' => 'image', 'date' => '2026-11-05', 'image' => 'campus/admission-poster-bn-2',    'tag' => 'Admission',   'title' => 'HSC admission 2026–27 is ongoing'],

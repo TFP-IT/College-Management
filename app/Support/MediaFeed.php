@@ -18,8 +18,22 @@ class MediaFeed
     {
         return self::items()
             ->map(fn (array $item) => self::normalise($item))
-            ->sortByDesc(fn (array $item) => $item['date'] ?? '')
+            ->sortBy([
+                // Pinned positions first ('first' items lead, 'last' items trail), then newest first.
+                fn (array $a, array $b) => self::rank($a) <=> self::rank($b),
+                fn (array $a, array $b) => ($b['date'] ?? '') <=> ($a['date'] ?? ''),
+            ])
             ->values();
+    }
+
+    /** position: 'first' | 'last' | null (null = ordered by date). */
+    private static function rank(array $item): int
+    {
+        return match ($item['position'] ?? null) {
+            'first' => 0,
+            'last' => 2,
+            default => 1,
+        };
     }
 
     /** Images only (official posters / announcements). */

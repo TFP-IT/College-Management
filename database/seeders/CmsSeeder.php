@@ -27,7 +27,7 @@ class CmsSeeder extends Seeder
             ['name' => 'Dr. Md Saiful Kabir', 'designation' => 'Member', 'sort_order' => 2],
             ['name' => 'Mrs. Najnin Sultana Ruma', 'designation' => 'Member', 'sort_order' => 3],
             ['name' => 'Mrs. Dil Afroz', 'designation' => 'Donor Member', 'sort_order' => 4],
-            ['name' => 'Md Khalilur Rahman', 'designation' => 'Member Secretary / Principal', 'sort_order' => 5],
+            ['name' => 'Md Shoheb Khan', 'designation' => 'Member Secretary / Principal', 'sort_order' => 5],
         ];
         $teachers = [
             ['name' => 'Burhan Uddin', 'designation' => 'Assistant Professor in History and Culture', 'sort_order' => 1],
