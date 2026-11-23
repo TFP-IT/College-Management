@@ -16,13 +16,26 @@
     'eyebrow' => 'Our staff',
     'title'   => 'The team that keeps <em>MCC running</em>',
     'lead'    => 'From the front office to the library, labs and transport, our staff make every school day safe, organised and welcoming for students and families.',
-    'chips'   => array_values(array_filter([$members->count() ? $members->count() . ' team members' : null, 'Administration', 'Student support'])),
+    'chips'   => array_values(array_filter([$people->count() ? $people->count() . ' featured' : null, 'Administration', 'Student support'])),
     'media'   => ['type' => 'collage', 'images' => ['campus/students-3', 'campus/campus-front']],
 ])
 
-<section class="dir-section section-pad" aria-label="Staff directory">
+<section class="people section-pad" aria-label="Staff">
     <div class="container">
-        @include('frontend.partials.people-directory', ['members' => $members, 'noun' => 'staff member', 'collective' => 'staff', 'groupBy' => 'none'])
+        @if ($people->isEmpty())
+            @include('frontend.partials.people-directory', ['members' => collect(), 'noun' => 'staff member', 'collective' => 'staff', 'groupBy' => 'none'])
+        @else
+            <header class="sec-head" data-reveal>
+                <span class="eyebrow">Meet the team</span>
+                <h2 class="sec-title">The people <em>behind the scenes</em></h2>
+            </header>
+            <div class="pc-grid" data-stagger>
+                @foreach ($people as $p)
+                    <div class="pc-cell">@include('frontend.partials.person-card', ['p' => $p])</div>
+                @endforeach
+            </div>
+            <p class="people-note" data-reveal><i class="fa-solid fa-circle-info"></i> More staff profiles are being added.</p>
+        @endif
     </div>
 </section>
 

@@ -32,17 +32,42 @@ class FrontendPageController extends Controller
         ]);
     }
 
+    /** Profiles from config/faculty.php (teachers with introduction videos for now). */
+    private function people(string $group)
+    {
+        return collect(config('faculty.members', []))->where('group', $group)->values();
+    }
+
     public function teacherInfo()
     {
-        return view('frontend.pages.teacher_info', [
-            'members' => CmsStaffMember::published('TEACHER')->get(),
-        ]);
+        return view('frontend.pages.teacher_info', ['people' => $this->people('teacher')]);
     }
 
     public function staffInfo()
     {
-        return view('frontend.pages.staff_info', [
-            'members' => CmsStaffMember::published('STAFF')->get(),
+        return view('frontend.pages.staff_info', ['people' => $this->people('staff')]);
+    }
+
+    public function teacherProfile(string $slug)
+    {
+        return $this->profile('teacher', $slug);
+    }
+
+    public function staffProfile(string $slug)
+    {
+        return $this->profile('staff', $slug);
+    }
+
+    private function profile(string $group, string $slug)
+    {
+        $people = $this->people($group);
+        $person = $people->firstWhere('slug', $slug);
+        abort_unless($person, 404);
+
+        return view('frontend.pages.person_profile', [
+            'person' => $person,
+            'group' => $group,
+            'others' => $people->reject(fn ($p) => $p['slug'] === $slug)->values(),
         ]);
     }
 

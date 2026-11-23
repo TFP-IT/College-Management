@@ -5,7 +5,15 @@
     downloads when it is played.
 --}}
 @php
-    $videos = collect($mc['videos'] ?? [])->map(function ($v) {
+    // Faculty/staff introductions (config/faculty.php) first, then other videos (config/landing.php).
+    $people = collect(config('faculty.members', []))->filter(fn ($m) => !empty($m['video']))->map(fn ($m) => [
+        'src' => $m['video'], 'poster' => $m['poster'], 'tag' => $m['tag'] ?? 'Meet our faculty',
+        'title' => $m['name'], 'subtitle' => $m['role'], 'caption' => $m['bio'],
+        'highlights' => collect($m['education'] ?? [])->flatMap(fn ($e) => [$e['degree'], $e['institution']])
+            ->push(!empty($m['experience']) ? 'Former ' . $m['experience'] : null)->filter()->unique()->values()->all(),
+        'profile' => route($m['group'] === 'staff' ? 'frontend.staff_profile' : 'frontend.teacher_profile', $m['slug']),
+    ]);
+    $videos = $people->concat($mc['videos'] ?? [])->map(function ($v) {
         $v['ready'] = !empty($v['src']) && file_exists(public_path($v['src']));
         return $v;
     });
@@ -59,6 +67,7 @@
                                     <ul class="lb-chips">@foreach ($v['highlights'] as $h)<li>{{ $h }}</li>@endforeach</ul>
                                 @endif
                                 <p class="lb-text">{{ $v['caption'] }}</p>
+                                @if (!empty($v['profile']))<a class="lb-link" href="{{ $v['profile'] }}">View full profile <i class="fa-solid fa-arrow-right"></i></a>@endif
                                 <span class="lb-sign">Maestro Crown School &amp; College</span>
                             </template>
                         @endif

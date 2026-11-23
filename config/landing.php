@@ -218,31 +218,7 @@ return [
     | Later this list can come from the CMS/database instead of this file.
     */
     'videos' => [
-        // Meet our people (portrait introductions). caption + highlights show in the video viewer.
-        ['src' => 'frontend/mcc/video/teachers/salma-khatun.mp4', 'poster' => 'campus/video-salma-khatun',
-         'tag' => 'Meet our faculty', 'title' => 'Salma Khatun', 'subtitle' => 'Lecturer in Finance & Banking',
-         'highlights' => ['Business Studies', 'Finance & Banking'],
-         'caption' => 'We are glad to introduce Salma Khatun, Lecturer in Finance & Banking. With her dedication, subject knowledge and commitment to student development, we believe she will make a valuable contribution to our academic community. Please join us in welcoming her to the MCC family.'],
-        ['src' => 'frontend/mcc/video/teachers/lopa-rani-chowdhury.mp4', 'poster' => 'campus/video-lopa-rani-chowdhury',
-         'tag' => 'Meet our faculty', 'title' => 'Ms. Lopa Rani Chowdhuri', 'subtitle' => 'Lecturer in Civics & Good Governance',
-         'highlights' => ['Honours & Master’s, Public Administration', 'Jatiya Kabi Kazi Nazrul Islam University', 'Former Lecturer, Mymensingh Girls’ Cadet College'],
-         'caption' => 'We are delighted to welcome Ms. Lopa Rani Chowdhuri as our new Lecturer in Civics & Good Governance. She completed both her Honours and Master’s degrees in Public Administration at Jatiya Kabi Kazi Nazrul Islam University and brings valuable teaching experience from her previous role as a Lecturer at Mymensingh Girls’ Cadet College. We look forward to her contribution to our students’ intellectual growth and to the academic excellence of our institution.'],
-        ['src' => 'frontend/mcc/video/teachers/nur-mohammad.mp4', 'poster' => 'campus/video-nur-mohammad',
-         'tag' => 'Meet our faculty', 'title' => 'Md. Nur Mohammad', 'subtitle' => 'Lecturer in Finance, Banking & Insurance',
-         'highlights' => ['BBA & MBA, Finance, Banking & Insurance', 'University of Barisal', 'Business Studies Group'],
-         'caption' => 'We are delighted to welcome Md. Nur Mohammad as a Lecturer in Finance, Banking & Insurance. He completed both his BBA and MBA in the Department of Finance, Banking & Insurance at the University of Barisal. He will teach our Business Studies students, particularly Finance, Banking & Insurance and Business Organisation & Management, helping them build a strong understanding of business and financial studies.'],
-        ['src' => 'frontend/mcc/video/teachers/shahrin.mp4', 'poster' => 'campus/video-shahrin',
-         'tag' => 'Meet our faculty', 'title' => 'Ms. Shahrin Nahin', 'subtitle' => 'Lecturer in English',
-         'highlights' => ['BA & MA, English Language & Literature', 'Jahangirnagar University', 'Former English Teacher, Boston International School'],
-         'caption' => 'We are delighted to welcome Ms. Shahrin Nahin as a Lecturer in English. A proud alumna of Jahangirnagar University, she completed both her undergraduate and postgraduate studies in English Language and Literature, and previously taught English at Boston International School. With her strong academic background and passion for the subject, she will further strengthen the academic excellence of our institution.'],
-        ['src' => 'frontend/mcc/video/teachers/shoriful-islam.mp4', 'poster' => 'campus/video-shoriful-islam',
-         'tag' => 'Welcome home', 'title' => 'Shoriful Islam', 'subtitle' => 'Executive (Administration)',
-         'highlights' => ['MCC alumnus: SSC & HSC', 'BBA & MBA', 'Gopalganj Science and Technology University'],
-         'caption' => 'Some homecomings are more than a return: they are moments of pride and joy. Shoriful Islam, a former student who completed both his SSC and HSC at Maestro Crown School & College, has come back to the campus he knows so well, this time as our Executive (Administration). After MCC he earned his BBA and MBA at Gopalganj Science and Technology University. Welcome home, Shoriful!'],
-        ['src' => 'frontend/mcc/video/teachers/ayub-ali.mp4', 'poster' => 'campus/video-ayub-ali',
-         'tag' => 'Meet our faculty', 'title' => 'Mr. Ayub Ali', 'subtitle' => 'Lecturer in Chemistry',
-         'highlights' => ['Department of Chemistry', 'Jahangirnagar University'],
-         'caption' => 'We are delighted to introduce Mr. Ayub Ali, who joins us as a Lecturer in Chemistry. A graduate of the Department of Chemistry at Jahangirnagar University, he brings a strong academic foundation, subject expertise and a genuine commitment to teaching. We are confident his knowledge and dedication will enrich the learning and development of our students.'],
+        // Teacher & staff introductions come from config/faculty.php (listed first automatically).
         // Campus
         ['src' => 'frontend/mcc/video/hero.mp4', 'poster' => 'hero-poster',
          'tag' => 'Campus tour', 'title' => 'A walk through our campus', 'subtitle' => 'Maestro Crown School & College, Savar'],

@@ -63,7 +63,9 @@ Route::controller(App\Http\Controllers\FrontendPageController::class)->group(fun
     Route::get('/message-of-chairman', 'messageChairman')->name('frontend.message_chairman');
     Route::get('/message-of-principal', 'messagePrincipal')->name('frontend.message_principal');
     Route::get('/teacher-information', 'teacherInfo')->name('frontend.teacher_info');
+    Route::get('/teacher-information/{slug}', 'teacherProfile')->where('slug', '[a-z0-9-]+')->name('frontend.teacher_profile');
     Route::get('/staff-information', 'staffInfo')->name('frontend.staff_info');
+    Route::get('/staff-information/{slug}', 'staffProfile')->where('slug', '[a-z0-9-]+')->name('frontend.staff_profile');
     Route::get('/academic-calendar', 'academicCalendar')->name('frontend.academic_calendar');
     Route::get('/programs', 'programs')->name('frontend.programs');
     Route::get('/notice', 'noticeBoard')->name('frontend.notice_board');

@@ -505,6 +505,8 @@ body.is-locked { overflow: hidden; }
 .lb-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
 .lb-chips li { padding: 6px 11px; border-radius: 10px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .1); font-size: .78rem; font-weight: 600; color: rgba(255, 255, 255, .88); line-height: 1.35; }
 .lb-text { font-size: .95rem; line-height: 1.75; margin-bottom: 18px; }
+.lb-link { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 9px 16px; border-radius: 999px; background: var(--mc-brand); color: #fff; text-decoration: none; font-size: .86rem; font-weight: 800; transition: background-color .3s, transform .35s var(--ease-out); }
+.lb-link:hover { background: var(--mc-brand-600); color: #fff; transform: translateX(3px); }
 .lb-sign { display: block; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, .1); font-family: var(--f-display); font-style: italic; color: rgba(255, 255, 255, .6); font-size: .9rem; }
 @media (max-width: 860px) {
     .lightbox:has(figure.has-info) { align-items: start; overflow-y: auto; padding-bottom: 96px; }
