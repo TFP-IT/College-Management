@@ -1,4 +1,4 @@
-{{-- "Continue exploring" cards for the About section; the current page is left out. --}}
+{{-- "Continue exploring" cards. @include(..., ['set' => 'about'|'academics']); the current page is left out. --}}
 @php
     $aboutPages = [
         ['route' => 'frontend.about',             'kicker' => 'Our story',  'title' => 'About MCC',              'avatar' => ['icon' => 'fa-landmark']],
@@ -9,7 +9,15 @@
         ['route' => 'frontend.teacher_info',      'kicker' => 'Our people', 'title' => 'Teachers',               'avatar' => ['icon' => 'fa-chalkboard-user']],
         ['route' => 'frontend.staff_info',        'kicker' => 'Our people', 'title' => 'Staff',                  'avatar' => ['icon' => 'fa-id-badge']],
     ];
-    $links = collect($aboutPages)->reject(fn ($p) => request()->routeIs($p['route']))->take($limit ?? 3);
+    $academicPages = [
+        ['route' => 'frontend.programs',          'kicker' => 'Academics', 'title' => 'Programs & curriculum', 'avatar' => ['icon' => 'fa-layer-group']],
+        ['route' => 'frontend.academic_calendar', 'kicker' => 'Academics', 'title' => 'Academic Calendar',     'avatar' => ['icon' => 'fa-calendar-days']],
+        ['route' => 'frontend.notice_board',      'kicker' => 'Academics', 'title' => 'Notice Board',          'avatar' => ['icon' => 'fa-bullhorn']],
+        ['route' => 'frontend.admission',         'kicker' => 'Admission', 'title' => 'Admission information', 'avatar' => ['icon' => 'fa-circle-info']],
+        ['route' => 'frontend.teacher_info',      'kicker' => 'Our people', 'title' => 'Teachers',             'avatar' => ['icon' => 'fa-chalkboard-user']],
+    ];
+    $pool = ($set ?? 'about') === 'academics' ? $academicPages : $aboutPages;
+    $links = collect($pool)->reject(fn ($p) => request()->routeIs($p['route']))->take($limit ?? 3);
 @endphp
 <section class="next section-pad" aria-labelledby="next-title">
     <div class="container">

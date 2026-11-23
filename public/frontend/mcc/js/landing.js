@@ -417,6 +417,49 @@
         });
     });
 
+    /* ── Generic filter/search lists (fees table, calendar, notices) ──
+       [data-filterable] > [data-fbtn=type|all], [data-fsearch], [data-fitem data-type data-search],
+       optional [data-fgroup] (hidden when it has no visible items), [data-fcount], [data-fnone]. */
+    $$('[data-filterable]').forEach(function (box) {
+        var items = $$('[data-fitem]', box);
+        var groups = $$('[data-fgroup]', box);
+        var btns = $$('[data-fbtn]', box);
+        var search = $('[data-fsearch]', box);
+        var count = $('[data-fcount]', box);
+        var none = $('[data-fnone]', box);
+        var state = { type: 'all', q: '' };
+        var apply = function () {
+            var shown = 0;
+            items.forEach(function (el) {
+                var okType = state.type === 'all' || el.getAttribute('data-type') === state.type;
+                var hay = el.getAttribute('data-search') || el.textContent.toLowerCase();
+                var ok = okType && (!state.q || hay.indexOf(state.q) > -1);
+                el.hidden = !ok;
+                if (ok) shown++;
+            });
+            groups.forEach(function (g) { g.hidden = !$$('[data-fitem]', g).some(function (el) { return !el.hidden; }); });
+            if (count) count.textContent = shown;
+            if (none) none.hidden = shown > 0;
+            if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+        };
+        btns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                state.type = btn.getAttribute('data-fbtn');
+                btns.forEach(function (b) {
+                    var on = b === btn;
+                    b.classList.toggle('is-active', on);
+                    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+                });
+                apply();
+            });
+        });
+        var t = null;
+        if (search) search.addEventListener('input', function () {
+            clearTimeout(t);
+            t = setTimeout(function () { state.q = search.value.trim().toLowerCase(); apply(); }, 120);
+        });
+    });
+
     /* ── Fallback "lit" states when GSAP is unavailable ───────────── */
     function litAll() {
         $$('[data-journey-step]').forEach(function (s) { s.classList.add('is-lit'); });
