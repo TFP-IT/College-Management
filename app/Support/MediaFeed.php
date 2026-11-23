@@ -50,7 +50,7 @@ class MediaFeed
                 'type' => 'video',
                 'date' => $m['date'] ?? null,
                 'src' => $m['video'],
-                'poster' => $m['poster'],
+                'poster' => $m['poster'] ?? $m['photo'] ?? null,
                 'tag' => $m['tag'] ?? 'Meet our faculty',
                 'title' => $m['name'],
                 'subtitle' => $m['role'],
