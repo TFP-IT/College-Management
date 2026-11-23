@@ -300,32 +300,94 @@
         applyGallery(false);
     }
 
-    /* ── Lightbox (navigates within its own scope: posters or gallery) ── */
+    /* ── Lightbox: images and videos, navigates within its own scope ──
+       Items: [data-lightbox=imageUrl] + optional [data-video=mp4Url] (empty = "coming soon").
+       A <video> element is created on demand; its file loads only when played. */
     var modal = $('[data-lightbox-modal]');
     if (modal) {
         var img = $('[data-lightbox-img]', modal), cap = $('[data-lightbox-cap]', modal), count = $('[data-lightbox-count]', modal);
+        var fig = img.parentNode;
+        var vid = null, soon = null, info = null;
+        var setInfo = function (item) {
+            var tpl = item.querySelector('template[data-lightbox-info]');
+            if (!tpl) {
+                if (info) info.hidden = true;
+                fig.classList.remove('has-info');
+                cap.hidden = false;
+                return;
+            }
+            if (!info) {
+                info = document.createElement('div');
+                info.className = 'lightbox-info';
+                fig.appendChild(info);
+            }
+            info.innerHTML = tpl.innerHTML;
+            info.hidden = false;
+            info.scrollTop = 0;
+            fig.classList.add('has-info');
+            cap.hidden = true;
+        };
         var items = [], current = 0, lastFocus = null;
+        var getVideo = function () {
+            if (vid) return vid;
+            vid = document.createElement('video');
+            vid.setAttribute('data-lightbox-video', '');
+            vid.controls = true; vid.playsInline = true; vid.preload = 'none';
+            vid.hidden = true;
+            fig.insertBefore(vid, img);
+            soon = document.createElement('span');
+            soon.className = 'lightbox-soon';
+            soon.innerHTML = '<i class="fa-solid fa-clock"></i> Video coming soon';
+            soon.hidden = true;
+            fig.insertBefore(soon, img.nextSibling);
+            return vid;
+        };
+        var stopVideo = function () {
+            if (!vid) return;
+            vid.pause();
+            vid.removeAttribute('src');
+            vid.load();
+            vid.hidden = true;
+            if (soon) soon.hidden = true;
+        };
+        var animateIn = function (el, fromEl) {
+            if (RM || !el.animate) return;
+            var to = el.getBoundingClientRect();
+            if (fromEl && to.width) {
+                var from = fromEl.getBoundingClientRect();
+                el.animate([
+                    { transform: 'translate(' + (from.left - to.left) + 'px,' + (from.top - to.top) + 'px) scale(' + (from.width / to.width) + ',' + (from.height / to.height) + ')', transformOrigin: '0 0', opacity: 0.6 },
+                    { transform: 'none', transformOrigin: '0 0', opacity: 1 }
+                ], { duration: 550, easing: 'cubic-bezier(.22,1,.36,1)' });
+            } else {
+                el.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'ease-out' });
+            }
+        };
         var show = function (i, fromEl) {
             current = (i + items.length) % items.length;
             var item = items[current];
-            var src = item.getAttribute('data-lightbox');
-            img.src = src;
-            img.alt = item.getAttribute('data-caption') || '';
-            cap.textContent = item.getAttribute('data-caption') || '';
+            var caption = item.getAttribute('data-caption') || '';
+            cap.textContent = caption;
             if (count) count.textContent = items.length > 1 ? (current + 1) + ' / ' + items.length : '';
-            if (RM || !img.animate) return;
-            var run = function () {
-                var to = img.getBoundingClientRect();
-                if (fromEl && to.width) {
-                    var from = fromEl.getBoundingClientRect();
-                    img.animate([
-                        { transform: 'translate(' + (from.left - to.left) + 'px,' + (from.top - to.top) + 'px) scale(' + (from.width / to.width) + ',' + (from.height / to.height) + ')', transformOrigin: '0 0', opacity: 0.6 },
-                        { transform: 'none', transformOrigin: '0 0', opacity: 1 }
-                    ], { duration: 550, easing: 'cubic-bezier(.22,1,.36,1)' });
-                } else {
-                    img.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'ease-out' });
-                }
-            };
+            stopVideo();
+            setInfo(item);
+            var isVideo = item.hasAttribute('data-video');
+            var vsrc = isVideo ? item.getAttribute('data-video') : '';
+            if (isVideo && vsrc) {
+                var v = getVideo();
+                img.hidden = true;
+                v.poster = item.getAttribute('data-lightbox');
+                v.src = vsrc;
+                v.hidden = false;
+                var p = v.play(); if (p && p.catch) p.catch(function () {});
+                animateIn(v, fromEl);
+                return;
+            }
+            img.hidden = false;
+            img.src = item.getAttribute('data-lightbox');
+            img.alt = caption;
+            if (isVideo) { getVideo(); soon.hidden = false; }
+            var run = function () { animateIn(img, fromEl); };
             if (img.complete && img.naturalWidth) run();
             else img.addEventListener('load', run, { once: true });
         };
@@ -340,6 +402,7 @@
             $('[data-lightbox-close]', modal).focus();
         };
         var close = function () {
+            stopVideo();
             modal.hidden = true;
             document.body.classList.remove('is-locked');
             if (lenis) lenis.start();
@@ -358,7 +421,7 @@
         modal.addEventListener('touchend', function (e) {
             if (touchX === null) return;
             var dx = e.changedTouches[0].clientX - touchX;
-            if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+            if (Math.abs(dx) > 50 && !(vid && e.target === vid)) show(current + (dx < 0 ? 1 : -1));
             touchX = null;
         });
         document.addEventListener('keydown', function (e) {
@@ -471,6 +534,66 @@
             window.location.href = 'mailto:' + form.getAttribute('data-to') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
         });
     });
+
+    /* ── MCC Media: tabs + carousel arrows ─────────────────────────── */
+    var media = $('[data-media]');
+    if (media) {
+        var mTabs = $$('[data-media-tab]', media);
+        var prevBtn = $('[data-carousel-prev]', media), nextBtn = $('[data-carousel-next]', media);
+        var activeTrack = function () {
+            var panel = $$('[data-media-panel]', media).filter(function (p) { return !p.hidden; })[0];
+            return panel ? $('[data-carousel-track]', panel) : null;
+        };
+        var syncArrows = function () {
+            var t = activeTrack();
+            if (!t || !prevBtn) return;
+            var max = t.scrollWidth - t.clientWidth - 8;
+            prevBtn.disabled = t.scrollLeft <= 8;
+            nextBtn.disabled = t.scrollLeft >= max;
+            var noScroll = max <= 0;
+            prevBtn.parentNode.classList.toggle('is-idle', noScroll);
+        };
+        var step = function (dir) {
+            var t = activeTrack();
+            if (!t) return;
+            var card = $('.poster', t);
+            var by = card ? card.getBoundingClientRect().width + 20 : t.clientWidth * 0.8;
+            t.scrollBy({ left: dir * by * Math.max(1, Math.floor(t.clientWidth / by) - 1 || 1), behavior: RM ? 'auto' : 'smooth' });
+        };
+        if (prevBtn) prevBtn.addEventListener('click', function () { step(-1); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { step(1); });
+        $$('[data-carousel-track]', media).forEach(function (t) {
+            t.addEventListener('scroll', function () { window.requestAnimationFrame(syncArrows); }, { passive: true });
+        });
+        window.addEventListener('resize', syncArrows);
+
+        var showPanel = function (btn, focus) {
+            var key = btn.getAttribute('data-media-tab');
+            mTabs.forEach(function (b) {
+                var on = b === btn;
+                b.classList.toggle('is-active', on);
+                b.setAttribute('aria-selected', on ? 'true' : 'false');
+                b.tabIndex = on ? 0 : -1;
+            });
+            $$('[data-media-panel]', media).forEach(function (p) {
+                var show = p.getAttribute('data-media-panel') === key;
+                p.hidden = !show;
+                p.classList.toggle('is-active', show);
+            });
+            if (focus) btn.focus();
+            syncArrows();
+            if (window.ScrollTrigger) setTimeout(function () { window.ScrollTrigger.refresh(); }, 60);
+        };
+        mTabs.forEach(function (btn, i) {
+            btn.addEventListener('click', function () { showPanel(btn); });
+            btn.addEventListener('keydown', function (e) {
+                if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+                e.preventDefault();
+                showPanel(mTabs[(i + (e.key === 'ArrowRight' ? 1 : mTabs.length - 1)) % mTabs.length], true);
+            });
+        });
+        syncArrows();
+    }
 
     /* ── Fallback "lit" states when GSAP is unavailable ───────────── */
     function litAll() {

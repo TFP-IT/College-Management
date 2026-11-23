@@ -215,24 +215,39 @@
     {{-- ── Footer ─────────────────────────────────────────────── --}}
     <footer class="mc-footer" id="contact">
         <div class="container">
-            <div class="mc-footer-grid">
-                <div class="mc-footer-brand">
+            {{-- Brand lockup + app & social --}}
+            <div class="mc-footer-top">
+                <a href="{{ route('landing') }}" class="mc-footer-lockup" aria-label="Maestro Crown School & College, home">
                     <picture>
                         <source type="image/webp" srcset="{{ asset('frontend/mcc/img/logo-512.webp') }}">
-                        <img src="{{ $logo }}" alt="Maestro Crown School & College crest" width="150" height="150" loading="lazy">
+                        <img src="{{ $logo }}" alt="" width="112" height="112" loading="lazy">
                     </picture>
-                    <h2>Maestro Crown School & College</h2>
-                    <p class="mc-footer-tagline">{{ $c['tagline'] }}</p>
-                    <p>A joint UK–Bangladesh institution for School and Higher Secondary education in Savar, Dhaka, since 2014.</p>
-                    <div class="mc-footer-codes"><span>EIIN 136876</span><span>College Code 1933</span></div>
-                    <div class="mc-social">
-                        <a href="{{ $c['facebook'] }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="{{ $app['play_store'] }}" target="_blank" rel="noopener" aria-label="Get the app on Google Play"><i class="fa-brands fa-google-play"></i></a>
-                        <a href="mailto:{{ $c['email'] }}" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
-                        <a href="{{ $c['phone_href'] }}" aria-label="Call"><i class="fa-solid fa-phone"></i></a>
+                    <span>
+                        <span class="mc-footer-name">Maestro Crown School &amp; College</span>
+                        <span class="mc-footer-tagline">{{ $c['tagline'] }}</span>
+                    </span>
+                </a>
+                <div class="mc-footer-connect">
+                    <span class="mc-footer-label">Get the {{ $app['name'] }} app</span>
+                    <div class="mc-footer-connect-row">
+                        @include('frontend.landing.partials._stores', ['class' => 'mc-footer-stores'])
+                        <div class="mc-social" aria-label="Social">
+                            <a href="{{ $c['facebook'] }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a href="mailto:{{ $c['email'] }}" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+                            <a href="{{ $c['phone_href'] }}" aria-label="Call"><i class="fa-solid fa-phone"></i></a>
+                        </div>
                     </div>
                 </div>
-                <div>
+            </div>
+
+            {{-- Link columns --}}
+            <div class="mc-footer-grid">
+                <div class="mc-footer-about">
+                    <h3>About MCC</h3>
+                    <p>A joint UK–Bangladesh institution for School (Play Group – Class 9) and Higher Secondary (HSC) education in Savar, Dhaka, since 2014.</p>
+                    <div class="mc-footer-codes"><span>EIIN 136876</span><span>College Code 1933</span></div>
+                </div>
+                <nav aria-label="Explore">
                     <h3>Explore</h3>
                     <ul>
                         <li><a href="{{ route('frontend.about') }}">About MCC</a></li>
@@ -242,30 +257,35 @@
                         <li><a href="{{ route('frontend.gallery') }}">Gallery</a></li>
                         <li><a href="{{ route('frontend.governing_body') }}">Governing Body</a></li>
                     </ul>
-                </div>
-                <div>
+                </nav>
+                <nav aria-label="Admission">
                     <h3>Admission {{ $mc['session'] }}</h3>
                     <ul>
-                        <li><a href="{{ $app['play_store'] }}" target="_blank" rel="noopener">School Admission (app)</a></li>
-                        <li><a href="{{ $app['play_store'] }}" target="_blank" rel="noopener">College Admission (app)</a></li>
-                        <li><a href="{{ $app['play_store'] }}" target="_blank" rel="noopener">Track Application (app)</a></li>
+                        <li><a href="{{ $app['play_store'] }}" target="_blank" rel="noopener">School Admission <span class="mc-pill">App</span></a></li>
+                        <li><a href="{{ $app['play_store'] }}" target="_blank" rel="noopener">College Admission <span class="mc-pill">App</span></a></li>
+                        <li><a href="{{ $app['play_store'] }}" target="_blank" rel="noopener">Track Application <span class="mc-pill">App</span></a></li>
                         <li><a href="{{ route('frontend.admission') }}">Admission Info</a></li>
+                        <li><a href="{{ route('frontend.contact') }}">Contact Us</a></li>
                     </ul>
-                </div>
+                </nav>
                 <div>
                     <h3>Contact</h3>
                     <ul class="mc-footer-contact">
                         <li><i class="fa-solid fa-location-dot"></i><a href="{{ $c['map_link'] }}" target="_blank" rel="noopener">{{ $c['address'] }}</a></li>
-                        <li><i class="fa-solid fa-phone"></i><span><a href="{{ $c['phone_href'] }}">{{ $c['phone'] }}</a><br><a href="{{ $c['phone_alt_href'] }}">{{ $c['phone_alt'] }}</a></span></li>
+                        <li><i class="fa-solid fa-phone"></i><span><a href="{{ $c['phone_href'] }}">{{ $c['phone'] }}</a><a href="{{ $c['phone_alt_href'] }}">{{ $c['phone_alt'] }}</a></span></li>
                         <li><i class="fa-solid fa-envelope"></i><a href="mailto:{{ $c['email'] }}">{{ $c['email'] }}</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="mc-footer-word" aria-hidden="true">Maestro Crown</div>
+        <div class="mc-footer-word" aria-hidden="true">
+            <svg viewBox="0 0 1600 160" preserveAspectRatio="xMidYMax meet" focusable="false">
+                <text x="2" y="118" textLength="1596" lengthAdjust="spacing">Maestro Crown School &amp; College</text>
+            </svg>
+        </div>
         <div class="mc-footer-bottom">
             <div class="container">
-                <div>&copy; {{ date('Y') }} Maestro Crown School & College. All rights reserved.</div>
+                <div>&copy; {{ date('Y') }} Maestro Crown School &amp; College. All rights reserved.</div>
                 <div class="mc-gov">
                     <a href="https://dhakaeducationboard.gov.bd/site/" target="_blank" rel="noopener">Dhaka Education Board</a>
                     <a href="https://moedu.gov.bd/" target="_blank" rel="noopener">Ministry of Education</a>

@@ -551,7 +551,7 @@
     .trust-item:nth-child(4)::before { display: none; }
     .bento { grid-template-columns: repeat(2, 1fr); }
     .app-stage { grid-template-columns: 1fr; }
-    .board-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 16px; margin: 0 calc(-1 * var(--gutter)); padding: 4px var(--gutter) 18px; scrollbar-width: none; }
+    .board-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 16px; margin: 0 calc(-1 * var(--gutter)); padding: 4px var(--gutter) 18px; scroll-padding-inline: var(--gutter); scrollbar-width: none; }
     .board-track::-webkit-scrollbar { display: none; }
     .poster { flex: 0 0 230px; scroll-snap-align: start; }
     .app-devices { height: 540px; max-width: 560px; width: 100%; margin: 0 auto; }
@@ -642,4 +642,62 @@
     .phone { width: 180px; height: 380px; }
     .app-devices { height: 420px; }
     .sd-actions i { width: 30px; height: 30px; }
+}
+
+/* ── MCC Media: videos + announcements (carousel) ────────────────────── */
+.media { background: #fff; border-top: 1px solid var(--mc-line); border-bottom: 1px solid var(--mc-line); }
+.media-head-side { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.media-tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: 999px; background: var(--mc-bg); border: 1px solid var(--mc-line); }
+.media-tabs button {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 0; border-radius: 999px; background: transparent; cursor: pointer;
+    font: inherit; font-size: .9rem; font-weight: 800; color: var(--mc-ink-2); transition: background-color .35s var(--ease-out), color .35s, box-shadow .35s;
+}
+.media-tabs button span { font-size: .72rem; padding: 1px 7px; border-radius: 999px; background: #fff; color: var(--mc-muted); }
+.media-tabs button.is-active { background: var(--mc-brand); color: #fff; box-shadow: 0 10px 22px -12px rgba(228, 85, 81, .9); }
+.media-tabs button.is-active span { background: rgba(255, 255, 255, .22); color: #fff; }
+.media-panel[hidden] { display: none; }
+
+.carousel-nav { display: inline-flex; gap: 8px; transition: opacity .3s; }
+.carousel-nav.is-idle { opacity: 0; pointer-events: none; }
+.carousel-btn { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--mc-line); background: #fff; color: var(--mc-ink); cursor: pointer; transition: background-color .3s, color .3s, border-color .3s, opacity .3s, transform .35s var(--ease-out); }
+.carousel-btn:hover:not(:disabled) { background: var(--mc-brand); border-color: var(--mc-brand); color: #fff; transform: translateY(-2px); }
+.carousel-btn:disabled { opacity: .35; cursor: default; }
+
+.media-track {
+    display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    padding: 6px 4px 18px; margin: 0 -4px; scroll-padding-inline: 4px; scrollbar-width: none;
+}
+.media-track::-webkit-scrollbar { display: none; }
+.media-track .poster { flex: 0 0 calc((100% - 3 * 20px) / 4); scroll-snap-align: start; }
+
+/* Video cards share the poster-card look, plus a play badge */
+.poster-play {
+    position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; display: grid; place-items: center; z-index: 1;
+    border-radius: 50%; background: rgba(255, 255, 255, .95); color: var(--mc-brand); font-size: 1.1rem; padding-left: 4px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .25), 0 0 0 0 rgba(255, 255, 255, .55); animation: mc-play-ping 2.4s var(--ease-out) infinite;
+    transition: transform .45s var(--ease-out), background-color .3s, color .3s;
+}
+.poster--video .poster-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(20, 7, 6, .35)); pointer-events: none; }
+.poster--video:hover .poster-play { transform: scale(1.12); background: var(--mc-brand); color: #fff; }
+.poster--video.is-pending .poster-play { background: rgba(255, 255, 255, .8); color: var(--mc-muted); animation: none; }
+@keyframes mc-play-ping { 0% { box-shadow: 0 10px 24px rgba(0, 0, 0, .25), 0 0 0 0 rgba(255, 255, 255, .5); } 70%, 100% { box-shadow: 0 10px 24px rgba(0, 0, 0, .25), 0 0 0 16px rgba(255, 255, 255, 0); } }
+.poster-soon { position: absolute; left: 10px; bottom: 10px; z-index: 1; padding: 4px 10px; border-radius: 999px; background: rgba(20, 7, 6, .78); color: #fff; font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.poster--video .poster-frame img { object-position: 50% 22%; }
+.poster-sub { font-size: .82rem; color: var(--mc-muted); margin-top: -2px; }
+.poster-tag--video { display: inline-flex; align-items: center; gap: 6px; background: #EFEAF7; color: #5B3F8C; }
+.poster-tag--video i { font-size: .62rem; }
+
+@media (max-width: 1100px) {
+    .media-track .poster { flex-basis: calc((100% - 2 * 20px) / 3.2); }
+}
+@media (max-width: 768px) {
+    .media-head-side { width: 100%; justify-content: space-between; }
+    .media-tabs button { padding: 10px 12px; font-size: .84rem; }
+    .carousel-nav { display: none; }
+    .media-track { gap: 14px; margin: 0 calc(-1 * var(--gutter)); padding: 6px var(--gutter) 18px; scroll-padding-inline: var(--gutter); }
+    .media-track .poster { flex-basis: 62vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .poster-play { animation: none; }
+    .media-track { scroll-behavior: auto; }
 }
