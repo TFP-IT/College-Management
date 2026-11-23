@@ -665,10 +665,17 @@
 
 .media-track {
     display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
-    padding: 6px 4px 18px; margin: 0 -4px; scroll-padding-inline: 4px; scrollbar-width: none;
+    padding: 16px 4px 22px; margin: -10px -4px 0; scroll-padding-inline: 4px; scrollbar-width: none;
 }
 .media-track::-webkit-scrollbar { display: none; }
 .media-track .poster { flex: 0 0 calc((100% - 3 * 20px) / 4); scroll-snap-align: start; }
+.media-track .poster:hover .poster-frame, .media-track .poster:focus-visible .poster-frame,
+.media-track .poster:nth-child(even):hover .poster-frame { transform: translateY(-6px); }
+.media-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: -4px; font-size: .88rem; font-weight: 700; color: var(--mc-muted); }
+.media-sub span { display: inline-flex; align-items: center; gap: 7px; }
+.media-sub i { color: var(--mc-brand); }
+.media-sub-note { padding: 3px 10px; border-radius: 999px; background: var(--mc-bg); border: 1px solid var(--mc-line); font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--mc-subtle); }
+.poster-tag i { font-size: .62rem; margin-right: 2px; }
 
 /* Video cards share the poster-card look, plus a play badge */
 .poster-play {
@@ -694,7 +701,7 @@
     .media-head-side { width: 100%; justify-content: space-between; }
     .media-tabs button { padding: 10px 12px; font-size: .84rem; }
     .carousel-nav { display: none; }
-    .media-track { gap: 14px; margin: 0 calc(-1 * var(--gutter)); padding: 6px var(--gutter) 18px; scroll-padding-inline: var(--gutter); }
+    .media-track { gap: 14px; margin: -10px calc(-1 * var(--gutter)) 0; padding: 16px var(--gutter) 20px; scroll-padding-inline: var(--gutter); }
     .media-track .poster { flex-basis: 62vw; }
 }
 @media (prefers-reduced-motion: reduce) {

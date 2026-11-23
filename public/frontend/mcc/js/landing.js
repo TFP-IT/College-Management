@@ -535,63 +535,28 @@
         });
     });
 
-    /* ── MCC Media: tabs + carousel arrows ─────────────────────────── */
+    /* ── MCC Media: carousel arrows ─────────────────────────────────── */
     var media = $('[data-media]');
     if (media) {
-        var mTabs = $$('[data-media-tab]', media);
+        var track = $('[data-carousel-track]', media);
         var prevBtn = $('[data-carousel-prev]', media), nextBtn = $('[data-carousel-next]', media);
-        var activeTrack = function () {
-            var panel = $$('[data-media-panel]', media).filter(function (p) { return !p.hidden; })[0];
-            return panel ? $('[data-carousel-track]', panel) : null;
-        };
         var syncArrows = function () {
-            var t = activeTrack();
-            if (!t || !prevBtn) return;
-            var max = t.scrollWidth - t.clientWidth - 8;
-            prevBtn.disabled = t.scrollLeft <= 8;
-            nextBtn.disabled = t.scrollLeft >= max;
-            var noScroll = max <= 0;
-            prevBtn.parentNode.classList.toggle('is-idle', noScroll);
+            if (!track || !prevBtn) return;
+            var max = track.scrollWidth - track.clientWidth - 8;
+            prevBtn.disabled = track.scrollLeft <= 8;
+            nextBtn.disabled = track.scrollLeft >= max;
+            prevBtn.parentNode.classList.toggle('is-idle', max <= 0);
         };
         var step = function (dir) {
-            var t = activeTrack();
-            if (!t) return;
-            var card = $('.poster', t);
-            var by = card ? card.getBoundingClientRect().width + 20 : t.clientWidth * 0.8;
-            t.scrollBy({ left: dir * by * Math.max(1, Math.floor(t.clientWidth / by) - 1 || 1), behavior: RM ? 'auto' : 'smooth' });
+            var card = $('.poster', track);
+            var by = card ? card.getBoundingClientRect().width + 20 : track.clientWidth * 0.8;
+            var perView = Math.max(1, Math.floor(track.clientWidth / by));
+            track.scrollBy({ left: dir * by * Math.max(1, perView - 1), behavior: RM ? 'auto' : 'smooth' });
         };
         if (prevBtn) prevBtn.addEventListener('click', function () { step(-1); });
         if (nextBtn) nextBtn.addEventListener('click', function () { step(1); });
-        $$('[data-carousel-track]', media).forEach(function (t) {
-            t.addEventListener('scroll', function () { window.requestAnimationFrame(syncArrows); }, { passive: true });
-        });
+        if (track) track.addEventListener('scroll', function () { window.requestAnimationFrame(syncArrows); }, { passive: true });
         window.addEventListener('resize', syncArrows);
-
-        var showPanel = function (btn, focus) {
-            var key = btn.getAttribute('data-media-tab');
-            mTabs.forEach(function (b) {
-                var on = b === btn;
-                b.classList.toggle('is-active', on);
-                b.setAttribute('aria-selected', on ? 'true' : 'false');
-                b.tabIndex = on ? 0 : -1;
-            });
-            $$('[data-media-panel]', media).forEach(function (p) {
-                var show = p.getAttribute('data-media-panel') === key;
-                p.hidden = !show;
-                p.classList.toggle('is-active', show);
-            });
-            if (focus) btn.focus();
-            syncArrows();
-            if (window.ScrollTrigger) setTimeout(function () { window.ScrollTrigger.refresh(); }, 60);
-        };
-        mTabs.forEach(function (btn, i) {
-            btn.addEventListener('click', function () { showPanel(btn); });
-            btn.addEventListener('keydown', function (e) {
-                if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-                e.preventDefault();
-                showPanel(mTabs[(i + (e.key === 'ArrowRight' ? 1 : mTabs.length - 1)) % mTabs.length], true);
-            });
-        });
         syncArrows();
     }
 

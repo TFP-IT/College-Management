@@ -101,7 +101,7 @@
             <div class="nb-posters" data-reveal data-lightbox-scope="posters">
                 <h3>Official posters</h3>
                 <div class="nb-poster-grid">
-                    @foreach ($mc['posters'] as $poster)
+                    @foreach (\App\Support\MediaFeed::images() as $poster)
                         <button type="button" class="nb-poster" data-lightbox="{{ asset('frontend/mcc/img/' . $poster['image'] . '.webp') }}" data-caption="{{ $poster['title'] }}">
                             @include('frontend.landing.partials._img', ['name' => $poster['image'], 'alt' => $poster['title'], 'sizes' => '160px'])
                             <span>{{ $poster['tag'] }}</span>

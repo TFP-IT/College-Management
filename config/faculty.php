@@ -12,12 +12,14 @@
 | poster: image under public/frontend/mcc/img (no extension) — also the profile photo
 | video:  mp4 under public/ — loads only when someone presses play
 | lead:   one-line summary shown under the name on the profile page
+| date:   when the introduction was published (orders the home page media feed)
 */
 
 return [
     'members' => [
         [
             'slug' => 'salma-khatun',
+            'date' => '2026-11-16',
             'lead' => 'Bringing dedication, subject knowledge and a real commitment to student development to our Business Studies classrooms.',
             'group' => 'teacher',
             'name' => 'Salma Khatun',
@@ -33,6 +35,7 @@ return [
         ],
         [
             'slug' => 'lopa-rani-chowdhuri',
+            'date' => '2026-11-14',
             'lead' => 'A Public Administration graduate of Jatiya Kabi Kazi Nazrul Islam University and former Lecturer at Mymensingh Girls’ Cadet College.',
             'group' => 'teacher',
             'name' => 'Ms. Lopa Rani Chowdhuri',
@@ -50,6 +53,7 @@ return [
         ],
         [
             'slug' => 'nur-mohammad',
+            'date' => '2026-11-13',
             'lead' => 'A University of Barisal finance graduate guiding our Business Studies students in finance, banking and management.',
             'group' => 'teacher',
             'name' => 'Md. Nur Mohammad',
@@ -67,6 +71,7 @@ return [
         ],
         [
             'slug' => 'shahrin-nahin',
+            'date' => '2026-11-15',
             'lead' => 'A Jahangirnagar University English graduate who brings international-school teaching experience to our classrooms.',
             'group' => 'teacher',
             'name' => 'Ms. Shahrin Nahin',
@@ -84,6 +89,7 @@ return [
         ],
         [
             'slug' => 'ayub-ali',
+            'date' => '2026-11-12',
             'lead' => 'A Jahangirnagar University chemistry graduate with a strong academic foundation and a genuine commitment to teaching.',
             'group' => 'teacher',
             'name' => 'Mr. Ayub Ali',
@@ -101,6 +107,7 @@ return [
         ],
         [
             'slug' => 'shoriful-islam',
+            'date' => '2026-11-11',
             'lead' => 'An MCC alumnus who has come home, now serving the campus where his own journey began.',
             'group' => 'teacher',
             'name' => 'Shoriful Islam',

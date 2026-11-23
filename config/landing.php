@@ -211,25 +211,24 @@ return [
     ],
 
     /*
-    | Videos shown in the "MCC Media" section (played on our own site, no third-party player).
-    | src:    an mp4 under public/ (e.g. frontend/mcc/video/xyz.mp4). Missing file = "Video coming soon".
-    | poster: a thumbnail under public/frontend/mcc/img (no extension). Only the poster loads with the page;
-    |         the video file downloads when someone presses play.
-    | Later this list can come from the CMS/database instead of this file.
+    | "MCC Media" feed on the home page: images (announcements/posters) and videos in one
+    | carousel, newest first. Teacher/staff introduction videos are added automatically from
+    | config/faculty.php. Built by App\Support\MediaFeed — later this will come from the backend.
+    |
+    | type:  image | video
+    | date:  used for ordering (newest first), Y-m-d
+    | image: (image) file under public/frontend/mcc/img, no extension
+    | src:   (video) mp4 under public/ — downloads only when played
+    | poster:(video) thumbnail under public/frontend/mcc/img, no extension
     */
-    'videos' => [
-        // Teacher & staff introductions come from config/faculty.php (listed first automatically).
-        // Campus
-        ['src' => 'frontend/mcc/video/hero.mp4', 'poster' => 'hero-poster',
+    'media' => [
+        ['type' => 'image', 'date' => '2026-11-21', 'image' => 'campus/school-2-teaser',          'tag' => 'Coming soon', 'title' => 'Maestro Crown School 2.0 is coming'],
+        ['type' => 'image', 'date' => '2026-11-18', 'image' => 'campus/admission-poster-2026-27', 'tag' => 'Admission',   'title' => 'Admissions open: Session 2026–27'],
+        ['type' => 'image', 'date' => '2026-11-08', 'image' => 'campus/admission-poster-bn-1',    'tag' => 'Admission',   'title' => 'Class XI admission: Science, Business & Humanities'],
+        ['type' => 'image', 'date' => '2026-11-05', 'image' => 'campus/admission-poster-bn-2',    'tag' => 'Admission',   'title' => 'HSC admission 2026–27 is ongoing'],
+        ['type' => 'image', 'date' => '2026-10-16', 'image' => 'campus/hsc-result-2026',          'tag' => 'Result',      'title' => 'HSC Examination 2026 results'],
+        ['type' => 'video', 'date' => '2026-09-01', 'src' => 'frontend/mcc/video/hero.mp4', 'poster' => 'hero-poster',
          'tag' => 'Campus tour', 'title' => 'A walk through our campus', 'subtitle' => 'Maestro Crown School & College, Savar'],
-    ],
-
-    'posters' => [
-        ['image' => 'campus/admission-poster-2026-27', 'title' => 'Admissions open: Session 2026–27',       'tag' => 'Admission'],
-        ['image' => 'campus/admission-poster-bn-1',    'title' => 'Class XI admission: Science, Business & Humanities', 'tag' => 'Admission'],
-        ['image' => 'campus/admission-poster-bn-2',    'title' => 'HSC admission 2026–27 is ongoing',      'tag' => 'Admission'],
-        ['image' => 'campus/hsc-result-2026',          'title' => 'HSC Examination 2026 results',          'tag' => 'Result'],
-        ['image' => 'campus/school-2-teaser',          'title' => 'Maestro Crown School 2.0 is coming',    'tag' => 'Coming soon'],
     ],
 
     'gallery' => [
