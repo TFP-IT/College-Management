@@ -84,7 +84,7 @@
                     <div class="gb-featured-body">
                         <span class="gb-role"><i class="fa-solid {{ $roleIcon($featured->designation) }}"></i> {{ $featured->designation }}</span>
                         <h3>{{ $featured->name }}</h3>
-                        <p>Founder of Kamrul Group and Maestro Crown School & College, leading the board’s vision for an institution built on mastery, honour and fairness.</p>
+                        <p>Founder of Maestro Crown School &amp; College and Global Chairman of Versatilo Group, leading the board’s vision for an institution built on mastery, honour and fairness.</p>
                         <div class="gb-featured-links">
                             <a href="{{ route('frontend.chairman_profile') }}" class="link-arrow">Profile <i class="fa-solid fa-arrow-right"></i></a>
                             <a href="{{ route('frontend.message_chairman') }}" class="link-arrow">Message <i class="fa-solid fa-arrow-right"></i></a>

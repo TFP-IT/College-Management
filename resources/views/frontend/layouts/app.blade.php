@@ -63,6 +63,7 @@
     </script>
 
     @stack('styles')
+    @stack('head')
 </head>
 <body class="{{ $isLanding ? 'page-landing' : 'page-inner' }}">
     <a class="skip-link" href="#main">Skip to content</a>

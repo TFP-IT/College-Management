@@ -52,7 +52,7 @@
 
             <footer class="signature" data-reveal>
                 <span class="signature-script" aria-hidden="true">Kamrul Ahsan</span>
-                <strong>Dr. Kamrul Ahsan</strong>
+                <strong>Dr. Kamrul Ahsan <abbr class="postnominal" title="Fellow of the Royal Society of Arts">FRSA</abbr></strong>
                 <span>Founder &amp; Chairman, Maestro Crown School & College</span>
             </footer>
         </article>
@@ -60,8 +60,8 @@
         <aside class="letter-aside">
             <div class="author-card" data-reveal>
                 @include('frontend.partials.portrait', ['name' => 'Dr. Kamrul Ahsan', 'image' => 'campus/chairman-face', 'class' => 'author-photo', 'sizes' => '96px'])
-                <strong>Dr. Kamrul Ahsan</strong>
-                <span>Founder &amp; Chairman<br>Kamrul Group · Maestro Crown School & College</span>
+                <strong>Dr. Kamrul Ahsan <abbr class="postnominal" title="Fellow of the Royal Society of Arts">FRSA</abbr></strong>
+                <span>Founder &amp; Chairman, Maestro Crown School &amp; College<br>Global Chairman, Versatilo Group</span>
                 <a href="{{ route('frontend.chairman_profile') }}" class="link-arrow">Full profile <i class="fa-solid fa-arrow-right"></i></a>
             </div>
             <div class="commit-card" data-reveal>
