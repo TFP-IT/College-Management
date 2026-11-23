@@ -3,10 +3,10 @@
     <div class="container about-grid">
         <div class="about-collage" aria-hidden="true">
             <div class="about-img about-img--a" data-clip data-parallax="-8">
-                @include('frontend.landing.partials._img', ['name' => 'some-students', 'alt' => ''])
+                @include('frontend.landing.partials._img', ['name' => $about['image_main'], 'alt' => '', 'sizes' => '(max-width: 1023px) 90vw, 40vw'])
             </div>
             <div class="about-img about-img--b" data-clip data-parallax="10">
-                @include('frontend.landing.partials._img', ['name' => 'library', 'alt' => ''])
+                @include('frontend.landing.partials._img', ['name' => $about['image_small'], 'alt' => '', 'sizes' => '(max-width: 1023px) 60vw, 30vw'])
             </div>
             <div class="about-badge" data-reveal>
                 <strong>{{ now()->year - 2014 }}+</strong>

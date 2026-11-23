@@ -26,7 +26,7 @@
             <p class="achieve-note" data-reveal><i class="fa-solid fa-trophy"></i> {{ $ach['note'] }}</p>
         </div>
         <div class="achieve-photo" data-clip>
-            @include('frontend.landing.partials._img', ['name' => 'award', 'alt' => 'MCC students and faculty at an award ceremony'])
+            @include('frontend.landing.partials._img', ['name' => $ach['image'], 'alt' => $ach['image_alt'], 'sizes' => '(max-width: 1023px) 100vw, 45vw'])
             <span class="achieve-shine" aria-hidden="true"></span>
         </div>
     </div>

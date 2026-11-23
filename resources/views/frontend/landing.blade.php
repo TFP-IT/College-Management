@@ -23,6 +23,7 @@
     @include('frontend.landing.sections._trust')
     @include('frontend.landing.sections._paths')
     @include('frontend.landing.sections._app')
+    @include('frontend.landing.sections._notice-board')
     @include('frontend.landing.sections._journey')
     @include('frontend.landing.sections._about')
     @include('frontend.landing.sections._why')

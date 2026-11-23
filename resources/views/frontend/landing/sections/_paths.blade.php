@@ -46,7 +46,7 @@
                         <div><strong>{{ $step['title'] }}</strong><span>{{ $step['desc'] }}</span></div>
                     </div>
                 @endforeach
-                <a href="{{ $contact['phone_href'] }}" class="paths-help"><i class="fa-solid fa-headset"></i> Need help choosing a class? <strong>{{ $contact['phone'] }}</strong></a>
+                <a href="{{ $contact['phone_href'] }}" class="paths-help"><i class="fa-solid fa-headset"></i><span><small>Need help choosing a class?</small><strong>{{ $contact['phone'] }}</strong></span></a>
             </div>
         </div>
 

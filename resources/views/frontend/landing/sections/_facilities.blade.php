@@ -11,7 +11,7 @@
             @foreach ($mc['facilities'] as $f)
                 @if (!empty($f['image']))
                     <figure class="fac-tile fac-tile--{{ $f['size'] ?? 'std' }}" data-clip>
-                        @include('frontend.landing.partials._img', ['name' => $f['image'], 'alt' => $f['title']])
+                        @include('frontend.landing.partials._img', ['name' => $f['image'], 'alt' => $f['title'], 'sizes' => !empty($f['size']) && $f['size'] === 'wide' ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 50vw, 25vw'])
                         <figcaption>
                             <h3>{{ $f['title'] }}</h3>
                             <p>{{ $f['desc'] }}</p>
