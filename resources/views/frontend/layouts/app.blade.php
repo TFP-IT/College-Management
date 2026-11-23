@@ -14,7 +14,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Maestro Crown College | School & College Admission ' . $mc['session'] . ' – Savar, Dhaka')</title>
     <meta name="description" content="@yield('meta_description', 'Maestro Crown College, Savar, Dhaka: a joint UK–Bangladesh institution since 2014. Admission ' . $mc['session'] . ' is open for School (Play Group to Class 10) and College (HSC: Science, Business Studies, Humanities). Apply in the MCC Hello Future app. EIIN 136876 · College Code 1933.')">
-    <meta name="theme-color" content="#2A0909">
+    <meta name="theme-color" content="#E45551">
     <link rel="icon" href="{{ asset('frontend/mcc/img/logo-256.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('frontend/mcc/img/logo-256.png') }}">
 
@@ -94,10 +94,9 @@
         <nav class="mc-nav" aria-label="Main">
             <div class="container mc-nav-inner">
                 <a href="{{ route('landing') }}" class="mc-brand" aria-label="Maestro Crown College, home">
-                    <img src="{{ $logo }}" alt="" width="46" height="46">
+                    <img src="{{ $logo }}" alt="" width="70" height="70">
                     <span>
                         <span class="mc-brand-name">Maestro Crown College</span>
-                        <span class="mc-brand-sub">School &amp; College · Est. 2014</span>
                     </span>
                 </a>
 

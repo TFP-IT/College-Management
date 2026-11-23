@@ -25,7 +25,7 @@
             </div>
             <p class="sd-label">Quick actions</p>
             <div class="sd-actions">
-                <span><i class="fa-solid fa-credit-card" style="color:#C62828;background:#FBE4E4"></i>Pay Fee</span>
+                <span><i class="fa-solid fa-credit-card" style="color:#E45551;background:#FDEEED"></i>Pay Fee</span>
                 <span><i class="fa-solid fa-book" style="color:#B8912A;background:#FBF3DC"></i>Library</span>
                 <span><i class="fa-solid fa-bus" style="color:#7A6A5A;background:#EFEAE4"></i>Transport</span>
                 <span><i class="fa-regular fa-calendar-check" style="color:#2E7D32;background:#E3F1E4"></i>Attendance</span>

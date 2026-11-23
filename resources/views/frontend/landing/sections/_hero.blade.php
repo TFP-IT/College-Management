@@ -32,7 +32,7 @@
                 <span class="hero-devices-glow"></span>
                 @include('frontend.landing.partials._phone', ['variant' => 'login', 'class' => 'phone--front', 'eager' => true])
                 @include('frontend.landing.partials._phone', ['variant' => 'dash', 'class' => 'phone--back', 'eager' => true])
-                <div class="toast toast--hero-1"><i class="fa-solid fa-file-circle-check"></i><span><b>Application submitted</b>Admission {{ $mc['session'] }}</span></div>
+                <div class="toast toast--hero-1"><i class="fa-solid fa-users"></i><span><b>One app. Every role.</b>Student, Guardian &amp; Teacher portals</span></div>
                 <div class="toast toast--hero-2"><i class="fa-solid fa-location-crosshairs"></i><span><b>Live tracking</b>Status updated just now</span></div>
             </div>
             <div class="hero-stores" data-hero-item>
