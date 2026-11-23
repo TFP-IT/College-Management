@@ -7,12 +7,14 @@
     $listRoute = $isStaff ? 'frontend.staff_info' : 'frontend.teacher_info';
     $listLabel = $isStaff ? 'Staff' : 'Teachers';
     $hasVideo = !empty($p['video']) && file_exists(public_path($p['video']));
-    $icon = config('faculty.department_icons.' . ($p['department'] ?? ''), 'fa-user');
+    $dept = $p['department'] ?? null;
+    $hasPoster = !empty($p['poster']);
+    $icon = $dept ? config('faculty.department_icons.' . $dept, 'fa-user') : ($isStaff ? 'fa-id-badge' : 'fa-chalkboard-user');
     $words = preg_split('/\s+/', trim($p['name']));
     $last = array_pop($words);
-    $firstSentence = $p['lead'] ?? \Illuminate\Support\Str::limit($p['bio'], 160);
+    $firstSentence = $p['lead'] ?? (!empty($p['bio']) ? \Illuminate\Support\Str::limit($p['bio'], 160) : $p['role'] . ' at Maestro Crown School & College, Savar.');
     $facts = array_values(array_filter([
-        ['icon' => $icon, 'label' => 'Department', 'value' => $p['department']],
+        $dept ? ['icon' => $icon, 'label' => 'Department', 'value' => $dept] : ['icon' => $icon, 'label' => 'Role', 'value' => $p['role']],
         !empty($p['subjects']) ? ['icon' => 'fa-book-open', 'label' => count($p['subjects']) > 1 ? 'Subjects' : 'Subject', 'value' => implode(' · ', $p['subjects'])] : null,
         !empty($p['education'][0]) ? ['icon' => 'fa-building-columns', 'label' => 'Studied at', 'value' => $p['education'][0]['institution']] : null,
         !empty($p['experience']) ? ['icon' => 'fa-briefcase', 'label' => 'Previously', 'value' => $p['experience']] : null,
@@ -21,7 +23,7 @@
 @endphp
 
 @section('title', $p['name'] . ', ' . $p['role'] . ' | Maestro Crown School & College')
-@section('meta_description', \Illuminate\Support\Str::limit($p['bio'], 155))
+@section('meta_description', \Illuminate\Support\Str::limit($p['bio'] ?? ($p['name'] . ', ' . $p['role'] . ' at Maestro Crown School & College, Savar, Dhaka.'), 155))
 
 @push('styles')
     <link rel="stylesheet" href="{{ $ver('frontend/mcc/css/motion.css') }}">
@@ -46,7 +48,7 @@
             </nav>
             <span class="eyebrow" data-reveal>{{ $p['tag'] ?? ($isStaff ? 'Our staff' : 'Meet our faculty') }}</span>
             <h1 class="pf-name" id="pf-name" data-split>{{ implode(' ', $words) }} <em>{{ $last }}</em></h1>
-            <p class="pf-role" data-reveal>{{ $p['role'] }} <span aria-hidden="true">·</span> {{ $p['department'] }}</p>
+            <p class="pf-role" data-reveal>{{ $p['role'] }}@if ($dept && !\Illuminate\Support\Str::contains($p['role'], $dept)) <span aria-hidden="true">·</span> {{ $dept }}@endif</p>
             <p class="pf-lead" data-reveal>{{ $firstSentence }}</p>
             <div class="pf-actions" data-reveal>
                 @if ($hasVideo)
@@ -57,10 +59,14 @@
         </div>
 
         <figure class="pf-portrait tp-portrait" data-clip>
-            @include('frontend.landing.partials._img', ['name' => $p['poster'], 'alt' => $p['name'] . ', ' . $p['role'], 'sizes' => '(max-width: 1023px) 90vw, 440px', 'eager' => true])
+            @if ($hasPoster)
+                @include('frontend.landing.partials._img', ['name' => $p['poster'], 'alt' => $p['name'] . ', ' . $p['role'], 'sizes' => '(max-width: 1023px) 90vw, 440px', 'eager' => true])
+            @else
+                @include('frontend.partials.portrait', ['name' => $p['name'], 'class' => 'portrait--hero'])
+            @endif
             <figcaption class="pf-portrait-card">
                 <span class="tp-card-icon"><i class="fa-solid {{ $icon }}"></i></span>
-                <span><strong>{{ $p['department'] }}</strong>Maestro Crown School &amp; College</span>
+                <span><strong>{{ $dept ?? ($isStaff ? 'Our staff' : 'Our faculty') }}</strong>Maestro Crown School &amp; College</span>
             </figcaption>
         </figure>
     </div>
@@ -93,9 +99,13 @@
                     </video>
                 </div>
                 <p class="tp-media-note"><i class="fa-solid fa-video"></i> Introduction video · {{ $p['name'] }}</p>
-            @else
+            @elseif ($hasPoster)
                 <div class="tp-player tp-player--image">
                     @include('frontend.landing.partials._img', ['name' => $p['poster'], 'alt' => $p['name'], 'sizes' => '(max-width: 1023px) 90vw, 420px'])
+                </div>
+            @else
+                <div class="tp-player tp-player--image">
+                    @include('frontend.partials.portrait', ['name' => $p['name'], 'class' => 'portrait--hero tp-portrait-ph'])
                 </div>
             @endif
         </div>
@@ -103,7 +113,12 @@
         <article class="tp-about">
             <span class="eyebrow" data-reveal>About</span>
             <h2 class="sec-title" id="tp-about-title" data-reveal>Meet <em>{{ $p['name'] }}</em></h2>
-            <p class="tp-bio" data-reveal>{{ $p['bio'] }}</p>
+            @if (!empty($p['bio']))
+                <p class="tp-bio" data-reveal>{{ $p['bio'] }}</p>
+            @else
+                <p class="tp-bio" data-reveal>{{ $p['name'] }} is {{ \Illuminate\Support\Str::startsWith(strtolower($p['role']), ['a', 'e', 'i', 'o', 'u']) ? 'an' : 'a' }} {{ $p['role'] }} at Maestro Crown School &amp; College{{ $dept && !$isStaff ? ', in the ' . $dept . ' department' : '' }}.</p>
+                <p class="tp-soon" data-reveal><i class="fa-solid fa-clock"></i> A detailed profile with photo and introduction is coming soon.</p>
+            @endif
 
             @if (!empty($p['education']))
                 <div class="tp-block" data-reveal>

@@ -1,11 +1,14 @@
 @extends('frontend.layouts.app')
 
 @section('title', 'Our Teachers | Maestro Crown School & College')
-@section('meta_description', 'Meet the teachers of Maestro Crown School & College, Savar: subject experts from leading universities in science, business studies, humanities and languages.')
+@section('meta_description', 'Meet the Principal and teachers of Maestro Crown School & College, Savar: subject experts in science, ICT, business studies, humanities and languages.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
-    $depts = $people->pluck('department')->unique()->values();
+    $leaders = collect(config('faculty.leadership', []));
+    $depts = $people->pluck('department')->filter()->unique()->values();
+    $withVideo = $people->filter(fn ($p) => !empty($p['video']))->count();
+    $heroImgs = $people->pluck('poster')->filter()->values();
 @endphp
 
 @push('styles')
@@ -18,10 +21,30 @@
     'crumbs'  => [['About', route('frontend.about')], ['Teachers']],
     'eyebrow' => 'Our teachers',
     'title'   => 'Teachers who know <em>every student by name</em>',
-    'lead'    => 'Meet the educators behind our classrooms and labs: subject experts from Bangladesh’s leading universities, who care about character as much as results. Watch their introductions and explore their profiles.',
-    'chips'   => [$people->count() . ' featured teachers', $depts->implode(' · ')],
-    'media'   => ['type' => 'collage', 'images' => [$people[0]['poster'] ?? 'campus/classroom-exam', $people[3]['poster'] ?? 'campus/computer-lab-3']],
+    'lead'    => 'Meet the educators behind our classrooms and labs: subject experts from Bangladesh’s leading universities, who care about character as much as results.',
+    'chips'   => array_values(array_filter([$people->count() . ' lecturers', $withVideo ? $withVideo . ' video introductions' : null, $depts->implode(' · ')])),
+    'media'   => ['type' => 'collage', 'images' => [$heroImgs[0] ?? 'campus/classroom-exam', $heroImgs[3] ?? 'campus/computer-lab-3']],
 ])
+
+{{-- Academic leadership --}}
+@if ($leaders->isNotEmpty())
+<section class="lead-strip" aria-label="Academic leadership">
+    <div class="container">
+        @foreach ($leaders as $l)
+            <a href="{{ route($l['route']) }}" class="lead-card" data-reveal>
+                @include('frontend.partials.portrait', ['name' => $l['name'], 'image' => $l['poster'] ?? null, 'class' => 'lead-photo', 'sizes' => '160px'])
+                <span class="lead-body">
+                    <span class="eyebrow eyebrow--plain">Academic leadership</span>
+                    <strong>{{ $l['name'] }}</strong>
+                    <span class="lead-role">{{ $l['role'] }}, Maestro Crown School &amp; College</span>
+                    @if (!empty($l['quote']))<span class="lead-quote">“{{ $l['quote'] }}”</span>@endif
+                </span>
+                <span class="lead-cta">Read the Principal’s message <i class="fa-solid fa-arrow-right"></i></span>
+            </a>
+        @endforeach
+    </div>
+</section>
+@endif
 
 <section class="people section-pad" aria-labelledby="people-title" data-filterable>
     <div class="container">
@@ -41,12 +64,12 @@
         </header>
         <div class="pc-grid" data-stagger>
             @foreach ($people as $p)
-                <div class="pc-cell" data-fitem data-type="{{ \Illuminate\Support\Str::slug($p['department']) }}">
+                <div class="pc-cell" data-fitem data-type="{{ $p['department'] ? \Illuminate\Support\Str::slug($p['department']) : 'other' }}">
                     @include('frontend.partials.person-card', ['p' => $p])
                 </div>
             @endforeach
         </div>
-        <p class="people-note" data-reveal><i class="fa-solid fa-circle-info"></i> More teacher profiles are being added. Every MCC teacher will soon have a profile here.</p>
+        <p class="people-note" data-reveal><i class="fa-solid fa-circle-info"></i> Photos and detailed profiles are being added for every teacher.</p>
     </div>
 </section>
 

@@ -8,7 +8,8 @@
 | (/teacher-information/{slug}, /staff-information/{slug}) and the
 | "Meet our faculty" videos on the home page. Later this can move to the CMS.
 |
-| group:  teacher | staff
+| group:  teacher | staff   (department may be null when not yet known)
+| Contact numbers and blood groups are intentionally NOT stored here: this file feeds a public website.
 | poster: image under public/frontend/mcc/img (no extension) — also the profile photo
 | video:  mp4 under public/ — loads only when someone presses play
 | lead:   one-line summary shown under the name on the profile page
@@ -109,10 +110,10 @@ return [
             'slug' => 'shoriful-islam',
             'date' => '2026-11-11',
             'lead' => 'An MCC alumnus who has come home, now serving the campus where his own journey began.',
-            'group' => 'teacher',
+            'group' => 'staff',
             'name' => 'Shoriful Islam',
-            'role' => 'Executive (Administration)',
-            'department' => 'Administration',
+            'role' => 'Accounts Officer',
+            'department' => 'Accounts',
             'subjects' => [],
             'education' => [
                 ['degree' => 'BBA & MBA', 'institution' => 'Gopalganj Science and Technology University'],
@@ -125,6 +126,67 @@ return [
             'video' => 'frontend/mcc/video/teachers/shoriful-islam.mp4',
             'poster' => 'campus/video-shoriful-islam',
         ],
+
+        // ── Faculty without introduction videos yet (placeholder photo until one is added) ──
+        [
+            'slug' => 'masud-rana', 'group' => 'teacher', 'name' => 'Md. Masud Rana',
+            'role' => 'Lecturer in ICT', 'department' => 'ICT', 'subjects' => ['Information & Communication Technology'],
+            'education' => [], 'experience' => null, 'tag' => 'Our faculty',
+            'lead' => null, 'bio' => null, 'video' => null, 'poster' => null,
+        ],
+        [
+            'slug' => 'shahin-alam', 'group' => 'teacher', 'name' => 'Md. Shahin Alam',
+            'role' => 'Lecturer in Accounting', 'department' => 'Business Studies', 'subjects' => ['Accounting'],
+            'education' => [], 'experience' => null, 'tag' => 'Our faculty',
+            'lead' => null, 'bio' => null, 'video' => null, 'poster' => null,
+        ],
+        [
+            'slug' => 'arshad-chowdhury', 'group' => 'teacher', 'name' => 'Md. Arshad Chowdhury',
+            'role' => 'Lecturer', 'department' => null, 'subjects' => [],
+            'education' => [], 'experience' => null, 'tag' => 'Our faculty',
+            'lead' => null, 'bio' => null, 'video' => null, 'poster' => null,
+        ],
+
+        // ── Administration & support staff ──
+        [
+            'slug' => 'islamul-haque', 'group' => 'staff', 'name' => 'Md. Islamul Haque',
+            'role' => 'Administration & Marketing Officer', 'department' => 'Administration',
+            'education' => [], 'experience' => null, 'bio' => null, 'video' => null, 'poster' => null,
+        ],
+        [
+            'slug' => 'yasin', 'group' => 'staff', 'name' => 'Md. Yasin',
+            'role' => 'Executive, Administration, Marketing & Student Counselling', 'department' => 'Administration',
+            'education' => [], 'experience' => null, 'bio' => null, 'video' => null, 'poster' => null,
+        ],
+        [
+            'slug' => 'rupa-akter', 'group' => 'staff', 'name' => 'Rupa Akter',
+            'role' => 'Front Desk Executive', 'department' => 'Front Office',
+            'education' => [], 'experience' => null, 'bio' => null, 'video' => null, 'poster' => null,
+        ],
+        [
+            'slug' => 'solaiman-hosen', 'group' => 'staff', 'name' => 'Md. Solaiman Hosen',
+            'role' => 'Office Assistant', 'department' => 'Support Services',
+            'education' => [], 'experience' => null, 'bio' => null, 'video' => null, 'poster' => null,
+        ],
+        [
+            'slug' => 'lucky-akter', 'group' => 'staff', 'name' => 'Lucky Akter',
+            'role' => 'Care Assistant (Aya)', 'department' => 'Support Services',
+            'education' => [], 'experience' => null, 'bio' => null, 'video' => null, 'poster' => null,
+        ],
+        [
+            'slug' => 'abbas-ali', 'group' => 'staff', 'name' => 'Md. Abbas Ali',
+            'role' => 'Security Guard', 'department' => 'Support Services',
+            'education' => [], 'experience' => null, 'bio' => null, 'video' => null, 'poster' => null,
+        ],
+    ],
+
+    // Shown at the top of the Teachers page.
+    'leadership' => [
+        [
+            'name' => 'Md. Shoeb Khan', 'role' => 'Principal', 'poster' => 'campus/principal',
+            'quote' => 'I believe education is the foundation of a brighter future.',
+            'route' => 'frontend.message_principal',
+        ],
     ],
 
     'department_icons' => [
@@ -133,5 +195,9 @@ return [
         'Humanities' => 'fa-landmark',
         'Languages' => 'fa-language',
         'Administration' => 'fa-building-user',
+        'ICT' => 'fa-laptop-code',
+        'Accounts' => 'fa-calculator',
+        'Front Office' => 'fa-headset',
+        'Support Services' => 'fa-handshake-angle',
     ],
 ];
