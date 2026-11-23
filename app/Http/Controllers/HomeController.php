@@ -9,12 +9,34 @@ use Mail;
 use App\Mail\SchoolEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use App\Modules\Cms\Models\CmsGalleryItem;
+use App\Modules\Cms\Models\CmsNotice;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return view('frontend.landing');
+        // Admission itself happens in the MCC Hello Future app, so the landing page
+        // only needs notices and gallery from the database.
+        return view('frontend.landing', [
+            'notices'         => $this->landingQuery('notices', fn () => CmsNotice::live()->take(4)->get()),
+            'gallery'         => $this->landingQuery('gallery', fn () => CmsGalleryItem::published()->take(10)->get()),
+        ]);
+    }
+
+    /**
+     * Live landing data is a nice-to-have: if a table is missing or a query
+     * fails, log it and render the static fallback instead of a 500.
+     */
+    private function landingQuery(string $what, \Closure $query): \Illuminate\Support\Collection
+    {
+        try {
+            return collect($query());
+        } catch (\Throwable $e) {
+            Log::warning("Landing page: could not load {$what}", ['error' => $e->getMessage()]);
+            return collect();
+        }
     }
 
     /**
