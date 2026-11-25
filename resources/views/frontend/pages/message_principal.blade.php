@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
 
 @section('title', 'Message from the Principal | Maestro Crown School & College')
-@section('meta_description', 'A message from Md. Shoeb Khan, Principal of Maestro Crown School & College, Savar, on academic excellence, discipline and personal growth.')
+@section('meta_description', 'A message from Md. Shoeb Khan, Principal of Maestro Crown School & College, Savar: 30 years in education, former Principal of Ashulia College and Economics graduate of Jahangirnagar University.')
 
 @php
     $ver = fn (string $path) => asset($path) . '?v=' . (@filemtime(public_path($path)) ?: '1');
@@ -9,6 +9,13 @@
         ['icon' => 'fa-award',         'title' => 'Academic excellence', 'desc' => 'High expectations in every classroom, supported by dedicated teachers.'],
         ['icon' => 'fa-scale-balanced', 'title' => 'Discipline',         'desc' => 'A focused, respectful campus where every student can do their best work.'],
         ['icon' => 'fa-seedling',      'title' => 'Personal growth',     'desc' => 'Confidence, capability and responsibility, built step by step.'],
+    ];
+    $highlights = [
+        ['icon' => 'fa-school',          'label' => 'Current role',          'value' => 'Principal, Maestro Crown School & College'],
+        ['icon' => 'fa-building-columns', 'label' => 'Previous leadership',  'value' => 'Principal & Assistant Professor, Ashulia College'],
+        ['icon' => 'fa-clipboard-check', 'label' => 'Teaching & assessment', 'value' => 'Former Teacher & Examiner, Savar Government College (Bangladesh Open University – BOU)'],
+        ['icon' => 'fa-graduation-cap',  'label' => 'Education',             'value' => 'Master’s and Honours in Economics, Jahangirnagar University'],
+        ['icon' => 'fa-certificate',     'label' => 'Specialized training',  'value' => 'Non-Formal Primary Education (NFPE), BRAC'],
     ];
 @endphp
 
@@ -22,10 +29,10 @@
     'crumbs'  => [['About', route('frontend.about')], ['Message of Principal']],
     'eyebrow' => 'Message of Principal',
     'title'   => 'Education is the foundation of a <em>brighter future</em>',
-    'lead'    => 'A message from our Principal, Md. Shoeb Khan, to every student, parent and friend of Maestro Crown School & College.',
+    'lead'    => 'A message from our Principal, Md. Shoeb Khan, who brings 30 years of experience in education and academic administration to every student, parent and friend of Maestro Crown School & College.',
     'actions' => [
         ['label' => 'Read the message', 'href' => '#letter', 'icon' => 'fa-arrow-down', 'style' => 'primary'],
-        ['label' => 'Meet our teachers', 'href' => route('frontend.teacher_info'), 'style' => 'outline'],
+        ['label' => 'About the Principal', 'href' => '#about-principal', 'style' => 'outline'],
     ],
     'media'   => ['type' => 'portrait', 'image' => 'campus/principal', 'name' => 'Md. Shoeb Khan', 'caption' => 'Principal'],
 ])
@@ -59,6 +66,22 @@
                 <strong>Md. Shoeb Khan</strong>
                 <span>Principal, Maestro Crown School & College</span>
             </footer>
+
+            <section class="principal-bio" id="about-principal" aria-labelledby="about-principal-title">
+                <h2 id="about-principal-title" data-reveal>About the Principal</h2>
+                <p data-reveal>With 30 years of dedicated experience in education and academic administration, Md. Shoeb Khan leads Maestro Crown School & College with a commitment to academic excellence, student growth and institutional integrity.</p>
+                <p data-reveal>Before joining Maestro Crown School & College, he served as both Principal and Assistant Professor at Ashulia College, where he played a key role in shaping academic standards and campus leadership. Earlier in his career, he contributed to higher education as a Teacher and Examiner at Savar Government College under the Bangladesh Open University (BOU).</p>
+
+                <h3 data-reveal>Academic &amp; professional highlights</h3>
+                <ul class="cred-list" data-stagger>
+                    @foreach ($highlights as $h)
+                        <li data-reveal>
+                            <span class="cred-icon"><i class="fa-solid {{ $h['icon'] }}" aria-hidden="true"></i></span>
+                            <span><small>{{ $h['label'] }}</small>{{ $h['value'] }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
         </article>
 
         <aside class="letter-aside">
@@ -66,14 +89,16 @@
                 @include('frontend.partials.portrait', ['name' => 'Md. Shoeb Khan', 'image' => 'campus/principal', 'class' => 'author-photo', 'sizes' => '96px'])
                 <strong>Md. Shoeb Khan</strong>
                 <span>Principal<br>Maestro Crown School & College</span>
-                <a href="{{ route('frontend.teacher_info') }}" class="link-arrow">Our teachers <i class="fa-solid fa-arrow-right"></i></a>
+                <span class="author-years"><strong>30</strong> years in education</span>
+                <a href="#about-principal" class="link-arrow">About the Principal <i class="fa-solid fa-arrow-right"></i></a>
             </div>
             <div class="commit-card" data-reveal>
-                <h3>Our goal for every student</h3>
+                <h3>At a glance</h3>
                 <ul>
-                    <li><i class="fa-solid fa-user-check"></i> Confident</li>
-                    <li><i class="fa-solid fa-screwdriver-wrench"></i> Capable</li>
-                    <li><i class="fa-solid fa-hand-holding-heart"></i> Responsible</li>
+                    <li><i class="fa-solid fa-briefcase"></i> 30 years in education &amp; academic administration</li>
+                    <li><i class="fa-solid fa-building-columns"></i> Former Principal, Ashulia College</li>
+                    <li><i class="fa-solid fa-graduation-cap"></i> Economics, Jahangirnagar University</li>
+                    <li><i class="fa-solid fa-certificate"></i> NFPE training, BRAC</li>
                 </ul>
             </div>
         </aside>

@@ -212,6 +212,17 @@ html.js .mosaic-item[data-clip].is-in { clip-path: inset(0 round var(--r-lg)); }
 .focus-icon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 13px; background: var(--mc-brand-tint); color: var(--mc-brand); margin-bottom: 6px; }
 .focus-card strong { font-family: var(--f-display); font-weight: 600; font-size: 1.12rem; color: var(--mc-ink); }
 .focus-card > span:last-child { font-size: .9rem; color: var(--mc-muted); line-height: 1.55; }
+
+/* Principal bio + credentials */
+.principal-bio { margin-top: 56px; padding-top: 8px; scroll-margin-top: calc(var(--header-h) + 24px); }
+.principal-bio h2 { margin-top: 0; }
+.principal-bio h3 { font-size: .74rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--mc-brand-700); margin: 32px 0 14px; }
+.cred-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.cred-list li { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: var(--r-lg); background: #fff; border: 1px solid var(--mc-line); line-height: 1.5; color: var(--mc-ink); font-weight: 600; font-size: .96rem; }
+.cred-list small { display: block; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--mc-gold-600); margin-bottom: 2px; }
+.cred-icon { width: 38px; height: 38px; flex-shrink: 0; display: grid; place-items: center; border-radius: 11px; background: var(--mc-brand-tint); color: var(--mc-brand); font-size: .9rem; }
+.author-card .author-years { display: inline-flex; align-items: baseline; gap: 6px; padding: 6px 14px; border-radius: 999px; background: var(--mc-gold-tint); color: #8A6A10; font-size: .78rem; font-weight: 700; margin-bottom: 8px; }
+.author-card .author-years strong { font-family: var(--f-display); font-size: 1.1rem; color: inherit; }
 .portrait img[src*="principal"] { object-position: 50% 18%; }
 
 /* ── Governing body ──────────────────────────────────────────────────── */
