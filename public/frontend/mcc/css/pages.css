@@ -874,3 +874,133 @@ html.js .mosaic-item[data-clip].is-in { clip-path: inset(0 round var(--r-lg)); }
     .lead-cta { justify-self: center; }
     .lead-photo { width: 104px; height: 104px; }
 }
+
+/* ==========================================================================
+   Content from the previous site: About (houses, beyond the classroom),
+   Programs (resources, subjects, grading) and Research & Development.
+   ========================================================================== */
+
+/* ── About: beyond the classroom ─────────────────────────────────────── */
+.ab-beyond { background: #fff; border-top: 1px solid var(--mc-line); }
+.ab-beyond .life-card { background: var(--mc-bg); }
+.ab-beyond .life-tags li { background: #fff; }
+.life-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.life-card { display: flex; flex-direction: column; padding: 28px 26px; border-radius: var(--r-lg); background: #fff; border: 1px solid var(--mc-line); transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out); }
+.life-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.life-icon { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; background: var(--mc-gold-tint); color: #8A6A10; font-size: 1.05rem; margin-bottom: 18px; transition: background-color .4s, color .4s; }
+.life-card:hover .life-icon { background: var(--mc-brand); color: #fff; }
+.life-card h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.22rem; margin-bottom: 6px; }
+.life-card p { color: var(--mc-muted); font-size: .93rem; margin-bottom: 16px; }
+.life-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+.life-tags li { font-size: .75rem; font-weight: 700; padding: 5px 11px; border-radius: 999px; background: var(--mc-bg); border: 1px solid var(--mc-line); color: var(--mc-ink-2); }
+
+/* ── About: house system ─────────────────────────────────────────────── */
+.ab-houses { position: relative; overflow: hidden; isolation: isolate; background: var(--mc-brand-900); color: #fff; }
+.ab-houses::before { content: ''; position: absolute; z-index: -1; width: 520px; height: 520px; right: -160px; top: -200px; border-radius: 50%; background: radial-gradient(circle, rgba(212, 175, 55, .22), transparent 70%); }
+.ab-houses-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(32px, 6vw, 88px); align-items: center; }
+.ab-houses-grid .sec-head { margin-bottom: 0; }
+.house-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.house { position: relative; overflow: hidden; display: flex; align-items: center; gap: 16px; padding: 22px; border-radius: var(--r-lg); background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .1); transition: transform .5s var(--ease-out), background-color .3s, border-color .3s; }
+.house::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--house); }
+.house:hover { transform: translateY(-4px); background: rgba(255, 255, 255, .09); border-color: color-mix(in srgb, var(--house) 60%, transparent); }
+.house-flag { width: 52px; height: 52px; flex-shrink: 0; display: grid; place-items: center; border-radius: 16px; background: var(--house); color: #fff; font-size: 1.2rem; box-shadow: 0 10px 24px -10px var(--house); }
+.house-body { display: grid; gap: 2px; min-width: 0; }
+.house-body strong { font-family: var(--f-display); font-weight: 600; font-size: 1.15rem; line-height: 1.25; }
+.house-body > span { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(255, 255, 255, .6); }
+
+/* ── Programs: resource strip ────────────────────────────────────────── */
+.res-wrap { position: relative; z-index: 2; margin-top: -52px; }
+.res-strip { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border: 1px solid var(--mc-line); border-radius: var(--r-lg); box-shadow: var(--shadow-md); overflow: hidden; }
+.res-strip li + li { border-left: 1px solid var(--mc-line); }
+.res-strip a { display: flex; align-items: center; gap: 14px; height: 100%; padding: 22px; text-decoration: none; color: inherit; transition: background-color .25s; }
+.res-strip a:hover, .res-strip a:focus-visible { background: var(--mc-bg); }
+.res-icon { width: 44px; height: 44px; flex-shrink: 0; display: grid; place-items: center; border-radius: 13px; background: var(--mc-brand-tint); color: var(--mc-brand); transition: background-color .3s, color .3s; }
+.res-strip a:hover .res-icon { background: var(--mc-brand); color: #fff; }
+.res-strip strong { display: block; font-size: .95rem; color: var(--mc-ink); }
+.res-strip small { font-size: .8rem; color: var(--mc-muted); }
+
+/* ── Programs: shared subjects ───────────────────────────────────────── */
+.subj-shared { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px 40px; margin-top: 18px; padding: 22px 28px; border-radius: var(--r-lg); background: var(--mc-bg); border: 1px dashed var(--mc-line); }
+.subj-shared .group-label { display: block; }
+.group-chips--gold li { background: var(--mc-gold-tint); border-color: rgba(212, 175, 55, .45); color: #7A5C0C; }
+
+/* ── Programs: grading ───────────────────────────────────────────────── */
+.pg-fees { background: #fff; border-top: 1px solid var(--mc-line); border-bottom: 1px solid var(--mc-line); }
+.pg-grading-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(32px, 6vw, 88px); align-items: center; }
+.pg-grading-grid .sec-head { margin-bottom: 0; }
+.grade-pass { display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; padding: 10px 16px; border-radius: 999px; background: #E8F3EC; color: #1D6A3B; font-size: .88rem; font-weight: 700; }
+.grade-table { border-radius: var(--r-lg); background: #fff; border: 1px solid var(--mc-line); box-shadow: var(--shadow-sm); overflow: hidden; }
+.grade-row { position: relative; display: grid; grid-template-columns: 1.1fr 1fr 1fr 1.2fr; align-items: center; gap: 12px; padding: 13px 24px; border-top: 1px solid var(--mc-line-2); font-size: .94rem; color: var(--mc-ink-2); transition: background-color .25s; }
+.grade-row:not(.grade-row--head)::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--mc-gold); opacity: calc(.15 + var(--lvl) * .14); }
+.grade-row:not(.grade-row--head):hover { background: var(--mc-bg); }
+.grade-row--head { border-top: 0; background: var(--mc-brand-900); color: rgba(255, 255, 255, .8); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; padding-top: 15px; padding-bottom: 15px; }
+.grade-marks { font-variant-numeric: tabular-nums; font-weight: 600; }
+.grade-chip { display: inline-grid; place-items: center; min-width: 44px; padding: 4px 10px; border-radius: 10px; background: var(--mc-brand-tint); color: var(--mc-brand-700); font-weight: 800; }
+.grade-row--top .grade-chip { background: linear-gradient(135deg, var(--mc-gold), var(--mc-gold-600)); color: var(--mc-brand-900); }
+.grade-point { font-family: var(--f-display); font-weight: 600; font-size: 1.08rem; color: var(--mc-ink); font-variant-numeric: tabular-nums; }
+.grade-remark { color: var(--mc-muted); }
+.grade-row--fail .grade-chip { background: var(--mc-line-2); color: var(--mc-subtle); }
+.grade-row--fail::before { display: none; }
+
+/* ── Research & Development ──────────────────────────────────────────── */
+.rd-pillars .ab-name-row strong { font-size: 1.7rem; }
+.rd-focus-grid { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.rd-focus-item { display: flex; gap: 18px; padding: 26px; border-radius: var(--r-lg); background: #fff; border: 1px solid var(--mc-line); transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out); }
+.rd-focus-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.rd-focus-icon { width: 54px; height: 54px; flex-shrink: 0; display: grid; place-items: center; border-radius: 16px; background: linear-gradient(135deg, var(--mc-brand), var(--mc-brand-700)); color: #fff; font-size: 1.2rem; box-shadow: 0 10px 22px -10px rgba(228, 85, 81, .7); }
+.rd-focus-item h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.22rem; margin-bottom: 4px; }
+.rd-focus-item p { color: var(--mc-muted); font-size: .94rem; }
+
+.rd-work { background: #fff; border-top: 1px solid var(--mc-line); border-bottom: 1px solid var(--mc-line); }
+.rd-work-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; }
+.rd-work-grid .rd-card { grid-column: span 2; }
+.rd-card { display: flex; flex-direction: column; overflow: hidden; border-radius: var(--r-lg); background: var(--mc-bg); border: 1px solid var(--mc-line); transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out); }
+.rd-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.rd-work-grid .rd-card--wide { grid-column: span 4; }
+.rd-card-img { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--mc-line-2); }
+.rd-card--wide .rd-card-img { aspect-ratio: auto; flex: 1; min-height: 280px; }
+.rd-card--wide .rd-card-img img { position: absolute; inset: 0; }
+.rd-card-img picture { display: contents; }
+.rd-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease-out); }
+.rd-card:hover .rd-card-img img { transform: scale(1.05); }
+.rd-card-img--contain { background: #5FD8E0; }
+.rd-card-img--contain img { object-fit: contain; }
+.rd-card:hover .rd-card-img--contain img { transform: none; }
+.rd-card-tag { position: absolute; left: 14px; top: 14px; padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, .94); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--mc-brand-700); }
+.rd-card-body { padding: 22px 24px 24px; }
+.rd-card-body h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.2rem; margin-bottom: 6px; }
+.rd-card-body p { color: var(--mc-muted); font-size: .93rem; }
+/* 4 cards on a 6-column grid: wide + standard on row one, two halves on row two */
+.rd-work-grid .rd-card:nth-child(3), .rd-work-grid .rd-card:nth-child(4) { grid-column: span 3; }
+
+.rd-statement { padding: clamp(64px, 9vw, 120px) 0 clamp(24px, 4vw, 48px); }
+.rd-statement-card { position: relative; max-width: 920px; margin: 0 auto; text-align: center; }
+.rd-statement-card > i { font-size: 2rem; color: var(--mc-gold); margin-bottom: 18px; }
+.rd-statement-card p { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.4rem, 2.6vw, 2.05rem); line-height: 1.4; letter-spacing: -.01em; color: var(--mc-ink); }
+.rd-statement-card p em { font-style: italic; color: var(--mc-brand); }
+.rd-statement-card > span { display: block; margin-top: 18px; font-size: .74rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--mc-gold-600); }
+
+/* ── Responsive (new sections) ───────────────────────────────────────── */
+@media (max-width: 1100px) {
+    .life-grid { grid-template-columns: repeat(2, 1fr); }
+    .res-strip { grid-template-columns: repeat(2, 1fr); }
+    .res-strip li:nth-child(3) { border-left: 0; }
+    .res-strip li:nth-child(n+3) { border-top: 1px solid var(--mc-line); }
+}
+@media (max-width: 1023px) {
+    .ab-houses-grid, .pg-grading-grid { grid-template-columns: 1fr; }
+    .rd-work-grid .rd-card, .rd-work-grid .rd-card--wide, .rd-work-grid .rd-card:nth-child(3), .rd-work-grid .rd-card:nth-child(4) { grid-column: span 3; }
+    .rd-work-grid .rd-card--wide { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+    .life-grid, .house-list, .rd-focus-grid, .subj-shared { grid-template-columns: 1fr; }
+    .res-strip { grid-template-columns: 1fr; }
+    .res-strip li + li { border-left: 0; border-top: 1px solid var(--mc-line); }
+    .res-strip a { padding: 16px 18px; }
+    .rd-work-grid { grid-template-columns: 1fr; }
+    .rd-work-grid .rd-card, .rd-work-grid .rd-card--wide, .rd-work-grid .rd-card:nth-child(3), .rd-work-grid .rd-card:nth-child(4) { grid-column: auto; }
+    .rd-card--wide .rd-card-img { aspect-ratio: 4 / 3; min-height: 0; }
+    .grade-row { grid-template-columns: 1fr .8fr .8fr; padding: 12px 16px; }
+    .grade-remark, .grade-row--head span:last-child { display: none; }
+    .rd-focus-item { padding: 20px; }
+}

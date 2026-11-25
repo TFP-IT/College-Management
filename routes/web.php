@@ -58,6 +58,11 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('la
 // Old profile link (name spelling corrected from the official employee list)
 Route::permanentRedirect('/teacher-information/lopa-rani-chowdhuri', '/teacher-information/lupa-rani-chowdhury');
 
+// URLs from the previous WordPress site, kept alive for search engines and bookmarks
+Route::permanentRedirect('/about-us', '/about');
+Route::permanentRedirect('/college', '/programs');
+Route::permanentRedirect('/academic-calender', '/academic-calendar');
+
 // Frontend Pages Routes
 Route::controller(App\Http\Controllers\FrontendPageController::class)->group(function () {
     Route::get('/about', 'about')->name('frontend.about');
@@ -71,6 +76,7 @@ Route::controller(App\Http\Controllers\FrontendPageController::class)->group(fun
     Route::get('/staff-information/{slug}', 'staffProfile')->where('slug', '[a-z0-9-]+')->name('frontend.staff_profile');
     Route::get('/academic-calendar', 'academicCalendar')->name('frontend.academic_calendar');
     Route::get('/programs', 'programs')->name('frontend.programs');
+    Route::get('/research-development', 'research')->name('frontend.research');
     Route::get('/notice', 'noticeBoard')->name('frontend.notice_board');
     Route::get('/admission', 'admission')->name('frontend.admission');
     Route::get('/gallery', 'gallery')->name('frontend.gallery');

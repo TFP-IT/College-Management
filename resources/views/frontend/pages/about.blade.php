@@ -28,6 +28,23 @@
         ['icon' => 'fa-mobile-screen-button', 'title' => 'A connected campus', 'desc' => 'Admission, attendance, results and fees in the MCC Hello Future app for students, guardians and teachers.', 'image' => 'campus/students-2'],
     ];
 
+    // The four houses students are divided into (colours from the house flags).
+    $houses = [
+        ['name' => 'Kazi Nazrul Islam',    'colour' => 'Yellow', 'hex' => '#E2A900'],
+        ['name' => 'Begum Rokeya',         'colour' => 'Green',  'hex' => '#2E8B57'],
+        ['name' => 'Jafar Ullah Patwary',  'colour' => 'Blue',   'hex' => '#2F6FB7'],
+        ['name' => 'Dr. Kamrul Ahsan',     'colour' => 'Red',    'hex' => '#C62828'],
+    ];
+
+    $life = [
+        ['icon' => 'fa-microphone-lines', 'title' => 'Clubs & co-curriculars', 'desc' => 'Activities that bring out hidden talent and build confidence and leadership.', 'tags' => ['Debate', 'Recitation', 'Music', 'Dance', 'Science club', 'Qirat']],
+        ['icon' => 'fa-trophy',           'title' => 'Competitions',           'desc' => 'Held regularly through the year, inside the houses and across the campus.', 'tags' => ['Art', 'Essay writing', 'Poetry recitation', 'Spelling', 'Impromptu speech', 'Debate']],
+        ['icon' => 'fa-atom',             'title' => 'Olympiads & Science Fair', 'desc' => 'Students compete in subject Olympiads and present projects at our annual Science Fair.', 'tags' => ['Maths', 'Physics', 'Chemistry', 'Biology', 'Science Fair']],
+        ['icon' => 'fa-book-open-reader', 'title' => 'Library',                'desc' => 'About 2,500 books plus journals, magazines and daily newspapers, with borrowing for every student.', 'tags' => ['2,500+ books', 'Journals', 'Newspapers']],
+        ['icon' => 'fa-newspaper',        'title' => 'Annual magazine',        'desc' => 'Published every year since our founding, showcasing students’ writing and artwork.', 'tags' => ['Articles', 'Artwork', 'Poetry']],
+        ['icon' => 'fa-futbol',           'title' => 'Games & sports',         'desc' => 'Indoor and outdoor games all year round to build stamina and keep minds fresh.', 'tags' => ['Cricket', 'Football', 'Rugby', 'Table tennis', 'Billiards']],
+    ];
+
     $mosaic = [
         ['campus/cricket-team', 'Girls’ cricket team'], ['campus/pitha-utshob-3', 'Pitha Utshob'], ['campus/classroom-hall-1', 'Classroom hall'],
         ['campus/indoor-chess', 'Indoor games'], ['campus/study-tour-2', 'Study tour'], ['campus/iftar-mahfil', 'Iftar Mahfil'],
@@ -75,7 +92,7 @@
             <h2 class="sec-title" id="story-title" data-reveal>A teacher’s dream, <em>a nation’s future</em></h2>
             <div class="prose">
                 <p class="lead-p" data-reveal>Maestro Crown School & College began with a simple conviction from our founder, Dr. Kamrul Ahsan: shaping minds and guiding young people is one of the most powerful ways to build a nation.</p>
-                <p data-reveal>Established in 2014 as a joint venture between England and Bangladesh, MCC has grown from a single campus into two, welcoming more than 1,300 learners from Play Group to Class XII. Our teachers combine an international approach with full compliance with the national board curriculum.</p>
+                <p data-reveal>Our voyage began on 15 June 2014, as a joint venture between England and Bangladesh. Since then MCC has grown from a single campus into two, welcoming more than 1,300 learners from Play Group to Class XII. Our teachers combine an international approach with full compliance with the national board curriculum.</p>
                 <p data-reveal>Today we remain committed to the same promise we made on day one: a disciplined, transparent and caring place to learn, where academic excellence and moral integrity grow side by side.</p>
             </div>
         </div>
@@ -152,6 +169,51 @@
                 </article>
             @endforeach
         </div>
+    </div>
+</section>
+
+{{-- Beyond the classroom --}}
+<section class="ab-beyond section-pad" id="beyond" aria-labelledby="beyond-title">
+    <div class="container">
+        <header class="sec-head sec-head--split" data-reveal>
+            <div>
+                <span class="eyebrow">Beyond the classroom</span>
+                <h2 class="sec-title" id="beyond-title">Talent finds <em>its stage here</em></h2>
+            </div>
+            <p class="sec-sub">A wide range of activities helps every student discover what they are good at, and grow the confidence to lead.</p>
+        </header>
+        <div class="life-grid" data-stagger>
+            @foreach ($life as $l)
+                <article class="life-card" data-reveal>
+                    <span class="life-icon"><i class="fa-solid {{ $l['icon'] }}"></i></span>
+                    <h3>{{ $l['title'] }}</h3>
+                    <p>{{ $l['desc'] }}</p>
+                    <ul class="life-tags">@foreach ($l['tags'] as $t)<li>{{ $t }}</li>@endforeach</ul>
+                </article>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- House system --}}
+<section class="ab-houses section-pad" id="houses" aria-labelledby="houses-title">
+    <div class="container ab-houses-grid">
+        <header class="sec-head" data-reveal>
+            <span class="eyebrow eyebrow--light">House system</span>
+            <h2 class="sec-title sec-title--light" id="houses-title">Four houses, <em>one spirit</em></h2>
+            <p class="sec-sub sec-sub--light">To create a healthy, spirited competitive atmosphere, students are divided equally into four houses. They compete in sports, debate, culture and academics all year, and learn teamwork and leadership along the way.</p>
+        </header>
+        <ul class="house-list" data-stagger>
+            @foreach ($houses as $h)
+                <li class="house" style="--house: {{ $h['hex'] }}" data-reveal>
+                    <span class="house-flag" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
+                    <span class="house-body">
+                        <strong>{{ $h['name'] }}</strong>
+                        <span>{{ $h['colour'] }} House</span>
+                    </span>
+                </li>
+            @endforeach
+        </ul>
     </div>
 </section>
 

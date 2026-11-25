@@ -121,27 +121,18 @@
                         <div class="mc-menu">
                             <a href="{{ route('frontend.programs') }}"><i class="fa-solid fa-layer-group"></i> Programs</a>
                             <a href="{{ route('frontend.academic_calendar') }}"><i class="fa-regular fa-calendar"></i> Academic Calendar</a>
+                            <a href="{{ route('frontend.research') }}"><i class="fa-solid fa-robot"></i> Research &amp; Development</a>
                             <a href="{{ route('frontend.notice_board') }}"><i class="fa-regular fa-bell"></i> Notice Board</a>
                         </div>
                     </li>
-                    <li><a class="mc-link" href="{{ route('frontend.admission') }}" @if(request()->routeIs('frontend.admission')) aria-current="page" @endif>Admission</a></li>
                     <li><a class="mc-link" href="{{ route('frontend.gallery') }}" @if(request()->routeIs('frontend.gallery')) aria-current="page" @endif>Gallery</a></li>
                     <li><a class="mc-link" href="{{ route('frontend.contact') }}" @if(request()->routeIs('frontend.contact')) aria-current="page" @endif>Contact</a></li>
                 </ul>
 
                 <div class="mc-actions">
-                    <div class="mc-apply" data-apply>
-                        <button class="btn btn-primary btn-sm" type="button" aria-haspopup="true" aria-expanded="false" data-apply-toggle>
-                            <i class="fa-solid fa-pen-nib"></i><span>Apply Now</span> <i class="fa-solid fa-chevron-down" style="font-size:.6rem"></i>
-                        </button>
-                        <div class="mc-menu mc-apply-menu" role="menu">
-                            <a role="menuitem" href="{{ $app['play_store'] }}" target="_blank" rel="noopener"><i class="fa-solid fa-shapes"></i><span><strong>School Admission</strong><span>Play Group to Class 9 · in the app</span></span></a>
-                            <a role="menuitem" href="{{ $app['play_store'] }}" target="_blank" rel="noopener"><i class="fa-solid fa-graduation-cap"></i><span><strong>College Admission</strong><span>HSC: Science · Business · Humanities · in the app</span></span></a>
-                            <hr>
-                            <a role="menuitem" href="{{ $app['play_store'] }}" target="_blank" rel="noopener"><i class="fa-brands fa-google-play"></i><span><strong>Get the {{ $app['name'] }} app</strong><span>Apply &amp; track your application in real time</span></span></a>
-                            <a role="menuitem" href="{{ route('frontend.admission') }}"><i class="fa-solid fa-circle-info"></i><span><strong>Admission info</strong><span>Documents, eligibility &amp; dates</span></span></a>
-                        </div>
-                    </div>
+                    <a href="{{ route('frontend.admission') }}" class="btn btn-primary btn-sm mc-admission" @if(request()->routeIs('frontend.admission')) aria-current="page" @endif>
+                        <i class="fa-solid fa-graduation-cap"></i><span>Admission</span>
+                    </a>
                     <button class="mc-burger" type="button" aria-label="Open menu" aria-controls="mc-drawer" aria-expanded="false" data-drawer-open>
                         <span></span><span></span><span></span>
                     </button>
@@ -181,16 +172,16 @@
                     <div class="mc-drawer-sub">
                         <a href="{{ route('frontend.programs') }}">Programs</a>
                         <a href="{{ route('frontend.academic_calendar') }}">Academic Calendar</a>
+                        <a href="{{ route('frontend.research') }}">Research &amp; Development</a>
                         <a href="{{ route('frontend.notice_board') }}">Notice Board</a>
                     </div>
                 </details>
-                <a href="{{ route('frontend.admission') }}">Admission <i class="fa-solid fa-arrow-right"></i></a>
                 <a href="{{ route('frontend.gallery') }}">Gallery <i class="fa-solid fa-arrow-right"></i></a>
                 <a href="{{ route('frontend.contact') }}">Contact <i class="fa-solid fa-arrow-right"></i></a>
             </div>
             <div class="mc-drawer-cta">
-                <a href="{{ $app['play_store'] }}" target="_blank" rel="noopener" class="btn btn-primary btn-block"><i class="fa-brands fa-google-play"></i> Apply in the MCC app</a>
-                <a href="{{ route('frontend.admission') }}" class="btn btn-outline btn-block"><i class="fa-solid fa-circle-info"></i> Admission info</a>
+                <a href="{{ route('frontend.admission') }}" class="btn btn-primary btn-block"><i class="fa-solid fa-graduation-cap"></i> Admission</a>
+                <a href="{{ $app['play_store'] }}" target="_blank" rel="noopener" class="btn btn-outline btn-block"><i class="fa-brands fa-google-play"></i> Get the {{ $app['name'] }} app</a>
                 <small>Need help? <a href="{{ $c['phone_href'] }}">{{ $c['phone'] }}</a></small>
             </div>
         </div>
@@ -254,6 +245,7 @@
                         <li><a href="{{ route('frontend.about') }}">About MCC</a></li>
                         <li><a href="{{ route('frontend.programs') }}">Programs</a></li>
                         <li><a href="{{ route('frontend.academic_calendar') }}">Academic Calendar</a></li>
+                        <li><a href="{{ route('frontend.research') }}">Research &amp; Development</a></li>
                         <li><a href="{{ route('frontend.notice_board') }}">Notice Board</a></li>
                         <li><a href="{{ route('frontend.gallery') }}">Gallery</a></li>
                         <li><a href="{{ route('frontend.governing_body') }}">Governing Body</a></li>

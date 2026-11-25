@@ -33,6 +33,18 @@
     'media'   => ['type' => 'collage', 'images' => ['campus/classroom-hall-1', 'campus/computer-lab-2'], 'badge' => ['3', 'HSC<br>groups']],
 ])
 
+{{-- Academic resources --}}
+<nav class="res-wrap" aria-label="Academic resources">
+    <div class="container">
+        <ul class="res-strip" data-stagger>
+            <li data-reveal><a href="{{ route('frontend.academic_calendar') }}"><span class="res-icon"><i class="fa-regular fa-calendar"></i></span><span><strong>Academic calendar</strong><small>Exams, holidays &amp; events</small></span></a></li>
+            <li data-reveal><a href="#grading"><span class="res-icon"><i class="fa-solid fa-chart-simple"></i></span><span><strong>Grading system</strong><small>Marks, grades &amp; GPA</small></span></a></li>
+            <li data-reveal><a href="#rules"><span class="res-icon"><i class="fa-solid fa-scale-balanced"></i></span><span><strong>Rules &amp; guidelines</strong><small>Attendance, uniform, exams</small></span></a></li>
+            <li data-reveal><a href="{{ $mc['app']['play_store'] }}" target="_blank" rel="noopener"><span class="res-icon"><i class="fa-solid fa-mobile-screen-button"></i></span><span><strong>Class routine</strong><small>In the {{ $mc['app']['name'] }} app</small></span></a></li>
+        </ul>
+    </div>
+</nav>
+
 {{-- School stages --}}
 <section class="pg-stages section-pad" id="stages" aria-labelledby="school-title">
     <div class="container">
@@ -75,12 +87,22 @@
                         <h3>{{ $g['title'] }}</h3>
                     </header>
                     <p>{{ $g['desc'] }}</p>
-                    <span class="group-label">Core subjects</span>
+                    <span class="group-label">Group subjects</span>
                     <ul class="group-chips">
-                        @foreach ($g['subjects'] as $sub)<li>{{ $sub }}</li>@endforeach
+                        @foreach ($ac['hsc']['groups'][$g['title']] ?? $g['subjects'] as $sub)<li>{{ $sub }}</li>@endforeach
                     </ul>
                 </article>
             @endforeach
+        </div>
+        <div class="subj-shared" data-reveal>
+            <div>
+                <span class="group-label">Compulsory for every group</span>
+                <ul class="group-chips">@foreach ($ac['hsc']['compulsory'] as $sub)<li>{{ $sub }}</li>@endforeach</ul>
+            </div>
+            <div>
+                <span class="group-label">Optional subject</span>
+                <ul class="group-chips group-chips--gold">@foreach ($ac['hsc']['optional'] as $sub)<li>{{ $sub }}</li>@endforeach</ul>
+            </div>
         </div>
         <div class="elig" data-reveal>
             <div class="elig-head">
@@ -90,6 +112,34 @@
             <ul>
                 @foreach ($college['eligibility'] as $e)<li><i class="fa-solid fa-circle-check"></i> {{ $e }}</li>@endforeach
             </ul>
+        </div>
+    </div>
+</section>
+
+{{-- Grading system --}}
+<section class="pg-grading section-pad" id="grading" aria-labelledby="grading-title">
+    <div class="container pg-grading-grid">
+        <header class="sec-head" data-reveal>
+            <span class="eyebrow">Assessment</span>
+            <h2 class="sec-title" id="grading-title">National <em>grading system</em></h2>
+            <p class="sec-sub">MCC follows the standard HSC grading system of the Ministry of Education, Bangladesh. Each subject is graded on the scale below, and a student’s GPA is the average of their grade points.</p>
+            <p class="grade-pass"><i class="fa-solid fa-circle-check"></i> 33% is the minimum pass mark in every subject.</p>
+        </header>
+        <div class="grade-table" role="table" aria-label="HSC grading system" data-reveal>
+            <div class="grade-row grade-row--head" role="row">
+                <span role="columnheader">Marks (%)</span>
+                <span role="columnheader">Letter grade</span>
+                <span role="columnheader">Grade point</span>
+                <span role="columnheader">Remarks</span>
+            </div>
+            @foreach ($ac['grading'] as $i => $g)
+                <div @class(['grade-row', 'grade-row--top' => $i === 0, 'grade-row--fail' => $g['grade'] === 'F']) role="row" style="--lvl: {{ count($ac['grading']) - 1 - $i }}">
+                    <span role="cell" class="grade-marks">{{ $g['marks'] }}</span>
+                    <span role="cell"><span class="grade-chip">{{ $g['grade'] }}</span></span>
+                    <span role="cell" class="grade-point">{{ $g['point'] }}</span>
+                    <span role="cell" class="grade-remark">{{ $g['remark'] }}</span>
+                </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -154,7 +204,7 @@
 @endif
 
 {{-- Rules & guidelines --}}
-<section class="pg-rules section-pad" aria-labelledby="rules-title">
+<section class="pg-rules section-pad" id="rules" aria-labelledby="rules-title">
     <div class="container pg-rules-grid">
         <header class="sec-head" data-reveal>
             <span class="eyebrow">Code of conduct</span>

@@ -87,6 +87,7 @@ class FrontendPageController extends Controller
 
     public function chairmanProfile() { return view('frontend.pages.chairman_profile'); }
     public function academicCalendar() { return view('frontend.pages.academic_calendar'); }
+    public function research() { return view('frontend.pages.research'); }
     public function admission() { return $this->pageOr('admission', 'frontend.pages.admission'); }
 
     public function programs()

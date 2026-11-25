@@ -12,6 +12,7 @@
     $academicPages = [
         ['route' => 'frontend.programs',          'kicker' => 'Academics', 'title' => 'Programs & curriculum', 'avatar' => ['icon' => 'fa-layer-group']],
         ['route' => 'frontend.academic_calendar', 'kicker' => 'Academics', 'title' => 'Academic Calendar',     'avatar' => ['icon' => 'fa-calendar-days']],
+        ['route' => 'frontend.research',          'kicker' => 'Innovation', 'title' => 'Research & Development', 'avatar' => ['icon' => 'fa-robot']],
         ['route' => 'frontend.notice_board',      'kicker' => 'Academics', 'title' => 'Notice Board',          'avatar' => ['icon' => 'fa-bullhorn']],
         ['route' => 'frontend.admission',         'kicker' => 'Admission', 'title' => 'Admission information', 'avatar' => ['icon' => 'fa-circle-info']],
         ['route' => 'frontend.teacher_info',      'kicker' => 'Our people', 'title' => 'Teachers',             'avatar' => ['icon' => 'fa-chalkboard-user']],
