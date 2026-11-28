@@ -10,11 +10,11 @@
     <div class="panel-body" style="padding-top:26px">
         <div class="person" style="justify-content:center;margin-bottom:18px">
             <img src="{{ asset('frontend/mcc/img/logo-256.png') }}" alt="" width="58" height="58">
-            <div><strong style="font:600 19px var(--serif)">{{ $school->title ?? 'Maestro Crown School and College' }}</strong><div class="small muted">{{ $school->address ?? '' }}</div></div>
+            <div><strong style="font:800 19px var(--sans)">{{ $school->title ?? 'Maestro Crown School and College' }}</strong><div class="small muted">{{ $school->address ?? '' }}</div></div>
         </div>
         <div style="text-align:center;padding:14px;background:var(--paper);border-radius:14px;margin-bottom:20px">
             <div class="small muted">{{ $payment->status === 'confirmed' ? 'Amount received' : 'This receipt is void' }}</div>
-            <div style="font:600 40px var(--serif)">৳{{ number_format($payment->amount) }}</div>
+            <div style="font:800 38px var(--sans)">৳{{ number_format($payment->amount) }}</div>
         </div>
         <dl class="facts">
             <dt>Receipt number</dt><dd>{{ $payment->receipt_no }}</dd>

@@ -66,7 +66,7 @@
                         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
                             <div>
                                 <span class="font-bold text-slate-900 text-xs">{{ $g->full_name }}</span>
-                                <span class="ml-2 text-[10px] font-bold uppercase px-2 py-0.5 rounded {{ $g->is_primary ? 'bg-blue-100 text-blue-800' : 'bg-slate-200 text-slate-700' }}">
+                                <span class="ml-2 text-[10px] font-bold uppercase px-2 py-0.5 rounded {{ $g->is_primary ? 'bg-sky-50 text-blue-800' : 'bg-slate-200 text-slate-700' }}">
                                     {{ $g->relation }} {{ $g->is_primary ? '(Primary)' : '' }}
                                 </span>
                                 <div class="text-slate-500 text-[11px] mt-0.5">Phone: {{ $g->phone }} &bull; Occ: {{ $g->occupation ?? 'N/A' }}</div>
@@ -221,7 +221,7 @@
                             <label class="block text-slate-600 font-semibold mb-1">Council Remarks / Justification</label>
                             <textarea name="remarks" rows="2" placeholder="Notes from interview or council review..." class="w-full text-xs rounded-lg border-slate-300 py-2 px-3"></textarea>
                         </div>
-                        <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors">
+                        <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg transition-colors">
                             Record Council Resolution
                         </button>
                     </form>

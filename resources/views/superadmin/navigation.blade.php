@@ -61,13 +61,13 @@
 
      <!--Main Jquery-->
      <script src="{{ asset('assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}?v={{ filemtime(public_path('css/mcc-portal.css')) }}" />
 </head>
 <body>
 	<div class="sidebar print-hidden">
 		<div class="logo-details">
 			<div class="img_wrapper">
-				<img height="40px" class="" src="{{ asset('assets/uploads/logo/'.get_settings('white_logo')) }}" alt="" />
+				<img height="40px" class="" src="{{ asset('frontend/mcc/img/logo-256.png') }}" alt="" />
 			</div>
       <span class="logo_name">{{ get_settings('navbar_title') }}</span>
 		</div>
@@ -512,6 +512,7 @@
 
      <!---Image Gallery--->
      <script src="{{ asset('assets/js/lightbox-plus-jquery.js') }}"></script>
+     <script>jQuery.noConflict(true);</script>
 
     <!--Toaster Script-->
     <script src="{{ asset('assets/js/toastr.min.js') }}"></script>

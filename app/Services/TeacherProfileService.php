@@ -131,7 +131,7 @@ class TeacherProfileService
     }
 
     /**
-     * Routine hours of 1–11 are the morning option in the admin form.
+     * The admin form stores 1–11 without saying which half of the day is meant.
      * During the afternoon, 3:00–3:50 is the 3 PM period, so 3:37 PM is ongoing.
      */
     private function periodWindow(int $startHour, int $startMinute, int $endHour, int $endMinute, int $nowMinutes): array
@@ -139,7 +139,8 @@ class TeacherProfileService
         $start = $startHour * 60 + $startMinute;
         $end = $endHour * 60 + $endMinute;
         $afternoon = $nowMinutes >= 12 * 60;
-        if ($afternoon && $startHour > 0 && $startHour < 12 && $endHour < 12) {
+        // No class meets between 1 and 6 in the morning; 7 to 11 stay morning classes all day.
+        if ($afternoon && $startHour > 0 && $startHour < 7 && $endHour < 12) {
             $start += 12 * 60;
             $end += 12 * 60;
         }

@@ -44,7 +44,7 @@ $subscription = DB::table('subscriptions')->where('school_id', auth()->user()->s
 					<div>
 						<p>
 		                	<span class="float-left">
-		                		<h4>{{ $package_details['name'] }}</h4>
+		                		<h4>{{ ($package_details['name'] ?? '') }}</h4>
 		                	</span>
 						</p>
 						@php
@@ -52,16 +52,16 @@ $subscription = DB::table('subscriptions')->where('school_id', auth()->user()->s
 						@endphp
 						
 						<span class="interval">
-		                	<?php if($package_details['interval'] == 'Days'): ?>
-		                		{{ $package_details['da	ys'].' '.$package_details['interval'] }}
-		                	<?php elseif($package_details['interval'] == 'life_time'): ?>
+		                	<?php if(($package_details['interval'] ?? '') == 'Days'): ?>
+		                		{{ ($package_details['days'] ?? '').' '.($package_details['interval'] ?? '') }}
+		                	<?php elseif(($package_details['interval'] ?? '') == 'life_time'): ?>
 								<span>Life Time</span>
 							<?php else:?>
-		                		{{ $package_details['interval'] }}
+		                		{{ ($package_details['interval'] ?? '') }}
 		                	<?php endif; ?>
 		                </span>
 						<br>
-						<span>Total Students: {{$student_count}}/{{$subscription->studentLimit}}</span>
+						<span>Total Students: {{$student_count}}/{{ $subscription->studentLimit ?? '-' }}</span>
 
 						<hr>
 						
@@ -316,7 +316,7 @@ $subscription = DB::table('subscriptions')->where('school_id', auth()->user()->s
 	                		?>
 	                		<tr>
 	                			<td>{{ $loop->index + 1 }}</td>
-	                			<td><strong>{{ $package->name }}</strong></td>
+	                			<td><strong>{{ $package->name ?? get_phrase('Package removed') }}</strong></td>
 	                			<td>{{ currency($subscription->paid_amount) }}</td>
 	                			<td>{{ $subscription->payment_method }}</td>
 	                			<td>{{ date('d-M-Y', $subscription->date_added) }}</td>

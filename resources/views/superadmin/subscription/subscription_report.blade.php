@@ -129,7 +129,7 @@ use App\Models\School;
 									@else
 		                			<td><strong>{{ $school->title }}</strong></td>
 									@endif
-		                			<td><strong>{{ $package->name }}</strong></td>
+		                			<td><strong>{{ $package->name ?? get_phrase('Package removed') }}</strong></td>
 		                			<td>{{ $subscription->paid_amount }}</td>
 		                			<td>
 		                				{{ $subscription->payment_method }}

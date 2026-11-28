@@ -53,7 +53,7 @@
 
 
     @stack('head')
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}?v={{ filemtime(public_path('css/mcc-portal.css')) }}" />
 </head>
 
 <body>
@@ -61,7 +61,7 @@
     <div class="sidebar">
         <div class="logo-details mt-4 mb-3">
             <div class="img_wrapper">
-                <img height="40px" class="" src="{{ asset('assets/uploads/logo/' . get_settings('white_logo')) }}"
+                <img height="40px" class="" src="{{ asset('frontend/mcc/img/logo-256.png') }}"
                     alt="" />
             </div>
             <span class="logo_name">{{ get_settings('navbar_title') }}</span>
@@ -1259,6 +1259,7 @@
     <script src="{{ asset('assets/js/html2canvas.min.js') }}"></script>
     <!---Image Gallery--->
     <script src="{{ asset('assets/js/lightbox-plus-jquery.js') }}"></script>
+    <script>jQuery.noConflict(true);</script>
     <script>
         // JavaScript to handle language selection
         document.addEventListener('DOMContentLoaded', function() {

@@ -55,14 +55,14 @@
 
      <!--Main Jquery-->
      <script src="{{ asset('assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}?v={{ filemtime(public_path('css/mcc-portal.css')) }}" />
 </head>
 <body>
 
 	<div class="sidebar">
 		<div class="logo-details mt-4 mb-3">
       <div class="img_wrapper">
-          <img height="40px" class="" src="{{ asset('assets/uploads/logo/'.get_settings('white_logo')) }}" alt="" />
+          <img height="40px" class="" src="{{ asset('frontend/mcc/img/logo-256.png') }}" alt="" />
       </div>
       <span class="logo_name">{{ get_settings('navbar_title') }}</span>
     </div>

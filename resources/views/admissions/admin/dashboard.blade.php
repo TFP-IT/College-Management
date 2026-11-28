@@ -24,8 +24,8 @@
 
         <!-- Approved -->
         <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-            <span class="text-[11px] font-bold text-indigo-500 uppercase tracking-wider block">Council Approved</span>
-            <div class="text-2xl font-black text-indigo-600 mt-1">{{ number_format($metrics['approved']) }}</div>
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Council Approved</span>
+            <div class="text-2xl font-black text-slate-900 mt-1">{{ number_format($metrics['approved']) }}</div>
         </div>
 
         <!-- Enrolled -->
