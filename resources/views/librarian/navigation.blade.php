@@ -59,6 +59,7 @@
     <script src="{{ asset('assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}?v={{ filemtime(public_path('css/mcc-portal.css')) }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-tables.css') }}?v={{ filemtime(public_path('css/mcc-tables.css')) }}" />
 </head>
 
 <body>
@@ -592,6 +593,7 @@
 
 	</script>
 
+<script src="{{ asset('js/mcc-tables.js') }}?v={{ filemtime(public_path('js/mcc-tables.js')) }}" defer></script>
 </body>
 
 </html>

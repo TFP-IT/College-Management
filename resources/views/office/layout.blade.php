@@ -44,6 +44,7 @@
     <title>@yield('title', 'Office') | Maestro Crown School and College</title>
     <link rel="icon" href="{{ asset('frontend/mcc/img/logo-256.png') }}">
     <link rel="stylesheet" href="{{ asset('css/mcc-office.css') }}?v={{ filemtime(public_path('css/mcc-office.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/mcc-tables.css') }}?v={{ filemtime(public_path('css/mcc-tables.css')) }}">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
@@ -83,5 +84,6 @@
         @yield('content')
     </main>
 </div>
+<script src="{{ asset('js/mcc-tables.js') }}?v={{ filemtime(public_path('js/mcc-tables.js')) }}" defer></script>
 </body>
 </html>
