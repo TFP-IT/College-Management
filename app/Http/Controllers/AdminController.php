@@ -338,10 +338,19 @@ class AdminController extends Controller
     
     function school_user_password(Request $request){
 
-        $userId = $request->input('user_id');
+        $request->validate([
+            'user_id' => 'required|integer',
+            'password' => 'required|string|min:6',
+        ]);
 
-        $data['password'] = Hash::make($request->password);
-        User::where('id', $userId)->update($data);
+        $target = User::where('id', $request->input('user_id'))
+            ->where('school_id', auth()->user()->school_id)
+            ->where('role_id', '!=', 1)
+            ->firstOrFail();
+
+        $target->password = Hash::make($request->password);
+        $target->save();
+        $target->tokens()->delete();
 
         return redirect()->back()->with('message', 'You have successfully update password.');
     }
@@ -3926,10 +3935,8 @@ class AdminController extends Controller
     public function update_offline_payment($id,$status)
     {
        
-        $amount= StudentFeeManager::find($id)->toArray();
-        $amount=$amount['total_amount'];
-        
-        $studentFeeManager = StudentFeeManager::find($id);
+        $studentFeeManager = StudentFeeManager::where('school_id', auth()->user()->school_id)->findOrFail($id);
+        $amount = $studentFeeManager->total_amount;
         $students_id = User::find($studentFeeManager->student_id);
         $student_email = $students_id->email;
         $parents_id = User::find($studentFeeManager->parent_id);
@@ -3962,7 +3969,7 @@ class AdminController extends Controller
             StudentFeeManager::where('id',$id)->update([
                 'status' => 'unpaid',
                 'updated_at'=>date("Y-m-d H:i:s"),
-                'paid_amount' =>$amount,
+                'paid_amount' => 0,
                 'payment_method' => 'offline']);
 
                 return redirect()->back()->with('message','Payment Decline');

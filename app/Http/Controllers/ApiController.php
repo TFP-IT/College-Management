@@ -154,14 +154,8 @@ class ApiController extends Controller
         if ($user->role_id == 7) {
             $admission = \App\Models\Admission::where('user_id', $user->id)->latest()->first();
             if ($admission) {
-                $appFee = $admission->applicationFeePayment();
-                $admFee = $admission->admissionFeePayment();
-
-                $appFeeStatus = $appFee ? $appFee->status : 'unpaid';
-                $appFeeAmount = $appFee ? (float) $appFee->amount : 500.00;
-
-                $admFeeStatus = $admFee ? $admFee->status : 'unpaid';
-                $admFeeAmount = $admFee ? (float) $admFee->amount : 3000.00;
+                ['status' => $appFeeStatus, 'amount' => $appFeeAmount] = $admission->feeSummary('application_fee');
+                ['status' => $admFeeStatus, 'amount' => $admFeeAmount] = $admission->feeSummary('admission_fee');
 
                 $admission->payment_status = $appFeeStatus;
                 $admission->payment_amount = $appFeeAmount;
@@ -881,46 +875,11 @@ class ApiController extends Controller
     }
 
     /**
-     * Get teacher conversation threads with guardians
+     * Teacher messaging is not available yet, so there are no conversations to return.
      */
     public function teacherThreads(Request $request)
     {
-        $guardians = User::where('role_id', 6)->where('status', 1)->take(6)->get();
-        $threads = [];
-
-        foreach ($guardians as $g) {
-            $student = User::where('parent_id', $g->id)->where('role_id', 7)->first();
-            $label = $student ? "{$g->name} (Guardian of {$student->name})" : "{$g->name} (Guardian)";
-            $threads[] = [
-                'id' => $g->id,
-                'name' => $label,
-                'snippet' => 'Inquiry regarding student academic progress and class attendance.',
-                'time' => '10:45 AM',
-                'unread' => 1,
-            ];
-        }
-
-        if (empty($threads)) {
-            $threads[] = [
-                'id' => 991,
-                'name' => 'Faculty Announcements',
-                'snippet' => 'Staff and departmental meeting scheduled for this week.',
-                'time' => 'Today',
-                'unread' => 0,
-            ];
-            $threads[] = [
-                'id' => 992,
-                'name' => 'Academic Routine Committee',
-                'snippet' => 'Mid-term syllabus review is now accessible on the portal.',
-                'time' => 'Mon',
-                'unread' => 0,
-            ];
-        }
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $threads
-        ]);
+        return response()->json(['status' => 'success', 'data' => []]);
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\URL;
 
 class Admission extends Model
 {
@@ -83,23 +84,68 @@ class Admission extends Model
 
     public function applicationFeePayment(): ?PaymentTransaction
     {
-        return $this->payments()
-            ->where(function ($q) {
-                $q->where('type', 'application_fee')
-                  ->orWhereNotNull('application_fee');
-            })
-            ->latest()
-            ->first();
+        return $this->feePayment('application_fee');
     }
 
     public function admissionFeePayment(): ?PaymentTransaction
     {
+        return $this->feePayment('admission_fee');
+    }
+
+    /** A paid transaction wins over any later unfinished attempt for the same fee. */
+    private function feePayment(string $type): ?PaymentTransaction
+    {
         return $this->payments()
-            ->where(function ($q) {
-                $q->where('type', 'admission_fee')
-                  ->orWhereNotNull('admission_fee');
+            ->where(function ($q) use ($type) {
+                $q->where('type', $type)
+                  ->orWhereNotNull($type);
             })
+            ->orderByRaw("status = 'paid' desc")
             ->latest()
+            ->orderByDesc('id')
             ->first();
+    }
+
+    /**
+     * What to show for one fee. Until it is paid the amount is the configured one, because that is
+     * what the next payment will charge.
+     *
+     * @return array{status:string, amount:float}
+     */
+    public function feeSummary(string $type): array
+    {
+        $payment = $this->feePayment($type);
+        $status = $payment?->status ?? 'unpaid';
+
+        return [
+            'status' => $status,
+            'amount' => $status === 'paid' ? (float) $payment->amount : (float) config('fees.' . $type),
+        ];
+    }
+
+    /** A time-limited download link for the admission slip. */
+    public function slipUrl(): string
+    {
+        return url(URL::temporarySignedRoute(
+            'api.admission.slip',
+            now()->addHours(config('security.slip_link_hours')),
+            ['application_no' => $this->application_no],
+            false,
+        ));
+    }
+
+    /** The student, the linked guardian, or the parent of the student account. */
+    public function isOwnedBy(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        if ((int) $this->user_id === (int) $user->id || (int) $this->guardian_user_id === (int) $user->id) {
+            return true;
+        }
+
+        return $this->user_id !== null
+            && User::whereKey($this->user_id)->where('parent_id', $user->id)->exists();
     }
 }

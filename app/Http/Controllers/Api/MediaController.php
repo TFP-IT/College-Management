@@ -12,12 +12,13 @@ class MediaController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|max:10240', // 10MB max
+            // No login is needed here, so only real images are accepted (checked by content).
+            'file' => 'required|file|mimes:jpg,jpeg,png,webp|max:10240', // 10MB max
         ]);
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $extension = $file->getClientOriginalExtension() ?: $file->guessExtension();
+            $extension = $file->guessExtension();
             $originalName = $file->getClientOriginalName();
             $title = pathinfo($originalName, PATHINFO_FILENAME);
             $slug = Str::slug($title) . '-' . uniqid();

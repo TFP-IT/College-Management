@@ -3,97 +3,72 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Client\PendingRequest;
-use Illuminate\Support\Facades\DB;
 use App\Models\Admission;
 use App\Models\PaymentTransaction;
+use App\Models\User;
+use App\Services\Payments\PaymentSettlement;
+use App\Services\Payments\SslCommerzClient;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
-    private $storeId;
-    private $storePass;
-    private $isSandbox;
-
-    public function __construct()
+    public function __construct(private SslCommerzClient $gateway, private PaymentSettlement $settlement)
     {
-        $this->storeId = (string) (config('services.sslcommerz.store_id') ?: 'versa6aa14fffc6aef');
-        $this->storePass = (string) (config('services.sslcommerz.store_password') ?: 'versa6aa14fffc6aef@ssl');
-        $this->isSandbox = filter_var(config('services.sslcommerz.sandbox', true), FILTER_VALIDATE_BOOLEAN);
-    }
-
-    private function getBaseUrl()
-    {
-        return $this->isSandbox ? 'https://sandbox.sslcommerz.com' : 'https://securepay.sslcommerz.com';
     }
 
     /** Play Store builds call the live API, so live callbacks must return there. */
     private function appUrl(string $path): string
     {
         $callbackRoot = rtrim((string) (config('services.sslcommerz.callback_url') ?: 'https://backendmcc.tocc.world'), '/');
-        $root = $this->isSandbox ? rtrim(url('/'), '/') : $callbackRoot;
+        $root = $this->gateway->isSandbox() ? rtrim(url('/'), '/') : $callbackRoot;
 
         return $root . $path;
     }
 
-    /** Sandbox handshakes often stall; retry before giving up. */
-    private function sslClient(): PendingRequest
-    {
-        return Http::withOptions([
-            'curl' => [CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4],
-        ])->connectTimeout(25)->timeout(40);
-    }
-
-    private function sslSend(callable $send)
-    {
-        $last = null;
-        for ($attempt = 0; $attempt < 3; $attempt++) {
-            try {
-                return $send($this->sslClient());
-            } catch (ConnectionException $e) {
-                $last = $e;
-                usleep(400000);
-            }
-        }
-
-        throw $last;
-    }
-
     public function initiatePayment(Request $request)
     {
+        // Older app builds still send "amount". It is deliberately not read.
         $request->validate([
             'application_no' => 'required|string',
-            'amount' => 'nullable|numeric|min:1',
-            'fee_type' => 'nullable|string', // 'admission_fee' or 'application_fee'
+            'fee_type' => 'nullable|in:application_fee,admission_fee',
         ]);
 
         $admission = Admission::where('application_no', $request->application_no)->first();
 
-        if (!$admission) {
+        // Someone else's application looks the same as a missing one, so numbers cannot be probed.
+        if (!$admission || !$admission->isOwnedBy($request->user())) {
             return response()->json(['status' => 'error', 'message' => 'Admission application not found.'], 404);
         }
 
         $feeType = $request->fee_type ?: 'application_fee';
+
+        if ($admission->status === 'rejected') {
+            return response()->json(['status' => 'error', 'message' => 'This application was not accepted, so no fee is due.'], 400);
+        }
 
         // Application fee can only be paid when pending/under_review. Once approved, application fee is already verified.
         if ($feeType === 'application_fee' && $admission->status === 'approved') {
             return response()->json(['status' => 'error', 'message' => 'Application is already approved.'], 400);
         }
 
-        // Admission fee can be paid once approved or anytime during enrollment.
-        $defaultAmount = ($feeType === 'admission_fee') ? 3000.00 : 500.00;
-        $amount = $request->filled('amount') && floatval($request->amount) > 0 
-            ? floatval($request->amount) 
-            : $defaultAmount;
+        if ($admission->payments()->where('type', $feeType)->where('status', 'paid')->exists()) {
+            return response()->json(['status' => 'error', 'message' => 'This fee is already paid.'], 409);
+        }
 
-        $transactionId = ($feeType === 'admission_fee' ? 'MCC_ENR_' : 'MCC_ADM_') . uniqid();
+        if (!$this->gateway->isConfigured()) {
+            Log::error('SSLCommerz credentials are missing. Set SSL_STORE_ID and SSL_STORE_PASSWORD.');
 
-        $student = \App\Models\User::find($admission->user_id);
+            return response()->json(['status' => 'error', 'message' => 'Online payment is not available right now.'], 503);
+        }
 
-        // Create Pending Transaction
+        $amount = (float) config('fees.' . $feeType);
+        $transactionId = ($feeType === 'admission_fee' ? 'MCC_ENR_' : 'MCC_ADM_') . Str::lower(Str::random(20));
+
+        $student = User::find($admission->user_id);
+
         $transaction = PaymentTransaction::create([
             'payable_type' => get_class($admission),
             'payable_id' => $admission->id,
@@ -111,11 +86,7 @@ class PaymentController extends Controller
             'status' => 'pending',
         ]);
 
-        $productName = ($feeType === 'admission_fee') ? 'Admission Fee' : 'Application Fee';
-
         $postData = [
-            'store_id' => $this->storeId,
-            'store_passwd' => $this->storePass,
             'total_amount' => $amount,
             'currency' => 'BDT',
             'tran_id' => $transactionId,
@@ -135,15 +106,15 @@ class PaymentController extends Controller
             'cus_fax' => '01711111111',
             'shipping_method' => 'NO',
             'num_of_item' => 1,
-            'product_name' => $productName,
+            'product_name' => ($feeType === 'admission_fee') ? 'Admission Fee' : 'Application Fee',
             'product_category' => 'Education',
             'product_profile' => 'general',
-            'value_a' => $transaction->id, // Store transaction PK here to retrieve later
+            'value_a' => $transaction->id,
             'value_b' => $feeType,
         ];
 
         try {
-            $response = $this->sslSend(fn ($http) => $http->asForm()->post($this->getBaseUrl() . '/gwprocess/v4/api.php', $postData));
+            $response = $this->gateway->createSession($postData);
         } catch (ConnectionException $e) {
             $transaction->status = 'failed';
             $transaction->save();
@@ -171,193 +142,63 @@ class PaymentController extends Controller
         Log::warning('SSLCommerz session initiation refused', [
             'transaction_id' => $transactionId,
             'amount' => $amount,
-            'sandbox' => $this->isSandbox,
+            'sandbox' => $this->gateway->isSandbox(),
             'failedreason' => $failedReason,
-            'response' => $result,
         ]);
 
         return response()->json([
             'status' => 'error',
             'message' => $failedReason ?: 'Failed to initiate payment gateway.',
-            'error' => $result,
         ], 500);
     }
 
     public function paymentSuccess(Request $request)
     {
-        $valId = $request->val_id;
-        $tranId = $request->tran_id;
+        $valId = (string) $request->input('val_id');
+        $tranId = (string) $request->input('tran_id');
 
-        if (!$valId || !$tranId) {
-            return redirect($this->appUrl('/api/payment/result?status=fail'));
-        }
+        $paid = $valId !== '' && $tranId !== ''
+            && $this->settlement->settle($tranId, $valId) === PaymentSettlement::PAID;
 
-        // The sandbox stalls when "@" in the store password is percent-encoded.
-        $validationUrl = $this->getBaseUrl() . '/validator/api/validationserverAPI.php?' . http_build_query([
-            'val_id' => $valId,
-            'store_id' => $this->storeId,
-            'store_passwd' => $this->storePass,
-            'v' => 1,
-            'format' => 'json',
-        ]);
-        $validationUrl = str_replace(
-            'store_passwd=' . urlencode($this->storePass),
-            'store_passwd=' . $this->storePass,
-            $validationUrl
-        );
-
-        try {
-            $validationResponse = $this->sslSend(fn ($http) => $http->get($validationUrl));
-        } catch (ConnectionException $e) {
-            Log::warning('SSLCommerz validation timed out', ['tran_id' => $tranId]);
-
-            return redirect($this->appUrl('/api/payment/result?status=fail'));
-        }
-
-        $result = $validationResponse->json();
-
-        if (isset($result['status']) && ($result['status'] === 'VALID' || $result['status'] === 'VALIDATED')) {
-            if ((string) ($result['risk_level'] ?? '0') === '1') {
-                $held = PaymentTransaction::where('transaction_id', $tranId)->first();
-                if ($held && $held->status !== 'paid') {
-                    $held->status = 'hold';
-                    $held->gateway_response = $result;
-                    $held->save();
-                }
-                Log::warning('SSLCommerz payment held for review', ['tran_id' => $tranId]);
-
-                return redirect($this->appUrl('/api/payment/result?status=fail'));
-            }
-
-            $transaction = PaymentTransaction::where('transaction_id', $tranId)->first();
-
-            if ($transaction) {
-                // Determine payment method from gateway response
-                $cardType = strtolower($result['card_type'] ?? '');
-                $method = 'card';
-                if (str_contains($cardType, 'bkash')) $method = 'bkash';
-                elseif (str_contains($cardType, 'nagad')) $method = 'nagad';
-                elseif (str_contains($cardType, 'rocket')) $method = 'rocket';
-
-                DB::transaction(function () use ($transaction, $result, $method) {
-                    $transaction->markPaid($transaction->transaction_id, $result, $method);
-                    
-                    $admission = Admission::find($transaction->payable_id);
-                    if ($admission && $transaction->type === 'application_fee' && $admission->status === 'pending') {
-                        $admission->status = 'under_review';
-                        $admission->save();
-                    }
-
-                    if ($admission && $transaction->type === 'admission_fee') {
-                        $student = \App\Models\User::find($admission->user_id);
-                        if ($student) {
-                            app(\App\Services\WebAccountSync::class)->enrollAfterAdmissionFee($student);
-                        }
-                    }
-                });
-            }
-
-            return redirect($this->appUrl('/api/payment/result?status=success'));
-        }
-
-        return redirect($this->appUrl('/api/payment/result?status=fail'));
+        return redirect($this->appUrl('/api/payment/result?status=' . ($paid ? 'success' : 'fail')));
     }
 
     /** Server-to-server notice. Same validation as the customer redirect, with no page. */
     public function paymentIpn(Request $request)
     {
-        $valId = $request->val_id;
-        $tranId = $request->tran_id;
-        if (!$valId || !$tranId) {
+        $valId = (string) $request->input('val_id');
+        $tranId = (string) $request->input('tran_id');
+        if ($valId === '' || $tranId === '') {
             return response('FAILED', 400);
         }
 
-        $validationUrl = $this->getBaseUrl() . '/validator/api/validationserverAPI.php?' . http_build_query([
-            'val_id' => $valId,
-            'store_id' => $this->storeId,
-            'store_passwd' => $this->storePass,
-            'v' => 1,
-            'format' => 'json',
-        ]);
-        $validationUrl = str_replace(
-            'store_passwd=' . urlencode($this->storePass),
-            'store_passwd=' . $this->storePass,
-            $validationUrl
-        );
-
-        try {
-            $validationResponse = $this->sslSend(fn ($http) => $http->get($validationUrl));
-        } catch (ConnectionException $e) {
-            Log::warning('SSLCommerz IPN validation timed out', ['tran_id' => $tranId]);
-
-            return response('FAILED', 504);
-        }
-
-        $result = $validationResponse->json();
-        $status = $result['status'] ?? '';
-        if (!in_array($status, ['VALID', 'VALIDATED'], true)) {
-            return response('FAILED', 200);
-        }
-
-        if ((string) ($result['risk_level'] ?? '0') === '1') {
-            $held = PaymentTransaction::where('transaction_id', $tranId)->first();
-            if ($held && $held->status !== 'paid') {
-                $held->status = 'hold';
-                $held->gateway_response = $result;
-                $held->save();
-            }
-
-            return response('HOLD', 200);
-        }
-
-        $transaction = PaymentTransaction::where('transaction_id', $tranId)->first();
-        if ($transaction && $transaction->status !== 'paid') {
-            $cardType = strtolower($result['card_type'] ?? '');
-            $method = 'card';
-            if (str_contains($cardType, 'bkash')) $method = 'bkash';
-            elseif (str_contains($cardType, 'nagad')) $method = 'nagad';
-            elseif (str_contains($cardType, 'rocket')) $method = 'rocket';
-
-            DB::transaction(function () use ($transaction, $result, $method) {
-                $transaction->markPaid($transaction->transaction_id, $result, $method);
-                $admission = Admission::find($transaction->payable_id);
-                if ($admission && $transaction->type === 'application_fee' && $admission->status === 'pending') {
-                    $admission->status = 'under_review';
-                    $admission->save();
-                }
-                if ($admission && $transaction->type === 'admission_fee') {
-                    $student = \App\Models\User::find($admission->user_id);
-                    if ($student) {
-                        app(\App\Services\WebAccountSync::class)->enrollAfterAdmissionFee($student);
-                    }
-                }
-            });
-        }
-
-        return response('OK', 200);
+        return match ($this->settlement->settle($tranId, $valId)) {
+            PaymentSettlement::PAID => response('OK', 200),
+            PaymentSettlement::HELD => response('HOLD', 200),
+            PaymentSettlement::UNREACHABLE => response('FAILED', 504),
+            default => response('FAILED', 200),
+        };
     }
 
     public function paymentFail(Request $request)
     {
-        $tranId = $request->tran_id;
-        $transaction = PaymentTransaction::where('transaction_id', $tranId)->first();
-        if ($transaction && $transaction->status !== 'paid') {
-            $transaction->status = 'failed';
-            $transaction->save();
-        }
+        $this->markFailed((string) $request->input('tran_id'));
 
         return redirect($this->appUrl('/api/payment/result?status=fail'));
     }
 
     public function paymentCancel(Request $request)
     {
-        $tranId = $request->tran_id;
-        $transaction = PaymentTransaction::where('transaction_id', $tranId)->first();
-        if ($transaction && $transaction->status !== 'paid') {
-            $transaction->status = 'failed';
-            $transaction->save();
-        }
+        $this->markFailed((string) $request->input('tran_id'));
 
         return redirect($this->appUrl('/api/payment/result?status=cancel'));
+    }
+
+    /** Only an open attempt can be closed this way. A later verified payment still settles it. */
+    private function markFailed(string $tranId): void
+    {
+        PaymentTransaction::where('transaction_id', $tranId)
+            ->where('status', 'pending')
+            ->update(['status' => 'failed']);
     }
 }

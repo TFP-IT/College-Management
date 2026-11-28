@@ -40,13 +40,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     } elseif ($user && $user->role_id == 7) {
         $admission = \App\Models\Admission::where('user_id', $user->id)->latest()->first();
         if ($admission) {
-            $feePayment = $admission->admissionFeePayment();
-            $paymentStatus = 'unpaid';
-            $paymentAmount = 500.00;
-            if ($feePayment) {
-                $paymentStatus = $feePayment->status;
-                $paymentAmount = (float) $feePayment->amount;
-            }
+            ['status' => $paymentStatus, 'amount' => $paymentAmount] = $admission->feeSummary('admission_fee');
             $admission->payment_status = $paymentStatus;
             $admission->payment_amount = $paymentAmount;
             $admission->application_fee = $paymentAmount;
@@ -63,8 +57,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     ]);
 });
 
-Route::post('/login', [ApiController::class, 'login']);
-Route::post('/app_login', [ApiController::class, 'appLogin']);
+Route::post('/login', [ApiController::class, 'login'])->middleware('throttle:login');
+Route::post('/app_login', [ApiController::class, 'appLogin'])->middleware('throttle:login');
 
 // Teacher First-Time Setup & Password Recovery (Email OTP)
 Route::prefix('auth/teacher')->group(function () {
@@ -73,9 +67,9 @@ Route::prefix('auth/teacher')->group(function () {
     Route::post('/complete-setup', [TeacherAuthController::class, 'completeSetup']);
 });
 
-Route::post('/media/upload', [MediaController::class, 'upload']);
-Route::post('/admission/submit', [AdmissionController::class, 'submit']);
-Route::get('/admission/{application_no}/pdf', [AdmissionController::class, 'downloadPdf']);
+Route::post('/media/upload', [MediaController::class, 'upload'])->middleware('throttle:upload');
+Route::post('/admission/submit', [AdmissionController::class, 'submit'])->middleware('throttle:signup');
+Route::get('/admission/{application_no}/pdf', [AdmissionController::class, 'downloadPdf'])->name('api.admission.slip');
 
 // Teacher & Classroom API Routes
 Route::middleware(['auth:sanctum', 'api.student'])->prefix('student')->group(function () {
@@ -169,6 +163,7 @@ Route::middleware('auth:sanctum')->group(function () {
 if (file_exists(__DIR__ . '/admissions_api.php')) {
     require __DIR__ . '/admissions_api.php';
 }
+require __DIR__ . '/campus_api.php';
 if (file_exists(__DIR__ . '/cms_api.php')) {
     require __DIR__ . '/cms_api.php';
 }

@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # Never serve application source, configuration or logs (matters when this folder is the web root)
+    RewriteRule ^(?:\.(?!well-known/)|(?:app|bootstrap|config|database|resources|routes|tests|vendor|docs|node_modules|storage/(?:app|framework|logs))(?:/|$)) - [F,L]
+    RewriteRule ^(?:artisan|composer\.(?:json|lock)|package(?:-lock)?\.json|phpunit\.xml|Attendence_report\.csv)$ - [F,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

@@ -57,6 +57,7 @@
     <!--Main Jquery-->
     <script src="{{ asset('assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
     
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}" />
 </head>
 <body>
 
@@ -74,6 +75,16 @@
         </div>
         <ul class="nav-links">
             <!-- sidebar title -->
+            <li class="nav-links-li">
+                <div class="iocn-link">
+                    <a href="{{ route('office.dashboard') }}">
+                        <div class="sidebar_icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M1 2.500A1.500 1.500 0 0 1 2.500 1h3A1.500 1.500 0 0 1 7 2.500v11A1.500 1.500 0 0 1 5.500 15h-3A1.500 1.500 0 0 1 1 13.500v-11Zm8 0A1.500 1.500 0 0 1 10.500 1h3A1.500 1.500 0 0 1 15 2.500v3A1.500 1.500 0 0 1 13.500 7h-3A1.500 1.500 0 0 1 9 5.500v-3Zm0 8A1.500 1.500 0 0 1 10.500 9h3a1.500 1.500 0 0 1 1.500 1.500v3a1.500 1.500 0 0 1-1.500 1.500h-3A1.500 1.500 0 0 1 9 13.500v-3Z"/></svg>
+                        </div>
+                        <span class="link_name">{{ get_phrase('Office portal') }}</span>
+                    </a>
+                </div>
+            </li>
             <li class="nav-links-li {{ request()->is('accountant/dashboard') ? 'showMenu':'' }}">
               <div class="iocn-link">
                 <a href="{{ route('accountant.dashboard') }}">

@@ -123,5 +123,19 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
         });
+
+        // Passwords: a few tries per account, and a wider cap per address (a campus shares one).
+        RateLimiter::for('login', function (Request $request) {
+            $account = mb_strtolower(trim((string) ($request->input('login_id') ?: $request->input('email'))));
+
+            return [
+                Limit::perMinute(5)->by('login:' . sha1($account . '|' . $request->ip())),
+                Limit::perMinute(40)->by('login-ip:' . $request->ip()),
+            ];
+        });
+
+        RateLimiter::for('signup', fn (Request $request) => Limit::perMinute(10)->by('signup:' . $request->ip()));
+
+        RateLimiter::for('upload', fn (Request $request) => Limit::perMinute(20)->by('upload:' . $request->ip()));
     }
 }

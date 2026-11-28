@@ -15,6 +15,13 @@ class CreateUsersSeeder extends Seeder
      */
     public function run()
     {
+        // These accounts have well-known passwords; they are for development only.
+        if (app()->isProduction()) {
+            $this->command?->warn('Skipped demo users: not allowed in production.');
+
+            return;
+        }
+
         $users = [
             [
                 'name' => 'Super Admin',

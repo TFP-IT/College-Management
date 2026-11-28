@@ -47,7 +47,7 @@ class AdmissionPdfService
             // Fresh dynamic payment details
             $feePayment = $admission->admissionFeePayment();
             $paymentStatus = $feePayment ? strtoupper($feePayment->status) : 'UNPAID';
-            $paymentAmount = $feePayment ? (float) $feePayment->amount : 500.00;
+            $paymentAmount = $feePayment ? (float) $feePayment->amount : (float) config('fees.application_fee');
             $transactionId = $feePayment ? $feePayment->transaction_id : null;
             $paidAt = ($feePayment && $feePayment->paid_at) 
                 ? \Carbon\Carbon::parse($feePayment->paid_at)->format('d M Y, h:i A') 
@@ -70,10 +70,10 @@ class AdmissionPdfService
                 'paymentMethod' => $paymentMethod,
             ]);
 
-            // Save PDF to public disk
-            $pdfPath = 'admissions/pdfs/' . $admission->application_no . '.pdf';
-            
-            Storage::disk('public')->put($pdfPath, $pdf->output());
+            // The slip holds personal data, so it is kept on the private disk.
+            $pdfPath = 'admissions/slips/' . $admission->application_no . '.pdf';
+
+            Storage::disk('local')->put($pdfPath, $pdf->output());
 
             // Update database with pdf_path
             $admission->update(['pdf_path' => $pdfPath]);

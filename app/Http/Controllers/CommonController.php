@@ -12,6 +12,8 @@ use App\Models\Section;
 use App\Models\Enrollment;
 use Illuminate\Support\Str;
 use App\Models\Gradebook;
+use App\Models\TeacherPermission;
+use Illuminate\Support\Facades\Log;
 use App\Models\Subject;
 use App\Models\School;
 use DB;
@@ -197,41 +199,76 @@ class CommonController extends Controller
 
     public function markUpdate(Request $request)
     {
-        $data = $request->all();
+        $input = $request->validate([
+            'exam_category_id' => 'required|integer',
+            'class_id' => 'required|integer',
+            'section_id' => 'required|integer',
+            'student_id' => 'required|integer',
+            'subject_id' => 'required|integer',
+            'session_id' => 'nullable|integer',
+            'mark' => 'nullable|numeric|min:0|max:1000',
+            'comment' => 'nullable|string|max:500',
+        ]);
 
-        if (!empty($data['session_id'])) {
-            $active_session  = $data['session_id'];
+        $user = $request->user();
+        $this->authorizeMarkEntry($user, (int) $input['class_id'], (int) $input['section_id']);
+
+        abort_unless(
+            Enrollment::where('user_id', $input['student_id'])
+                ->where('class_id', $input['class_id'])
+                ->where('section_id', $input['section_id'])
+                ->where('school_id', $user->school_id)
+                ->exists(),
+            404
+        );
+
+        $key = [
+            'exam_category_id' => $input['exam_category_id'],
+            'class_id' => $input['class_id'],
+            'section_id' => $input['section_id'],
+            'student_id' => $input['student_id'],
+            'school_id' => $user->school_id,
+            'session_id' => !empty($input['session_id'])
+                ? $input['session_id']
+                : get_school_settings($user->school_id)->value('running_session'),
+        ];
+
+        $gradebook = Gradebook::where($key)->first();
+        $marks = $gradebook ? (json_decode($gradebook->marks, true) ?: []) : [];
+        $before = $marks[$input['subject_id']] ?? null;
+        $marks[$input['subject_id']] = $input['mark'] ?? null;
+        $changes = ['marks' => json_encode($marks), 'comment' => $input['comment'] ?? null];
+
+        if ($gradebook) {
+            $gradebook->fill($changes)->save();
         } else {
-            $active_session = get_school_settings(auth()->user()->school_id)->value('running_session');
+            Gradebook::create($key + $changes + ['timestamp' => strtotime(date('Y-m-d'))]);
         }
 
-        $data['school_id'] = auth()->user()->school_id;
-        $data['session_id'] = $active_session;
+        Log::info('Mark updated', [
+            'by' => $user->id,
+            'student' => (int) $input['student_id'],
+            'subject' => (int) $input['subject_id'],
+            'exam_category' => (int) $input['exam_category_id'],
+            'old' => $before,
+            'new' => $input['mark'] ?? null,
+        ]);
 
-        $query = Gradebook::where('exam_category_id', $data['exam_category_id'])
-            ->where('class_id', $data['class_id'])
-            ->where('section_id', $data['section_id'])
-            ->where('student_id', $data['student_id'])
-            ->where('school_id', $data['school_id'])
-            ->where('session_id', $data['session_id'])
-            ->first();
+        return response()->noContent();
+    }
 
-        if (!empty($query) && $query->count() > 0) {
+    private function authorizeMarkEntry(User $user, int $classId, int $sectionId): void
+    {
+        $role = (int) $user->role_id;
 
-            $marks = json_decode($query->marks, true);
-            $marks[$data['subject_id']] = $data['mark'];
-            $query->marks = json_encode($marks);
-            $query->comment = $data['comment'];
-            $query->save();
+        $allowed = $role === 2 || ($role === 3 && TeacherPermission::where('teacher_id', $user->id)
+            ->where('class_id', $classId)
+            ->where('section_id', $sectionId)
+            ->where('school_id', $user->school_id)
+            ->where('marks', 1)
+            ->exists());
 
-
-        } else {
-            $mark[$data['subject_id']] = $data['mark'];
-            $marks = json_encode($mark);
-            $data['marks'] = $marks;
-            $data['timestamp'] = strtotime(date('Y-m-d'));
-            Gradebook::create($data);
-        }
+        abort_unless($allowed, 403, 'You are not allowed to enter marks for this class.');
     }
 
     public function get_user_by_id_from_user_table($id)

@@ -29,6 +29,7 @@ use App\Models\Admin;
 use App\Models\ExpenseCategory;
 use App\Models\Expense;
 use App\Models\StudentFeeManager;
+use Illuminate\Support\Str;
 use App\Models\PaymentMethods;
 use App\Models\Payments;
 use App\Models\MessageThrade;
@@ -498,7 +499,7 @@ class StudentController extends Controller
     public function FeePayment(Request $request, $id)
     {
 
-        $fee_details = StudentFeeManager::where('id', $id)->first()->toArray();
+        $fee_details = $this->ownInvoice($id)->toArray();
         $user_info = User::where('id', $fee_details['student_id'])->first()->toArray();
         return view('student.payment.payment_gateway', ['fee_details' => $fee_details, 'user_info' => $user_info]);
     }
@@ -506,7 +507,7 @@ class StudentController extends Controller
     public function studentFeeinvoice(Request $request, $id)
     {
 
-        $invoice_details = StudentFeeManager::find($id)->toArray();
+        $invoice_details = $this->ownInvoice($id)->toArray();
         $student_details = (new CommonController)->get_student_details_by_id($invoice_details['student_id'])->toArray();
 
         return view('student.fee_manager.invoice', ['invoice_details' => $invoice_details, 'student_details' => $student_details]);
@@ -516,37 +517,37 @@ class StudentController extends Controller
 
     public function offlinePaymentStudent(Request $request, $id = "")
     {
-        $data = $request->all();
+        $invoice = $this->ownInvoice($id);
 
-        if ($data['amount'] > 0) {
+        $request->validate([
+            'amount' => 'required|numeric|gt:0',
+            'document_image' => 'required|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
+        ]);
 
-            $file = $data['document_image'];
-
-            if ($file) {
-                $filename = $file->getClientOriginalName();
-                $extension = $file->getClientOriginalExtension(); //Get extension of uploaded file
-
-                
-                $file->move(public_path('assets/uploads/offline_payment'), $filename);
-                $data['document_image'] = $filename;
-            } else {
-                $data['document_image'] = '';
-            }
-
-            StudentFeeManager::where('id',  $id)->update([
-                'status' => 'pending',
-                'document_image' => $data['document_image'],
-                'payment_method' => 'offline'
-            ]);
-
-
-
-
-
-            return redirect()->route('student.fee_manager.list')->with('message', 'offline payment requested successfully');
-        } else {
-            return redirect()->route('student.fee_manager.list')->with('message', 'offline payment requested fail');
+        if ($invoice->status === 'paid') {
+            return redirect()->route('student.fee_manager.list')->with('error', 'This invoice is already paid.');
         }
+
+        // The stored name is random: the browser's name could overwrite or disguise a file.
+        $file = $request->file('document_image');
+        $filename = Str::random(40) . '.' . $file->guessExtension();
+        $file->move(public_path('assets/uploads/offline_payment'), $filename);
+
+        $invoice->update([
+            'status' => 'pending',
+            'document_image' => $filename,
+            'payment_method' => 'offline',
+        ]);
+
+        return redirect()->route('student.fee_manager.list')->with('message', 'offline payment requested successfully');
+    }
+
+    /** An invoice that belongs to the signed-in account; anything else is "not found". */
+    private function ownInvoice($id): StudentFeeManager
+    {
+        return StudentFeeManager::where('id', $id)
+            ->where('student_id', auth()->user()->id)
+            ->firstOrFail();
     }
 
     function profile(){

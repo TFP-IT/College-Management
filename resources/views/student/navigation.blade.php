@@ -55,6 +55,7 @@
 
      <!--Main Jquery-->
      <script src="{{ asset('assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}" />
 </head>
 <body>
 

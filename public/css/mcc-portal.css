@@ -1,0 +1,693 @@
+/* MCC theme for the older school portals. Generated from their stylesheets so colours and type match
+   the new office portal; hand-written touches follow at the end. Load after custom.css. */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+.eBlue {
+  background-color: #c62828 !important;
+}
+.eBlueish {
+  background-color: #4a0e12 !important;
+}
+:root {
+  --dark-color-1: #1c1921;
+  --blue-bg-color-1: #fbeaea;
+}
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+li,
+button,
+label,
+div,
+span {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+.bg-primary {
+  background-color: #c62828 !important;
+}
+.color-primary {
+  color: #c62828 !important;
+}
+.btn-primary {
+  background-color: #c62828 !important;
+  border-color: #c62828 !important;
+}
+.btn-light-primary {
+  background-color: #fbeaea !important;
+  border-color: #fbeaea !important;
+  color: #c62828 !important;
+}
+.btn-light-primary:hover {
+  background-color: #c62828 !important;
+  border-color: #c62828 !important;
+}
+.btn-outline-primary {
+  color: #c62828 !important;
+  border-color: #c62828 !important;
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: #c62828 !important;
+  border-color: #c62828 !important;
+}
+.page-item.active .page-link {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.navigation-section-dark {
+  background-color: #4a0e12;
+}
+.navigation-section-dark .side-navigation-bar {
+  background-color: #4a0e12;
+}
+.login-btn {
+  background-color: #c62828;
+}
+.signup-btn {
+  color: #1c1921;
+}
+.signup-btn:hover {
+  color: #1c1921;
+}
+.navigation-section-dark .side-navigation-bar > .parent-side-bar {
+  background-color: #4a0e12;
+}
+.side-navigation-bar > .parent-side-bar > li > a {
+  border-left: 4px solid rgba(198, 40, 40, 0);
+}
+.side-navigation-bar > .parent-side-bar > li > a.active,
+.side-navigation-bar > .parent-side-bar > li > a:hover {
+  color: #c62828;
+  border-left: 4px solid #c62828;
+}
+.side-navigation-bar > .parent-side-bar > li > a.active .svg-icon1,
+.side-navigation-bar > .parent-side-bar > li > a:hover .svg-icon1 {
+  stroke: #c62828;
+}
+.side-navigation-bar > .parent-side-bar > li > a.active .svg-icon2,
+.side-navigation-bar > .parent-side-bar > li > a:hover .svg-icon2 {
+  fill: #c62828;
+}
+.side-navigation-bar > .parent-side-bar > li > a.active .svg-icon3 path,
+.side-navigation-bar > .parent-side-bar > li > a:hover .svg-icon3 path {
+  stroke: #c62828;
+}
+.side-navigation-bar > .parent-side-bar > li > a.active .svg-icon3 g,
+.side-navigation-bar > .parent-side-bar > li > a:hover .svg-icon3 g {
+  stroke: #c62828;
+}
+.side-navigation-bar > .parent-side-bar > li > a.active .svg-icon3 circle,
+.side-navigation-bar > .parent-side-bar > li > a:hover .svg-icon3 circle {
+  stroke: #c62828;
+}
+.child-side-bar > li > a.active,
+.child-side-bar > li > a:hover {
+  color: #c62828;
+}
+.child-side-bar-2nd > li > a.active,
+.child-side-bar-2nd > li > a:hover {
+  color: #c62828;
+}
+.ek-menu-button {
+  background-color: #4a0e12;
+}
+.visit-btn a {
+  background-color: #c62828;
+}
+.page-header .header-title h5 {
+  color: #1c1921;
+}
+.primary-form .subtitle p {
+  color: #1c1921;
+}
+.signin-diff-btn {
+  color: #1c1921;
+}
+.signup-seperate {
+  color: #1c1921;
+}
+.login-form form label {
+  color: #1c1921;
+}
+.ekator-offcanvas .offcanvas-header h5 {
+  color: #1c1921;
+}
+.updateAdmin-btn {
+  background-color: #c62828;
+}
+.dAdmin_profile .dAdmin_profile_name h4 {
+  color: #1c1921;
+}
+.dAdmin_info .dAdmin_info_img i {
+  color: #c62828;
+}
+.dAdmin_info_name p span {
+  color: #1c1921;
+}
+.assignPermi_area h3.title {
+  color: #1c1921;
+}
+.sidebar {
+  background: #4a0e12;
+}
+.sidebar .nav-links > li .sMenu-title .sidebar_icon svg {
+  fill: #c62828;
+}
+.sidebar .nav-links > li .iocn-link::before {
+  background-color: #c62828;
+}
+.sidebar .nav-links > li.showMenu .iocn-link::before {
+  background-color: #c62828;
+}
+.sidebar .nav-links > li.showMenu .iocn-link a .sidebar_icon svg {
+  color: #c62828;
+  fill: #c62828;
+}
+ul > li.user-profile > .btn-group .dropdown-menu li:not(.user-profile) > a:not(.btn) {
+  color: #1c1921;
+}
+ul > li.user-profile > .btn-group .dropdown-menu li:not(.user-profile) > a:not(.btn):hover {
+  color: #c62828;
+}
+ul > li.user-profile > .btn-group .dropdown-menu li:not(.user-profile) > a:not(.btn):hover span svg {
+  color: #c62828;
+}
+ul > li.user-profile > .btn-group .dropdown-menu li:not(.user-profile) > a:not(.btn):hover span svg path,
+ul > li.user-profile > .btn-group .dropdown-menu li:not(.user-profile) > a:not(.btn):hover span svg circle,
+ul > li.user-profile > .btn-group .dropdown-menu li:not(.user-profile) > a:not(.btn):hover span svg g g {
+  stroke: #c62828;
+  fill: #c62828;
+}
+ul > li.user-profile > .btn-group .dropdown-menu li:not(.user-profile) > a:not(.btn):active, ul > li.user-profile > .btn-group .dropdown-menu li:not(.user-profile) > a:not(.btn):focus {
+  color: #c62828;
+}
+.header_notification .notification_icon {
+  background-color: #fbeaea;
+}
+.header_notification .notification_icon i {
+  color: #c62828;
+}
+.header_notification p span {
+  color: #c62828;
+}
+.eLogut_btn {
+  background-color: #c62828;
+}
+.mainSection-title h4 {
+  color: #1c1921;
+}
+.eSection-wrap .title h3 {
+  color: #1c1921;
+}
+.column-title {
+  color: #1c1921;
+}
+.copyright-text p span {
+  color: #c62828;
+}
+.export_btn {
+  background-color: #c62828;
+}
+.export_btn:hover {
+  border-color: #c62828;
+  color: #c62828;
+}
+.print_invoice_btn {
+  background-color: #c62828;
+}
+.print_invoice_btn:hover {
+  border-color: #c62828;
+  color: #c62828;
+}
+.print_invoice_btn:hover svg path {
+  fill: #c62828;
+}
+.paypal_btn {
+  background-color: #c62828;
+}
+.paypal_btn:hover {
+  border-color: #c62828;
+  color: #c62828;
+}
+.off_payment_btn {
+  background-color: #c62828;
+}
+.off_payment_btn:hover {
+  border-color: #c62828;
+  color: #c62828;
+}
+.eBtn-3 {
+  color: #c62828;
+}
+.eBtn-3:hover {
+  border-color: #c62828;
+  color: #c62828;
+}
+.eAlert {
+  color: #1c1921;
+}
+.eBtn-link {
+  color: #1c1921;
+}
+.eBtn-blue {
+  background-color: #c62828;
+  border: 1px solid #c62828;
+}
+.eBtn-outline-blue {
+  border: 1px solid #c62828;
+  color: #c62828;
+}
+.eBtn-outline-blueish {
+  border: 1px solid #c62828;
+  color: #c62828;
+}
+.eBtn-outline-whiteish {
+  color: #c62828;
+}
+.eCard-body .eCard-title {
+  color: #1c1921;
+}
+.eSwiper-caption h4 {
+  color: #1c1921;
+}
+.eOffcanvas .offcanvas-body h5 {
+  color: #1c1921;
+}
+.eSweet_alerts_title {
+  color: #1c1921;
+}
+.e_sAlert {
+  background-color: #c62828;
+  border: 1px solid #c62828;
+}
+.eModal .modal-dialog .modal-content .modal-body .icon svg {
+  fill: #c62828;
+}
+.eModal .modal-dialog .modal-content .modal-body p {
+  color: #1c1921;
+}
+.eModal .modal-dialog .modal-content .modal-body button {
+  background-color: #c62828;
+}
+.eNav-Tabs button.nav-link {
+  color: #1c1921;
+}
+.eNav-Tabs button.nav-link.active, .eNav-Tabs button.nav-link:hover {
+  color: #1c1921;
+}
+.eNav-Tabs-justify button.nav-link {
+  color: #1c1921;
+}
+.eNav-Tabs-justify button.nav-link.active {
+  background-color: #c62828;
+}
+.eNav-Tabs-vertical button.nav-link {
+  color: #1c1921;
+}
+.eNav-Tabs-vertical button.nav-link.active {
+  background-color: #c62828;
+}
+.eNav-Tabs-custom button.nav-link {
+  color: #1c1921;
+}
+.eNav-Tabs-custom button.nav-link.active span, .eNav-Tabs-custom button.nav-link:hover span {
+  background-color: #c62828;
+}
+.eNav-Tabs-custom button.nav-link span {
+  background-color: #c62828;
+}
+.blueColors {
+  background: conic-gradient(#4dbfff 0deg 120deg, #b1e2fe 120deg 240deg, #c62828 240deg 360deg);
+}
+.ebg-primary {
+  background-color: #c62828 !important;
+}
+.ebg-outline-primary {
+  color: #1c1921;
+  border-color: #c62828 !important;
+}
+.ebg-outline-primary:hover {
+  background-color: #c62828;
+}
+.ebg-soft-primary {
+  color: #c62828 !important;
+}
+.ebg-outline-success {
+  color: #1c1921;
+}
+.ebg-info {
+  background-color: #c62828 !important;
+}
+.ebg-outline-info {
+  color: #1c1921;
+  border-color: #c62828 !important;
+}
+.ebg-outline-info:hover {
+  background-color: #c62828;
+}
+.ebg-dark {
+  background-color: #4a0e12 !important;
+}
+.ebg-soft-dark {
+  color: #1c1921 !important;
+}
+.eForm-label {
+  color: #1c1921;
+}
+.col-eForm-label {
+  color: #1c1921;
+}
+.eForm-check-label {
+  color: #1c1921;
+}
+.eForm-control:focus, .eForm-control:hover {
+  border: 1px solid #c62828;
+}
+.eForm-control::-moz-placeholder {
+  color: #1c1921;
+}
+.eForm-control::placeholder {
+  color: #1c1921;
+}
+.btn-form {
+  background-color: #c62828;
+}
+.eForm-select ~ .select2-container--default .select2-selection--multiple:focus, .eForm-select ~ .select2-container--default .select2-selection--multiple:hover,
+.eForm-select ~ .select2-container--default .select2-selection--single:focus,
+.eForm-select ~ .select2-container--default .select2-selection--single:hover {
+  border: 1px solid #c62828;
+}
+.eForm-select ~ .select2-container--default .select2-selection--multiple .select2-selection__choice,
+.eForm-select ~ .select2-container--default .select2-selection--single .select2-selection__choice {
+  background-color: #c62828;
+}
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+  color: #c62828 !important;
+}
+.select2-container--default .select2-results__option--selected {
+  color: #c62828 !important;
+}
+.custom-accordion .accordion-item .accordion-header .accordion-button {
+  color: #1c1921;
+}
+.custom-accordion-flush .accordion-item .accordion-header .accordion-button {
+  color: #1c1921;
+}
+.eh1 {
+  color: #1c1921;
+}
+.eh2 {
+  color: #1c1921;
+}
+.eh3 {
+  color: #1c1921;
+}
+.eh4 {
+  color: #1c1921;
+}
+.eh5 {
+  color: #1c1921;
+}
+.eh6 {
+  color: #1c1921;
+}
+.eh7 {
+  color: #1c1921;
+}
+.eh8 {
+  color: #1c1921;
+}
+.eDisplay-1 {
+  color: #1c1921;
+}
+.eDisplay-2 {
+  color: #1c1921;
+}
+.eDisplay-3 {
+  color: #1c1921;
+}
+.eDisplay-4 {
+  color: #1c1921;
+}
+.eDisplay-5 {
+  color: #1c1921;
+}
+.eCheckbox input.form-check-input:checked {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.eCheckbox input.form-check-input.eCheckboxPrimary:checked {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.eCheckbox input.form-check-input.eCheckboxInfo:checked {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.eCheckbox input.form-check-input.eCheckboxOutlinePrimary:checked {
+  border-color: #c62828;
+}
+.eCheckbox input.form-check-input.eCheckboxOutlineInfo:checked {
+  border-color: #c62828;
+}
+.eCheckbox label {
+  color: #1c1921;
+}
+.eRadios input.form-check-input:checked {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.eRadios input.form-check-input.eRadioPrimary:checked {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.eRadios input.form-check-input.eRadioInfo:checked {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.eRadios input.form-check-input.eRadioOutlinePrimary:checked {
+  border-color: #c62828;
+}
+.eRadios input.form-check-input.eRadioOutlinePrimary:checked::before {
+  background-color: #c62828;
+}
+.eRadios input.form-check-input.eRadioOutlineInfo:checked {
+  border-color: #c62828;
+}
+.eRadios input.form-check-input.eRadioOutlineInfo:checked::before {
+  background-color: #c62828;
+}
+.eRadios label {
+  color: #1c1921;
+}
+.eSwitches .form-switch input.form-check-input:checked {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.eSwitches label {
+  color: #1c1921;
+}
+.epagination .page-item .page-link:hover {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.epagination-2 .page-item .page-link:hover, .epagination-2 .page-item .page-link.active {
+  background-color: #c62828;
+}
+.eToastBasic .toast-header {
+  color: #1c1921;
+}
+.eToastBasic .toast-header strong {
+  color: #1c1921;
+}
+.eToastBasic .toast-body {
+  color: #1c1921;
+}
+.eToastCustom .toast-body p {
+  color: #1c1921;
+}
+.eTable {
+  color: #1c1921 !important;
+}
+.eTable.table-hover > tbody > tr:hover > * {
+  color: #1c1921;
+}
+.eTable.table-dark {
+  --bs-table-bg: #1c1921;
+  --bs-table-hover-bg: #1c192115;
+  --bs-table-hover-color: #1c1921;
+}
+.eTable.table-dark.table-striped > tbody > tr:nth-of-type(odd) > * {
+  --bs-table-accent-bg: #1c192190 !important;
+}
+.eTable.table-striped > tbody > tr:nth-of-type(odd) > * {
+  color: #1c1921;
+}
+.table-action-btn {
+  color: #1c1921;
+}
+.table-action-btn:hover {
+  color: #1c1921;
+}
+.eTable-2.tbody-border thead tr th {
+  color: #1c1921;
+}
+.eBreadcrumb li:first-child {
+  color: #1c1921;
+}
+.classRoutines-item .title {
+  color: #1c1921;
+}
+.classTime-item {
+  border: 1px dashed rgba(198, 40, 40, 0.4);
+}
+.classTime-item .subjectName {
+  color: #1c1921;
+}
+.classDetails-info .info {
+  color: #1c1921;
+}
+.eDropdown-menu-2 li a:hover {
+  color: #c62828;
+}
+.filter-option select:hover,
+.filter-option input:hover {
+  border: 1px solid #c62828;
+}
+.eFilter-apply {
+  background-color: #c62828;
+}
+.att-report-banner::before {
+  background-color: #c62828;
+}
+.att-report-banner .att-report-summary .title {
+  color: #1c1921;
+}
+.att-report-banner .att-report-summary .summary-item {
+  color: #1c1921;
+}
+.att-stuName-items .att-stuName-item a {
+  color: #1c1921;
+}
+.att-wDay div p {
+  color: #1c1921;
+}
+.user-profile-area .user-details-info .eNav-Tabs-custom button.nav-link.active, .user-profile-area .user-details-info .eNav-Tabs-custom button.nav-link:hover {
+  color: #1c1921;
+}
+.user-info-basic .userContent .title {
+  color: #1c1921;
+}
+.user-info-basic .userContent .user-status-verify {
+  color: #c62828;
+}
+.user-edit-title .title {
+  color: #1c1921;
+}
+.user-info-edit-items .item .title {
+  color: #1c1921;
+}
+.userFormEdit-btn {
+  background-color: #c62828;
+}
+.error_content .title {
+  color: #1c1921;
+}
+.invoice_details .item .title {
+  color: #1c1921 !important;
+}
+.invoice_title {
+  color: #1c1921;
+}
+.invoice_summary_item .summary_title .summary_title_icon.allowance_icon {
+  border-color: #c62828;
+}
+.invoice_summary_item .summary_title h4 {
+  color: #1c1921;
+}
+.summary_table .summary_tbody .amount {
+  color: #1c1921;
+}
+.payslip_modal_content .modal-header .modal-title {
+  color: #1c1921;
+}
+.payslip_user_summary .item .inner-item {
+  color: #1c1921;
+}
+.paymentHeader .title {
+  color: #1c1921;
+}
+.payment_tab_title {
+  color: #1c1921;
+}
+.payment_gateway_option .info .card_no {
+  color: #1c1921;
+}
+.packageBox:hover {
+  background-color: #4a0e12;
+}
+.packageTitle {
+  border: 1px solid #c62828;
+  color: #c62828;
+}
+.packagePrice {
+  color: #1c1921;
+}
+.packagePrice span {
+  color: #1c1921;
+}
+.packageFeatures li {
+  color: #1c1921;
+}
+.packageSubs_btn {
+  background-color: #c62828;
+  border: 1px solid #c62828;
+}
+.packageSubs_btn:hover {
+  color: #c62828;
+}
+.dsHeader .ds_link.ds_sutdent svg path {
+  fill: #c62828 !important;
+}
+.dsBody .total_no {
+  color: #1c1921;
+}
+.dashboard_attendance {
+  background-color: #c62828;
+}
+.sub-menu li a.active {
+  color: #c62828 !important;
+}
+.card #search:focus {
+  border-color: #4a0e12;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #4a0e12;
+}
+.chat_write_box_text_area:focus {
+  border: 1px solid #4a0e12;
+}
+/* Hand-written */
+body { background: #f4f3f6; }
+.sidebar { background: linear-gradient(180deg, #4a0e12, #6b161a) !important; border-right: 3px solid #d4af37; }
+.sidebar .logo-details .img_wrapper img { background: #fff; border-radius: 50%; padding: 3px; }
+.sidebar .nav-links > li .link_name, .sidebar .nav-links > li .sidebar_icon, .sidebar .nav-links > li .arrow, .sidebar .nav-links > li > .iocn-link a .link_name { color: rgba(255,255,255,.84) !important; opacity: 1; }
+.sidebar .nav-links > li > .iocn-link a { display: flex; align-items: center; }
+.sidebar .nav-links > li.showMenu > .iocn-link .link_name, .sidebar .nav-links > li:hover > .iocn-link .link_name { color: #fff; }
+.sidebar .nav-links > li.showMenu::before { background: #d4af37; }
+.sidebar .nav-links > li .sidebar_icon svg path { fill: currentColor; }
+.sidebar .sub-menu li a { color: rgba(255,255,255,.75); }
+.sidebar .sub-menu li a:hover, .sidebar .sub-menu li a.active { color: #ead48a; }
+.sidebar.close .sub-menu { background: #4a0e12; }
+.dashboard_ShortListItem, .eSection-wrap, .eSection-wrap-2, .eCard, .dashboard_report { border-radius: 16px; box-shadow: 0 1px 2px rgba(60,20,40,.06), 0 8px 24px rgba(60,20,40,.05); }
+.eBtn, .btn, .eForm-control, .eForm-select { border-radius: 8px; }
+.dashboard_report.dashboard_attendance, .dashboard_attendance { background-color: #6b161a !important; }
+.dashboard_report.dashboard_income_report { background-color: #17734a !important; }
+.dashboard_report.dashboard_upcoming_events { background-color: #4a0e12 !important; }
+:focus-visible { outline: 3px solid #d4af37; outline-offset: 2px; }

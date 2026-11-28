@@ -245,112 +245,39 @@ class TeacherClassroomService
             ]);
     }
 
+    private function teaches(User $teacher, int $studentId): bool
+    {
+        $assigned = $this->classes($teacher)
+            ->map(fn ($c) => "{$c['class_id']}-{$c['section_id']}");
+
+        return DB::table('enrollments')
+            ->where('user_id', $studentId)
+            ->get(['class_id', 'section_id'])
+            ->contains(fn ($e) => $assigned->contains("{$e->class_id}-{$e->section_id}"));
+    }
+
     public function studentAnalytics(User $teacher, int $studentId): array
     {
         $schoolId = $teacher->school_id;
-        $student = DB::table('users')->where('id', $studentId)->where('school_id', $schoolId)->first();
-        if (!$student) {
+        $student = DB::table('users')
+            ->where('id', $studentId)
+            ->where('school_id', $schoolId)
+            ->where('role_id', 7)
+            ->first();
+        if (!$student || !$this->teaches($teacher, $studentId)) {
             abort(404, 'Student not found');
         }
 
+        $model = User::findOrFail($studentId);
+        $context = \App\Modules\Campus\Support\StudentContext::for($model);
+        $record = app(\App\Modules\Campus\Services\AttendanceService::class)->forStudent($context);
+        $result = app(\App\Modules\Campus\Services\ResultService::class)->publishedFor($context)[0] ?? null;
         $info = json_decode($student->user_information ?? '', true) ?: [];
-        $enrollment = DB::table('enrollments')
-            ->leftJoin('classes', 'classes.id', '=', 'enrollments.class_id')
-            ->leftJoin('sections', 'sections.id', '=', 'enrollments.section_id')
-            ->where('enrollments.user_id', $studentId)
-            ->first(['classes.id as class_id', 'classes.name as class_name', 'sections.name as section_name']);
+        $guardian = $student->parent_id ? User::find($student->parent_id) : null;
+        $totals = $record['session'];
+        $share = fn (int $count) => $totals['total'] ? (int) round($count / $totals['total'] * 100) : 0;
 
-        // 1. Attendance records
-        $attendances = DB::table('student_attendances')
-            ->where('user_id', $studentId)
-            ->orderBy('date', 'desc')
-            ->take(30)
-            ->get();
-
-        if ($attendances->isEmpty()) {
-            $attendances = DB::table('daily_attendances')
-                ->where('student_id', $studentId)
-                ->orderBy('timestamp', 'desc')
-                ->take(30)
-                ->get()
-                ->map(fn ($a) => (object)[
-                    'date' => date('Y-m-d', $a->timestamp),
-                    'status' => $a->status == 1 ? 'present' : ($a->status == 2 ? 'late' : 'absent'),
-                    'check_in' => '09:00:00',
-                    'check_out' => '15:30:00',
-                    'source' => 'manual',
-                ]);
-        }
-
-        if ($attendances->isEmpty()) {
-            $synthetic = [];
-            $statuses = ['present', 'present', 'present', 'present', 'present', 'late', 'present', 'present', 'present', 'absent'];
-            for ($i = 0; $i < 15; $i++) {
-                $time = strtotime("-{$i} days");
-                $dayOfWeek = date('w', $time);
-                if ($dayOfWeek == 5) continue; // Skip Friday
-                $st = $statuses[$i % count($statuses)];
-                $synthetic[] = (object)[
-                    'date' => date('Y-m-d', $time),
-                    'status' => $st,
-                    'check_in' => $st === 'late' ? '09:42 AM' : '08:55 AM',
-                    'check_out' => '03:30 PM',
-                    'source' => 'Biometric',
-                ];
-            }
-            $attendances = collect($synthetic);
-        }
-
-        $totalDays = $attendances->count();
-        $presentCount = $attendances->where('status', 'present')->count();
-        $lateCount = $attendances->where('status', 'late')->count();
-        $absentCount = $attendances->where('status', 'absent')->count();
-        $attendanceRate = $totalDays > 0 ? round((($presentCount + ($lateCount * 0.5)) / $totalDays) * 100, 1) : 0;
-
-        $last10 = $attendances->take(10)->values()->map(function ($a) {
-            $ts = strtotime($a->date ?? 'now');
-            return [
-                'date' => date('d M Y', $ts),
-                'day' => date('l', $ts),
-                'status' => strtolower($a->status ?? 'present'),
-                'check_in' => !empty($a->check_in) ? (strlen($a->check_in) <= 8 && strpos($a->check_in, 'M') === false ? date('h:i A', strtotime($a->check_in)) : $a->check_in) : '09:00 AM',
-                'check_out' => !empty($a->check_out) ? (strlen($a->check_out) <= 8 && strpos($a->check_out, 'M') === false ? date('h:i A', strtotime($a->check_out)) : $a->check_out) : '03:30 PM',
-                'source' => $a->source ?? 'Biometric',
-            ];
-        });
-
-        // 2. Leave Summary
-        $leaveApproved = 3;
-        $leavePending = 1;
-        $leaveRejected = 0;
-        $leavesList = [
-            ['type' => 'Medical Leave', 'days' => 2, 'dates' => '24 Oct - 25 Oct', 'status' => 'approved'],
-            ['type' => 'Casual Leave', 'days' => 1, 'dates' => '05 Nov', 'status' => 'approved'],
-            ['type' => 'Family Event', 'days' => 1, 'dates' => '14 Nov', 'status' => 'pending'],
-        ];
-
-        // 3. Mark Distribution
-        $classId = $enrollment?->class_id ?? 2;
-        $subjects = DB::table('subjects')->where('class_id', $classId)->where('school_id', $schoolId)->get();
-        if ($subjects->isEmpty()) {
-            $subjects = DB::table('subjects')->where('school_id', $schoolId)->take(6)->get();
-        }
-
-        $marksList = [];
-        $sampleScores = [92, 85, 78, 88, 95, 82, 90, 74];
-        foreach ($subjects as $idx => $sub) {
-            $score = $sampleScores[$idx % count($sampleScores)];
-            $grade = $score >= 80 ? 'A+' : ($score >= 70 ? 'A' : ($score >= 60 ? 'A-' : 'B'));
-            $marksList[] = [
-                'id' => $sub->id,
-                'subject' => $sub->name,
-                'score' => $score,
-                'total' => 100,
-                'grade' => $grade,
-                'highest' => min(100, $score + 6),
-            ];
-        }
-
+        // Everything below comes from stored records. Sections with no records stay empty.
         return [
             'student' => [
                 'id' => (int) $student->id,
@@ -358,43 +285,42 @@ class TeacherClassroomService
                 'student_id' => $student->student_id ?: ('MCC' . $student->id),
                 'email' => $student->email,
                 'phone' => $info['phone'] ?? '',
-                'gender' => $info['gender'] ?? 'Not specified',
-                'blood_group' => $info['blood_group'] ?? 'N/A',
+                'gender' => $info['gender'] ?? '',
+                'blood_group' => $info['blood_group'] ?? '',
                 'photo' => !empty($info['photo']) ? asset('assets/uploads/user-images/' . $info['photo']) : null,
-                'class' => $enrollment?->class_name ?? 'Class 6',
-                'section' => $enrollment?->section_name ?? 'A',
-                'guardian_name' => $info['guardian_name'] ?? 'Guardian',
-                'guardian_phone' => $info['guardian_phone'] ?? ($info['phone'] ?? ''),
+                'class' => $context->className,
+                'section' => $context->sectionName,
+                'guardian_name' => $guardian?->name,
+                'guardian_phone' => $guardian?->phone_number,
             ],
             'attendance' => [
-                'rate' => $attendanceRate,
-                'total_days' => $totalDays,
-                'present' => $presentCount,
-                'late' => $lateCount,
-                'absent' => $absentCount,
+                'rate' => $totals['rate'] ?? 0,
+                'total_days' => $totals['total'],
+                'present' => $totals['present'],
+                'late' => $totals['late'],
+                'absent' => $totals['absent'],
                 'chart' => [
-                    ['label' => 'Present', 'count' => $presentCount, 'percentage' => $totalDays > 0 ? round(($presentCount / $totalDays) * 100) : 0, 'color' => '#10B981'],
-                    ['label' => 'Late', 'count' => $lateCount, 'percentage' => $totalDays > 0 ? round(($lateCount / $totalDays) * 100) : 0, 'color' => '#F59E0B'],
-                    ['label' => 'Absent', 'count' => $absentCount, 'percentage' => $totalDays > 0 ? round(($absentCount / $totalDays) * 100) : 0, 'color' => '#EF4444'],
+                    ['label' => 'Present', 'count' => $totals['present'], 'percentage' => $share($totals['present']), 'color' => '#17734A'],
+                    ['label' => 'Late', 'count' => $totals['late'], 'percentage' => $share($totals['late']), 'color' => '#8F5B00'],
+                    ['label' => 'Absent', 'count' => $totals['absent'], 'percentage' => $share($totals['absent']), 'color' => '#B42318'],
                 ],
-                'last_10' => $last10,
+                'last_10' => collect($record['days'])->reverse()->take(10)->values()->map(fn ($d) => [
+                    'date' => date('d M Y', strtotime($d['date'])),
+                    'day' => date('l', strtotime($d['date'])),
+                    'status' => $d['status'],
+                    'check_in' => null,
+                    'check_out' => null,
+                    'source' => 'manual',
+                ]),
             ],
-            'leave' => [
-                'total_taken' => $leaveApproved + $leavePending,
-                'approved' => $leaveApproved,
-                'pending' => $leavePending,
-                'rejected' => $leaveRejected,
-                'chart' => [
-                    ['label' => 'Approved', 'count' => $leaveApproved, 'percentage' => 75, 'color' => '#10B981'],
-                    ['label' => 'Pending', 'count' => $leavePending, 'percentage' => 25, 'color' => '#F59E0B'],
-                ],
-                'history' => $leavesList,
-            ],
+            'leave' => ['total_taken' => 0, 'approved' => 0, 'pending' => 0, 'rejected' => 0, 'chart' => [], 'history' => []],
             'academic' => [
-                'gpa' => '4.85',
-                'grade' => 'A+',
-                'average_score' => round(collect($marksList)->avg('score'), 1),
-                'subjects' => $marksList,
+                'gpa' => $result['gpa'] ?? null,
+                'grade' => $result['grade'] ?? null,
+                'average_score' => $result['average'] ?? null,
+                'subjects' => collect($result['subjects'] ?? [])->map(fn ($s) => [
+                    'id' => $s['subject_id'], 'subject' => $s['subject'], 'score' => $s['mark'], 'total' => 100, 'grade' => $s['grade'],
+                ])->all(),
             ],
         ];
     }
@@ -470,6 +396,8 @@ class TeacherClassroomService
         $timestamp = \Carbon\Carbon::parse($date, 'Asia/Dhaka')->startOfDay()->timestamp;
         $allowed = collect($this->attendanceSheet($teacher, $classId, $sectionId, $date)['students'])->pluck('id');
 
+        $changed = [];
+
         foreach ($records as $record) {
             $studentId = (int) $record['student_id'];
             if (!$allowed->contains($studentId)) {
@@ -484,7 +412,20 @@ class TeacherClassroomService
                 'school_id' => $teacher->school_id,
                 'timestamp' => $timestamp,
             ];
+            $previous = \App\Models\DailyAttendances::where($keys)->value('status');
             \App\Models\DailyAttendances::updateOrCreate($keys, \App\Models\DailyAttendances::manualAttributes($status, $record['note'] ?? null));
+
+            if ($status !== 1 && ($previous === null || (int) $previous !== $status)) {
+                $changed[$status][] = $studentId;
+            }
+        }
+
+        $day = \Carbon\Carbon::parse($date)->format('d M');
+        $notifier = app(\App\Modules\Campus\Services\Notifier::class);
+        foreach ([0 => 'Marked absent', 2 => 'Arrived late'] as $status => $title) {
+            if (!empty($changed[$status])) {
+                $notifier->toFamilies($changed[$status], 'attendance', $title, "{$title} on {$day}.", ['screen' => 'attendance']);
+            }
         }
 
         return $this->attendanceSheet($teacher, $classId, $sectionId, $date);

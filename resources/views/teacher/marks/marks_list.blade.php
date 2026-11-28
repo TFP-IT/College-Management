@@ -131,11 +131,14 @@ use App\Models\Grade;
         var comment = $('#comment-' + student_id).val();
         if(subject_id != ""){
             $.ajax({
-                type : 'GET',
+                type : 'POST',
                 url : "{{ route('update.mark') }}",
-                data : {student_id : student_id, class_id : class_id, section_id : section_id, subject_id : subject_id, session_id: session_id, exam_category_id : exam_category_id, mark : mark, comment : comment},
+                data : {_token : '{{ csrf_token() }}', student_id : student_id, class_id : class_id, section_id : section_id, subject_id : subject_id, session_id: session_id, exam_category_id : exam_category_id, mark : mark, comment : comment},
                 success : function(response){
                     toastr.success('{{ get_phrase('Value has been updated successfully') }}');
+                },
+                error : function(){
+                    toastr.error('{{ get_phrase('The mark could not be saved') }}');
                 }
             });
         }else{

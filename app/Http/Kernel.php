@@ -36,55 +36,26 @@ class Kernel extends HttpKernel
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
+            \App\Http\Middleware\RejectDangerousUploads::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
         'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
+            \App\Http\Middleware\RejectDangerousUploads::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
 
     /**
-     * The application's route middleware.
-     *
-     * These middleware may be assigned to groups or used individually.
-     *
-     * @var array<string, class-string|string>
-     */
-    protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'role_id' => \App\Http\Middleware\RoleId::class,
-        'superAdmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
-        'admin' => \App\Http\Middleware\AdminMiddleware::class,
-        'student' => \App\Http\Middleware\StudentMiddleware::class,
-        'parent' => \App\Http\Middleware\ParentMiddleware::class,
-        'accountant' => \App\Http\Middleware\AccountantMiddleware::class,
-        'librarian' => \App\Http\Middleware\LibrarianMiddleware::class,
-        'teacher' => \App\Http\Middleware\TeacherMiddleware::class,
-        'api.teacher' => \App\Http\Middleware\EnsureApiTeacher::class,
-        'api.student' => \App\Http\Middleware\EnsureApiStudent::class,
-        'academic.admin' => \App\Http\Middleware\EnsureAcademicAdmin::class,
-        'is_installed' => \App\Http\Middleware\IsInstalled::class,
-        'alumni' => \App\Http\Middleware\AlumniMiddleware::class,
-        'admin_permission' => \App\Http\Middleware\AdminPermission::class,
-    ];
-
-    /**
-     * Backward/Forward compatibility alias for route middleware.
+     * Middleware aliases that can be assigned to groups or single routes.
      *
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
+        'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
+        'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
@@ -108,5 +79,11 @@ class Kernel extends HttpKernel
         'is_installed' => \App\Http\Middleware\IsInstalled::class,
         'alumni' => \App\Http\Middleware\AlumniMiddleware::class,
         'admin_permission' => \App\Http\Middleware\AdminPermission::class,
+        'installer' => \App\Http\Middleware\EnsureInstallerAllowed::class,
+        'updater' => \App\Http\Middleware\EnsureUpdaterAllowed::class,
+        'own.child' => \App\Http\Middleware\EnsureOwnChild::class,
+        'own.thread' => \App\Http\Middleware\EnsureThreadParticipant::class,
+        'staff' => \App\Http\Middleware\EnsureStaff::class,
+        'office' => \App\Http\Middleware\EnsureOffice::class,
     ];
 }

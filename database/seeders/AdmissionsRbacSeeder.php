@@ -47,6 +47,14 @@ class AdmissionsRbacSeeder extends Seeder
             $role->syncPermissions($permissions);
         }
 
+        // Roles and permissions are safe anywhere. The accounts below have known passwords, so a live
+        // site gets none of them: grant roles to real staff with "admissions:grant-role".
+        if (app()->isProduction()) {
+            $this->command?->warn('Skipped demo staff accounts: not allowed in production.');
+
+            return;
+        }
+
         $staff = [
             ['email' => 'council@mcc.edu.bd', 'name' => 'Prof. Dr. Council Chair', 'phone' => '01711000001', 'role' => 'Admission Council Member'],
             ['email' => 'officer@mcc.edu.bd', 'name' => 'Admissions Desk Officer', 'phone' => '01711000002', 'role' => 'Admissions Officer'],

@@ -25,33 +25,9 @@ use App\Http\Controllers\Updater;
 */
 
 
-// Clear application cache:
-Route::get('/clear-cache', function() {
-    Artisan::call('cache:clear');
-
-    //Artisan::call('route:cache');
-
-    Artisan::call('config:cache');
-
-    Artisan::call('view:clear');
-
-    Artisan::call('optimize:clear');
-
-    return 'Cache cleard';
-})->name('clear.cache');
-
-
 //Auth routes are here
 Auth::routes();
 
-
-Route::get('/test-pdf', function() {
-    $admission = \App\Models\Admission::latest()->first();
-    if (!$admission) return "No admission found.";
-    $pdfService = new \App\Services\AdmissionPdfService();
-    $pdfPath = $pdfService->generate($admission);
-    return response()->file(storage_path('app/public/' . $pdfPath));
-});
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('landing');
 
@@ -582,9 +558,9 @@ Route::controller(AdminController::class)->middleware('admin','auth')->group(fun
     Route::get('admin/feedback-delete/{id}', 'delete_feedback')->name('admin.feedback.delete_feedback');
 
     // Message
-    Route::get('admin/message/all-message/{id}', 'allMessage')->name('admin.message.all_message');
+    Route::get('admin/message/all-message/{id}', 'allMessage')->name('admin.message.all_message')->middleware('own.thread');
     Route::get('admin/message/message-thrades/{id}', 'messagethrades')->name('admin.message.messagethrades');
-    Route::post('admin/message/single-chat/save', 'chat_save')->name('admin.message.chat_save');
+    Route::post('admin/message/single-chat/save', 'chat_save')->name('admin.message.chat_save')->middleware('own.thread');
     Route::get('admin/message/chat_empty', 'chat_empty')->name('admin.message.chat_empty');
 
 
@@ -668,9 +644,9 @@ Route::controller(TeacherController::class)->middleware('teacher','auth')->group
     Route::get('teacher/feedback-delete/{id}', 'delete_feedback')->name('teacher.feedback.delete_feedback');
 
     // Message
-    Route::get('teacher/message/all-message/{id}', 'allMessage')->name('teacher.message.all_message');
+    Route::get('teacher/message/all-message/{id}', 'allMessage')->name('teacher.message.all_message')->middleware('own.thread');
     Route::get('teacher/message/message-thrades/{id}', 'messagethrades')->name('teacher.message.messagethrades');
-    Route::post('teacher/message/single-chat/save', 'chat_save')->name('teacher.message.chat_save');
+    Route::post('teacher/message/single-chat/save', 'chat_save')->name('teacher.message.chat_save')->middleware('own.thread');
     Route::get('teacher/message/chat_empty', 'chat_empty')->name('teacher.message.chat_empty');
 
 });
@@ -678,7 +654,7 @@ Route::controller(TeacherController::class)->middleware('teacher','auth')->group
 
 
 //Parent routes are here
-Route::controller(ParentController::class)->middleware('parent','auth')->group(function () {
+Route::controller(ParentController::class)->middleware('parent','auth','own.child')->group(function () {
 
     Route::get('parent/dashboard', 'parentDashboard')->name('parent.dashboard')->middleware('role_id');
 
@@ -755,9 +731,9 @@ Route::controller(ParentController::class)->middleware('parent','auth')->group(f
     Route::get('parent/feedback-list', 'feedback_list')->name('parent.feedback.feedback_list');
 
     // Message
-    Route::get('parent/message/all-message/{id}', 'allMessage')->name('parent.message.all_message');
+    Route::get('parent/message/all-message/{id}', 'allMessage')->name('parent.message.all_message')->middleware('own.thread');
     Route::get('parent/message/message-thrades/{id}', 'messagethrades')->name('parent.message.messagethrades');
-    Route::post('parent/message/single-chat/save', 'chat_save')->name('parent.message.chat_save');
+    Route::post('parent/message/single-chat/save', 'chat_save')->name('parent.message.chat_save')->middleware('own.thread');
     Route::get('parent/message/chat_empty', 'chat_empty')->name('parent.message.chat_empty');
 
 });
@@ -833,9 +809,9 @@ Route::controller(StudentController::class)->middleware('student','auth')->group
     Route::post('student/language', 'user_language')->name('student.language');
 
     // Message
-    Route::get('student/message/all-message/{id}', 'allMessage')->name('student.message.all_message');
+    Route::get('student/message/all-message/{id}', 'allMessage')->name('student.message.all_message')->middleware('own.thread');
     Route::get('student/message/message-thrades/{id}', 'messagethrades')->name('student.message.messagethrades');
-    Route::post('student/message/single-chat/save', 'chat_save')->name('student.message.chat_save');
+    Route::post('student/message/single-chat/save', 'chat_save')->name('student.message.chat_save')->middleware('own.thread');
     Route::get('student/message/chat_empty', 'chat_empty')->name('student.message.chat_empty');
 
 });
@@ -848,16 +824,16 @@ Route::controller(CommonController::class)->middleware('auth')->group(function (
     //Filter object routes
     Route::get('section/{id}', 'classWiseSections')->name('class_wise_sections');
     Route::get('subjects/{id}', 'classWiseSubject')->name('class_wise_subject');
-    Route::get('students/{id}', 'classWiseStudents')->name('class_wise_student');
-    Route::get('class/section/{id}', 'sectionWiseStudents')->name('section_wise_students');
-    Route::get('class/section/student/{id}', 'studentWiseParent')->name('student_wise_parent');
+    Route::get('students/{id}', 'classWiseStudents')->name('class_wise_student')->middleware('staff');
+    Route::get('class/section/{id}', 'sectionWiseStudents')->name('section_wise_students')->middleware('staff');
+    Route::get('class/section/student/{id}', 'studentWiseParent')->name('student_wise_parent')->middleware('staff');
 
     //Grade crud routes
     Route::get('grade/get/{exam_mark}', 'getGrade')->name('get.grade');
-    Route::get('mark/update', 'markUpdate')->name('update.mark');
+    Route::post('mark/update', 'markUpdate')->name('update.mark')->middleware('staff');
 
 
-    Route::get('user/{id}', 'idWiseUserName')->name('id_wise_user_name');
+    Route::get('user/{id}', 'idWiseUserName')->name('id_wise_user_name')->middleware('staff');
 
 });
 //Common routes end here
@@ -920,9 +896,9 @@ Route::controller(AccountantController::class)->middleware('accountant','auth')-
     //Route::get('accountant/account_disable', 'account_disable')->name('accountant.account_disable');
     
     // Message
-    Route::get('accountant/message/all-message/{id}', 'allMessage')->name('accountant.message.all_message');
+    Route::get('accountant/message/all-message/{id}', 'allMessage')->name('accountant.message.all_message')->middleware('own.thread');
     Route::get('accountant/message/message-thrades/{id}', 'messagethrades')->name('accountant.message.messagethrades');
-    Route::post('accountant/message/single-chat/save', 'chat_save')->name('accountant.message.chat_save');
+    Route::post('accountant/message/single-chat/save', 'chat_save')->name('accountant.message.chat_save')->middleware('own.thread');
     Route::get('accountant/message/chat_empty', 'chat_empty')->name('accountant.message.chat_empty');
 });
 
@@ -969,9 +945,9 @@ Route::controller(LibrarianController::class)->middleware('librarian','auth')->g
     Route::post('librarian/language', 'user_language')->name('librarian.language');
 
     // Message
-    Route::get('librarian/message/all-message/{id}', 'allMessage')->name('librarian.message.all_message');
+    Route::get('librarian/message/all-message/{id}', 'allMessage')->name('librarian.message.all_message')->middleware('own.thread');
     Route::get('librarian/message/message-thrades/{id}', 'messagethrades')->name('librarian.message.messagethrades');
-    Route::post('librarian/message/single-chat/save', 'chat_save')->name('librarian.message.chat_save');
+    Route::post('librarian/message/single-chat/save', 'chat_save')->name('librarian.message.chat_save')->middleware('own.thread');
     Route::get('librarian/message/chat_empty', 'chat_empty')->name('librarian.message.chat_empty');
 
 });
@@ -979,7 +955,7 @@ Route::controller(LibrarianController::class)->middleware('librarian','auth')->g
 
 
 //Updater routes are here
-Route::controller(Updater::class)->middleware('superAdmin','auth')->group(function () {
+Route::controller(Updater::class)->middleware('updater','auth','superAdmin')->group(function () {
 
     Route::post('superadmin/addon/create', 'update')->name('superadmin.addon.create');
     Route::post('superadmin/addon/update', 'update')->name('superadmin.addon.update');
@@ -990,7 +966,7 @@ Route::controller(Updater::class)->middleware('superAdmin','auth')->group(functi
 
 
 //Installation routes are here
-Route::controller(InstallController::class)->group(function () {
+Route::controller(InstallController::class)->middleware('installer')->group(function () {
 
     Route::get('/install_ended', 'index');
 
@@ -1011,3 +987,4 @@ Route::controller(InstallController::class)->group(function () {
 // MCC-Hello Future Admissions Web Routes
 require __DIR__ . '/admissions_web.php';
 require __DIR__ . '/cms_web.php';
+require __DIR__ . '/campus_web.php';

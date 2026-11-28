@@ -64,7 +64,7 @@ class InstallController extends Controller
     public function api_request($code = '')
     {
         $product_code = $code;
-        $personal_token = "FkA9UyDiQT0YiKwYLK3ghyFNRVV9SeUn";
+        $personal_token = (string) config('services.envato.token');
         $url = "https://api.envato.com/v3/market/author/sale?code=" . $product_code;
         $curl = curl_init($url);
     

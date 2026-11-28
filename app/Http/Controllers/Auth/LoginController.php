@@ -37,6 +37,7 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+        $this->middleware('throttle:login')->only('login');
     }
 
     public function login(Request $request)
@@ -48,7 +49,10 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password']))) {
+        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password']), $request->boolean('remember'))) {
+
+            // A new session id after sign-in, so one planted earlier is worthless.
+            $request->session()->regenerate();
 
             $user = auth()->user();
 
@@ -58,6 +62,10 @@ class LoginController extends Controller
                     return redirect()->route('login')
                         ->with('error', 'Your school is yet to be authorized to this service!');
                 }
+            }
+
+            if (!in_array((int) $user->role_id, [1, 2], true) && $user->getRoleNames()->intersect(\App\Console\Commands\GrantAdmissionsRole::OFFICE_ROLES)->isNotEmpty()) {
+                return redirect()->route('office.dashboard');
             }
 
             if ($user->role_id == 1) {

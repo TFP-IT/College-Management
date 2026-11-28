@@ -76,6 +76,18 @@ class AdmissionController extends Controller
             ], 422);
         }
 
+        // This endpoint needs no login, so it may only create a guardian account, never change one.
+        if (!$isCollege) {
+            $conflicts = $this->guardianSignupConflicts(
+                $request->guardianMobile ?: $request->phone,
+                $request->guardianEmail ?: $request->email,
+            );
+
+            if ($conflicts) {
+                return response()->json(['status' => 'error', 'errors' => $conflicts], 422);
+            }
+        }
+
         try {
             DB::beginTransaction();
 
@@ -89,7 +101,7 @@ class AdmissionController extends Controller
 
             if ($isCollege) {
                 // College Student Registration Flow
-                $guardianPlainPassword = (string) mt_rand(100000, 999999);
+                $guardianPlainPassword = (string) random_int(100000, 999999);
                 $guardian = User::where('role_id', 6)->where('phone_number', $request->guardianMobile)->first();
                 if (!$guardian) {
                     $guardian = User::create([
@@ -104,7 +116,7 @@ class AdmissionController extends Controller
                     ]);
                 }
 
-                $studentPassword = (string) mt_rand(100000, 999999);
+                $studentPassword = (string) random_int(100000, 999999);
                 $studentId = 'MCC' . date('Y') . mt_rand(1000, 9999);
                 $student = User::create([
                     'student_id' => $studentId,
@@ -161,9 +173,7 @@ class AdmissionController extends Controller
 
                 DB::commit();
 
-                $pdfService = new AdmissionPdfService();
-                $pdfPath = $pdfService->generate($admission);
-                $pdfUrl = $pdfPath ? Storage::disk('public')->url($pdfPath) : null;
+                $pdfUrl = $admission->slipUrl();
 
                 return response()->json([
                     'status' => 'success',
@@ -187,9 +197,7 @@ class AdmissionController extends Controller
             $guardianEmail = $request->guardianEmail ?: $request->email;
             $presentAddress = $request->presentAddress ?: ($request->address ?: 'Dhaka, Bangladesh');
             $guardianNid = $request->guardianNid ?: ($request->nid ?: 'N/A');
-            $guardianPlainPassword = $request->filled('password') ? $request->password : (string) mt_rand(100000, 999999);
-
-            $guardian = User::where('role_id', 6)->where('phone_number', $guardianMobile)->first();
+            $guardianPlainPassword = $request->filled('password') ? $request->password : (string) random_int(100000, 999999);
 
             $guardianInfo = [
                 'nid' => $guardianNid,
@@ -199,28 +207,17 @@ class AdmissionController extends Controller
                 'phone' => $guardianMobile,
             ];
 
-            if (!$guardian) {
-                $guardian = User::create([
-                    'name' => $guardianName,
-                    'email' => $guardianEmail ?: ($guardianMobile . '@guardian.maestrocrown.edu.bd'),
-                    'phone_number' => $guardianMobile,
-                    'role_id' => 6,
-                    'password' => Hash::make($guardianPlainPassword),
-                    'user_type' => 'regular',
-                    'status' => 1,
-                    'school_id' => 1,
-                    'user_information' => json_encode($guardianInfo),
-                ]);
-            } else {
-                $guardian->password = Hash::make($guardianPlainPassword);
-                $guardian->name = $guardianName;
-                if ($guardianEmail) {
-                    $guardian->email = $guardianEmail;
-                }
-                $guardian->status = 1;
-                $guardian->user_information = json_encode($guardianInfo);
-                $guardian->save();
-            }
+            $guardian = User::create([
+                'name' => $guardianName,
+                'email' => $guardianEmail ?: ($guardianMobile . '@guardian.maestrocrown.edu.bd'),
+                'phone_number' => $guardianMobile,
+                'role_id' => 6,
+                'password' => Hash::make($guardianPlainPassword),
+                'user_type' => 'regular',
+                'status' => 1,
+                'school_id' => 1,
+                'user_information' => json_encode($guardianInfo),
+            ]);
 
             DB::commit();
 
@@ -237,7 +234,8 @@ class AdmissionController extends Controller
                     'guardian_name' => $guardian->name,
                     'guardian_mobile' => $guardian->phone_number,
                     'login_id' => $guardian->phone_number,
-                    'password' => $guardianPlainPassword,
+                    // Only a generated password is returned; a chosen one is already known to the user.
+                    'password' => $request->filled('password') ? null : $guardianPlainPassword,
                     'role' => 'guardian',
                     'student_name' => null,
                 ]
@@ -245,11 +243,29 @@ class AdmissionController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
+            report($e);
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to register guardian: ' . $e->getMessage()
+                'message' => 'Registration could not be completed. Please try again.'
             ], 500);
         }
+    }
+
+    /** @return array<string, string[]> field errors when the phone or email already belongs to someone */
+    private function guardianSignupConflicts(string $mobile, ?string $email): array
+    {
+        $errors = [];
+
+        if (User::where('role_id', 6)->where('phone_number', $mobile)->exists()) {
+            $errors['phone'] = ['An account with this mobile number already exists. Please sign in, or contact the college office to reset your password.'];
+        }
+
+        if ($email && User::where('email', $email)->exists()) {
+            $errors['email'] = ['This email address is already in use.'];
+        }
+
+        return $errors;
     }
 
     /**
@@ -308,7 +324,7 @@ class AdmissionController extends Controller
                 'phone_number' => $guardian->phone_number,
                 'role_id' => 7,
                 'parent_id' => $guardian->id,
-                'password' => Hash::make((string) mt_rand(100000, 999999)),
+                'password' => Hash::make((string) random_int(100000, 999999)),
                 'user_type' => 'regular',
                 'status' => 1,
                 'school_id' => 1,
@@ -356,10 +372,7 @@ class AdmissionController extends Controller
 
             DB::commit();
 
-            // Generate PDF Slip
-            $pdfService = new AdmissionPdfService();
-            $pdfPath = $pdfService->generate($admission);
-            $pdfUrl = $pdfPath ? Storage::disk('public')->url($pdfPath) : null;
+            $pdfUrl = $admission->slipUrl();
 
             return response()->json([
                 'status' => 'success',
@@ -376,9 +389,11 @@ class AdmissionController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
+            report($e);
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to add student: ' . $e->getMessage()
+                'message' => 'The student could not be added. Please try again.'
             ], 500);
         }
     }
@@ -399,19 +414,11 @@ class AdmissionController extends Controller
 
             $admissionData = null;
             if ($admission) {
-                $pdfUrl = $admission->pdf_path
-                    ? Storage::disk('public')->url($admission->pdf_path)
-                    : null;
+                $pdfUrl = $admission->slipUrl();
 
                 // Check fees payment status
-                $appFee = $admission->applicationFeePayment();
-                $admFee = $admission->admissionFeePayment();
-
-                $appFeeStatus = $appFee ? $appFee->status : 'unpaid';
-                $appFeeAmount = $appFee ? (float) $appFee->amount : 500.00;
-
-                $admFeeStatus = $admFee ? $admFee->status : 'unpaid';
-                $admFeeAmount = $admFee ? (float) $admFee->amount : 3000.00;
+                ['status' => $appFeeStatus, 'amount' => $appFeeAmount] = $admission->feeSummary('application_fee');
+                ['status' => $admFeeStatus, 'amount' => $admFeeAmount] = $admission->feeSummary('admission_fee');
 
                 // Derive exam date from class_name (school admissions get exam within 7 days of submission)
                 $examDate = null;
@@ -448,35 +455,34 @@ class AdmissionController extends Controller
     }
 
     /**
-     * Download admission slip PDF
+     * Download admission slip PDF. Allowed with a signed link from the API, or for the signed-in
+     * student or guardian the application belongs to.
      */
-    public function downloadPdf($application_no)
+    public function downloadPdf(Request $request, $application_no)
     {
         $admission = Admission::where('application_no', $application_no)->first();
 
-        if (!$admission) {
+        $allowed = $admission
+            && ($request->hasValidSignature(false) || $admission->isOwnedBy(auth('sanctum')->user()));
+
+        if (!$allowed) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Admission application not found.'
             ], 404);
         }
 
-        $pdfService = new AdmissionPdfService();
-        
         // Always generate fresh to guarantee dynamic status (approved/pending) and payment status (paid/unpaid)
-        $pdfPath = $pdfService->generate($admission);
-        if (!$pdfPath) {
-            $pdfPath = $admission->pdf_path;
-        }
+        $pdfPath = (new AdmissionPdfService())->generate($admission);
 
-        if (!$pdfPath || !Storage::disk('public')->exists($pdfPath)) {
+        if (!$pdfPath || !Storage::disk('local')->exists($pdfPath)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to generate PDF.'
             ], 500);
         }
 
-        return Storage::disk('public')->download($pdfPath, 'Admission_Slip_' . $application_no . '.pdf');
+        return Storage::disk('local')->download($pdfPath, 'Admission_Slip_' . $admission->application_no . '.pdf');
     }
 
     /**
@@ -498,17 +504,11 @@ class AdmissionController extends Controller
             ], 404);
         }
 
-        $pdfUrl = $admission->pdf_path ? Storage::disk('public')->url($admission->pdf_path) : null;
+        $pdfUrl = $admission->slipUrl();
         $photoUrl = $admission->photo_url;
 
-        $appFee = $admission->applicationFeePayment();
-        $admFee = $admission->admissionFeePayment();
-
-        $appFeeStatus = $appFee ? $appFee->status : 'unpaid';
-        $appFeeAmount = $appFee ? (float) $appFee->amount : 500.00;
-
-        $admFeeStatus = $admFee ? $admFee->status : 'unpaid';
-        $admFeeAmount = $admFee ? (float) $admFee->amount : 3000.00;
+        ['status' => $appFeeStatus, 'amount' => $appFeeAmount] = $admission->feeSummary('application_fee');
+        ['status' => $admFeeStatus, 'amount' => $admFeeAmount] = $admission->feeSummary('admission_fee');
 
         return response()->json([
             'status' => 'success',

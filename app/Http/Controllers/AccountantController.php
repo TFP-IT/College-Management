@@ -338,8 +338,7 @@ class AccountantController extends Controller
 
     public function update_offline_payment($id,$status)
     {
-        $amount= StudentFeeManager::find($id)->first()->toArray();
-        $amount=$amount['total_amount'];
+        $amount = StudentFeeManager::where('school_id', auth()->user()->school_id)->findOrFail($id)->total_amount;
 
         if($status=='approve')
         {
@@ -356,7 +355,7 @@ class AccountantController extends Controller
             StudentFeeManager::where('id',$id)->update([
                 'status' => 'unpaid',
                 'updated_at'=>date("Y-m-d H:i:s"),
-                'paid_amount' =>$amount,
+                'paid_amount' => 0,
                 'payment_method' => 'offline']);
 
                 return redirect()->back()->with('message','Payment Decline');

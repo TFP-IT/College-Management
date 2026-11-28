@@ -31,6 +31,11 @@ return [
     ],
 
 
+    // Purchase verification for the bundled admin script. Leave empty to disable the check.
+    'envato' => [
+        'token' => env('ENVATO_TOKEN', ''),
+    ],
+
     'sslcommerz' => [
         'store_id' => env('SSL_STORE_ID', ''),
         'store_password' => env('SSL_STORE_PASSWORD', ''),

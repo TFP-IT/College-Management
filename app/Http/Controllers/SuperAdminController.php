@@ -785,7 +785,7 @@ class SuperAdminController extends Controller
             'customer_name'        => get_phrase('Not found')
         );
 
-        $personal_token = "gC0J1ZpY53kRpynNe4g2rWT5s4MW56Zg";
+        $personal_token = (string) config('services.envato.token');
         $url = "https://api.envato.com/v3/market/author/sale?code=" . $purchase_code;
         $curl = curl_init($url);
 
@@ -859,7 +859,7 @@ class SuperAdminController extends Controller
 
         $purchase_code = $code;
 
-        $personal_token = "FkA9UyDiQT0YiKwYLK3ghyFNRVV9SeUn";
+        $personal_token = (string) config('services.envato.token');
         $url = "https://api.envato.com/v3/market/author/sale?code=" . $purchase_code;
         $curl = curl_init($url);
 
