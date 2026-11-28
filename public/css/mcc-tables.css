@@ -34,3 +34,57 @@ th[aria-sort=ascending], th[aria-sort=descending] { color: #1a1a1a !important; }
 .panel .mcc-list-pager { padding: 12px 22px; border-top: 1px solid #e6e8ec; }
 .mcc-list-bar.quiet { justify-content: flex-end; padding: 0 2px 8px; border: 0; background: none; }
 .mcc-list-bar.quiet + .table-responsive, .mcc-list-bar.quiet + .table-wrap, .mcc-list-bar.quiet + table { border: 0; }
+
+/* ---------- Table look: striped rows, soft header, pills ---------- */
+.main_content .table-responsive, main.main .table-wrap { border: 1px solid #e6e8ec; border-radius: 14px; background: #fff; }
+.mcc-list-bar + .table-responsive, .mcc-list-bar + .table-wrap { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
+.panel .table-wrap { border: 0; border-radius: 0; }
+.main_content .table-responsive > table, main.main .table-wrap > table { margin: 0 !important; }
+
+.main_content table.mcc-list, main.main table.mcc-list, .main_content table.eTable, .main_content table.table { width: 100% !important; min-width: 0; border-collapse: separate !important; border-spacing: 0; color: #1f2328 !important; }
+.main_content table.mcc-list > thead > tr > th, main.main table.mcc-list > thead > tr > th, .main_content table.eTable > thead > tr > th, .main_content table.table > thead > tr > th {
+  padding: 13px 16px !important; background: #f3f5f8 !important; color: #4a4f57 !important; font-size: 12.5px !important; font-weight: 700 !important; text-transform: none; letter-spacing: 0;
+  border-top: 0 !important; border-bottom: 1px solid #e3e6ea !important; white-space: nowrap; vertical-align: middle; }
+.main_content table.mcc-list > tbody > tr > td, main.main table.mcc-list > tbody > tr > td, .main_content table.eTable > tbody > tr > td, .main_content table.table > tbody > tr > td,
+.main_content table.mcc-list > tbody > tr > th, .main_content table.eTable > tbody > tr > th {
+  padding: 14px 16px !important; border-top: 0 !important; border-bottom: 1px solid #eef0f3 !important; font-size: 13.5px !important; vertical-align: middle; background: transparent; transition: background-color .12s; }
+.main_content table > tbody > tr:last-child > td, main.main table.mcc-list > tbody > tr:last-child > td { border-bottom: 0 !important; }
+table.mcc-list > tbody > tr.mcc-alt > td, table.mcc-list > tbody > tr.mcc-alt > th { background: #f9fafb !important; }
+.main_content table.eTable:not(.mcc-list) > tbody > tr:nth-child(even) > td, .main_content table.table:not(.mcc-list) > tbody > tr:nth-child(even) > td, .mcc-table > tbody > tr:nth-child(even) > td { background: #f9fafb; }
+.main_content table > tbody > tr:hover > td, main.main table.mcc-list > tbody > tr:hover > td, .mcc-table > tbody > tr:hover > td { background: #fdf5f5 !important; }
+table.mcc-list .mcc-idx, table.mcc-list tbody td:first-child:is(.mcc-num) { width: 56px; }
+table.mcc-list .mcc-num { text-align: right !important; font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.mcc-list th.mcc-num .mcc-sort { flex-direction: row-reverse; }
+table.mcc-list th.mcc-idx.mcc-num, table.mcc-list td.mcc-num:first-child { text-align: left !important; color: #8a8f96; }
+table.mcc-list .mcc-act { width: 1%; text-align: right; }
+table.mcc-list td.mcc-act .dropdown, table.mcc-list td.mcc-act .adminTable-action, table.mcc-list td.mcc-act .btn-group { display: inline-block; }
+table.mcc-list td.mcc-act, table.mcc-list th.mcc-act { text-align: right !important; white-space: nowrap; }
+table.mcc-list .mcc-nowrap { white-space: nowrap; }
+.main_content table.mcc-list > thead > tr > th, .main_content table.mcc-list > tbody > tr > td { padding-left: 12px !important; padding-right: 12px !important; }
+.main_content table.mcc-list > thead > tr > th:first-child, .main_content table.mcc-list > tbody > tr > td:first-child { padding-left: 18px !important; }
+.main_content table.mcc-list > thead > tr > th:last-child, .main_content table.mcc-list > tbody > tr > td:last-child { padding-right: 18px !important; }
+.mcc-muted { color: #9aa0a6 !important; }
+
+/* Status pills */
+.mcc-pill { display: inline-flex !important; align-items: center; gap: 6px; padding: 4px 11px !important; border: 0 !important; border-radius: 999px !important; font-size: 12px !important; font-weight: 700 !important; line-height: 1.35 !important; white-space: nowrap; text-transform: none !important; }
+.mcc-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .8; }
+.mcc-pill-ok { background: #dcf3e2 !important; color: #1b6b34 !important; }
+.mcc-pill-warn { background: #fdf0c8 !important; color: #855600 !important; }
+.mcc-pill-bad { background: #fde2e1 !important; color: #b42318 !important; }
+.mcc-pill-info { background: #dde9fd !important; color: #1e4fa8 !important; }
+.mcc-pill-neutral { background: #eef0f3 !important; color: #3f4247 !important; }
+
+/* People */
+.mcc-person { display: inline-flex; align-items: center; gap: 11px; text-align: left; }
+.mcc-person-body { display: inline-block; min-width: 0; }
+.mcc-person-body small, .mcc-person-body .small { display: block; }
+.mcc-av { display: inline-grid; place-items: center; width: 34px; height: 34px; flex: none; border-radius: 50%; font-size: 12px; font-weight: 800; letter-spacing: .02em; background: #faf1d6; color: #816208; box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px #ece6d2; }
+.mcc-av[data-hue="1"] { background: #fce4e4; color: #a82020; box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px #f3d4d4; }
+.mcc-av[data-hue="2"] { background: #dff2e5; color: #1f6b38; box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px #cfe8d7; }
+.mcc-av[data-hue="3"] { background: #e2ebfc; color: #2b55ad; box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px #d2def6; }
+.mcc-av[data-hue="4"] { background: #efe6fb; color: #5b3aa4; box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px #e1d5f4; }
+.main_content table img { border-radius: 50%; object-fit: cover; }
+
+/* Row actions stay compact so the list does not scroll sideways */
+table.mcc-list .table-action-btn-2, table.mcc-list .eBtn.dropdown-toggle, table.mcc-list td .btn-sm, .main_content table .table-action-btn-2 { height: 32px !important; padding: 0 12px !important; font-size: 12.5px !important; line-height: 30px !important; border-radius: 8px !important; }
+main.main table.mcc-list td .btn.small { min-height: 32px; }

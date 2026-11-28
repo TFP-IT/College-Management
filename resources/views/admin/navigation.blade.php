@@ -55,6 +55,7 @@
     @stack('head')
     <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-portal.css') }}?v={{ filemtime(public_path('css/mcc-portal.css')) }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('css/mcc-tables.css') }}?v={{ filemtime(public_path('css/mcc-tables.css')) }}" />
+    <link rel="stylesheet" href="{{ asset('css/mcc-dashboard.css') }}?v={{ filemtime(public_path('css/mcc-dashboard.css')) }}">
 </head>
 
 <body>

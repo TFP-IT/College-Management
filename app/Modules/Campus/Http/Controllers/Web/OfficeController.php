@@ -60,14 +60,11 @@ class OfficeController extends Controller
             return redirect()->route(in_array('approvals', $areas, true) ? 'office.approvals' : 'office.library');
         }
         $school = $this->school($request);
+        $user = $request->user();
+        $money = OfficeAccess::allows($user, 'fees') ? $report->money($school) : null;
 
         return view('office.dashboard', [
-            'today' => $report->today($school, $this->session($request)),
-            'money' => OfficeAccess::allows($request->user(), 'fees') ? $report->money($school) : null,
-            'payments' => OfficeAccess::allows($request->user(), 'fees')
-                ? FeePayment::where('school_id', $school)->where('status', 'confirmed')->latest('paid_at')->latest('id')->limit(6)->get()
-                : collect(),
-            'names' => User::whereIn('id', FeePayment::where('school_id', $school)->latest('id')->limit(40)->pluck('student_id'))->pluck('name', 'id'),
+            'dash' => app(\App\Services\PortalDashboard::class)->office($user, OfficeAccess::areas($user), $report->today($school, $this->session($request)), $money),
         ]);
     }
 

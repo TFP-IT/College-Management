@@ -39,6 +39,90 @@
     return node;
   }
 
+  var TONES = [
+    ['ok', /^(paid|delivered|active|enable|enabled|approved|present|published|completed|complete|done|confirmed|valid|verified|member|accepted|returned|resolved|passed|success|successful|yes|in stock|genuine|recorded)$/i],
+    ['warn', /^(pending|due|part paid|partial|partially paid|waiting|requested|in progress|draft|late|under review|planning|scheduled|upcoming|reserved|being checked|to verify|on leave|hold|on hold|processing|proposed)$/i],
+    ['bad', /^(cancelled|canceled|rejected|absent|disable|disabled|inactive|overdue|failed|fail|expired|suspended|lost|revoked|declined|blocked|unpaid|not approved|void|no)$/i],
+    ['info', /^(shipped|submitted|issued|in review|ongoing|online|sent|new|planned|open|offline|cash|bkash|nagad|rocket|card|bank)$/i],
+  ];
+  var EMPTY = /^(no .{0,30} found|n\/a|na|-|—|–|none|not set|null)$/i;
+  var STATUS_HEAD = /status|state|result|payment|attendance|method|paid by|account/i;
+  var NAME_HEAD = /^(name|student|teacher|customer|child|guardian|parent|who|staff|user|candidate|member|applicant)$/i;
+
+  function initials(name) {
+    return name.split(/\s+/).filter(Boolean).slice(0, 2).map(function (p) { return p.charAt(0).toUpperCase(); }).join('');
+  }
+
+  /** Status words become coloured pills, placeholders go quiet, names get an avatar, figures align right. */
+  function stripe(rows) {
+    var n = 0;
+    rows.slice().sort(function (a, b) { return a.rowIndex - b.rowIndex; }).forEach(function (r) {
+      if (r.hidden) return;
+      r.classList.toggle('mcc-alt', n++ % 2 === 1);
+    });
+  }
+
+  function decorate(table, rows, heads) {
+    heads.forEach(function (th, col) {
+      var name = text(th);
+      if (/^(#|sl|sl\.?\s*no\.?|no\.?)$/i.test(name)) th.classList.add('mcc-idx');
+      var cells = rows.map(function (r) { return r.cells[col]; }).filter(Boolean);
+      var values = cells.map(text).filter(function (v) { return v && !EMPTY.test(v); });
+      if (values.length && values.every(function (v) { return key(v).t === 0 && v.length < 18; })) {
+        th.classList.add('mcc-num');
+        cells.forEach(function (c) { c.classList.add('mcc-num'); });
+      }
+      cells.forEach(function (cell) {
+        var v = text(cell);
+        if (!v) return;
+        if (EMPTY.test(v) && !cell.querySelector('a, button, img')) { cell.classList.add('mcc-muted'); return; }
+        var badge = cell.querySelector('.badge, .eBadge, [class*="badge"]');
+        var plain = !cell.querySelector('*') || (cell.children.length === 1 && !cell.querySelector('a, button, img, input') && text(cell.children[0]) === v);
+        if ((badge && text(badge) === v) || (plain && STATUS_HEAD.test(name))) {
+          var tone = TONES.filter(function (t) { return t[1].test(v); })[0];
+          if (!tone && !badge) return;
+          var pill = badge || el('span', { text: v });
+          if (!badge) { cell.textContent = ''; cell.appendChild(pill); }
+          pill.classList.add('mcc-pill', 'mcc-pill-' + (tone ? tone[0] : 'neutral'));
+        }
+      });
+      if (NAME_HEAD.test(name)) {
+        cells.forEach(function (cell) {
+          if (cell.querySelector('img, .avatar, .mcc-av, .mcc-avatar, input')) return;
+          // The name is the link, or else the first line of text; labels such as "Class :" are not names.
+          var link = cell.querySelector('a');
+          var who = '';
+          if (link) who = text(link);
+          else {
+            for (var i = 0; i < cell.childNodes.length && !who; i++) who = (cell.childNodes[i].textContent || '').replace(/\s+/g, ' ').trim();
+          }
+          who = who.replace(/\s*\(.*\)$/, '');
+          if (!who || who.length > 40 || /:/.test(who) || EMPTY.test(who) || /\d{3,}/.test(who)) return;
+          var box = el('span', { class: 'mcc-person' });
+          box.appendChild(el('span', { class: 'mcc-av', 'aria-hidden': 'true', 'data-hue': String(who.charCodeAt(0) % 5), text: initials(who) }));
+          var body = el('span', { class: 'mcc-person-body' });
+          while (cell.firstChild) body.appendChild(cell.firstChild);
+          box.appendChild(body);
+          cell.appendChild(box);
+        });
+      }
+    });
+    // Row actions sit at the right edge; short date-and-time values stay on one line.
+    var lastHead = heads[heads.length - 1];
+    var lastCells = rows.map(function (r) { return r.cells[r.cells.length - 1]; }).filter(Boolean);
+    if (lastHead && (lastCells.length && lastCells.every(function (c) { return c.querySelector('button, .btn, .dropdown, a.eBtn'); }))) {
+      lastHead.classList.add('mcc-act');
+      lastCells.forEach(function (c) { c.classList.add('mcc-act'); });
+    }
+    rows.forEach(function (r) {
+      Array.prototype.forEach.call(r.cells, function (c) {
+        var v = text(c);
+        if (v.length <= 26 && /\d{1,2}:\d{2}/.test(v) && /\d{4}|[A-Za-z]{3}/.test(v)) c.classList.add('mcc-nowrap');
+      });
+    });
+    table.classList.add('mcc-decorated');
+  }
+
   function enhance(table) {
     if (table.dataset.enhanced || table.hasAttribute('data-plain')) return;
     if (table.closest('.modal, dialog, .fc, .mcc-dash, .sheet, .offcanvas, .dropdown-menu, [data-plain]')) return;
@@ -54,11 +138,12 @@
     var rows = Array.prototype.filter.call(body.rows, function (r) {
       return r.cells.length > 1 && !(r.cells.length === 1 || r.querySelector('td[colspan]') && r.cells.length < 3);
     });
-    if (rows.length < 3) return;
+    var heads = Array.prototype.slice.call(table.tHead.rows[table.tHead.rows.length - 1].cells);
     table.dataset.enhanced = '1';
     table.classList.add('mcc-list');
-
-    var heads = Array.prototype.slice.call(table.tHead.rows[table.tHead.rows.length - 1].cells);
+    if (rows.length) decorate(table, rows, heads);
+    stripe(rows);
+    if (rows.length < 3) return;
     var section = table.closest('.eSection-wrap, .eSection-wrap-2, .panel, .card, .eCard, .table-responsive') || table.parentNode;
     var holder = section.closest('.eSection-wrap, .eSection-wrap-2, .panel') || section;
     var serverPaged = !!(holder.querySelector('.pagination, .pager'));
@@ -196,6 +281,7 @@
       var visible = {};
       ordered.filter(function (r) { return shown.indexOf(r) !== -1; }).slice(from, to).forEach(function (r) { visible[r.dataset.order] = true; });
       rows.forEach(function (r) { r.hidden = !visible[r.dataset.order]; });
+      stripe(rows);
 
       var active = !!state.q || Object.keys(state.filters).some(function (k) { return state.filters[k]; });
       clear.hidden = !active;

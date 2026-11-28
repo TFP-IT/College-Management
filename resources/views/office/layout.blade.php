@@ -45,6 +45,7 @@
     <link rel="icon" href="{{ asset('frontend/mcc/img/logo-256.png') }}">
     <link rel="stylesheet" href="{{ asset('css/mcc-office.css') }}?v={{ filemtime(public_path('css/mcc-office.css')) }}">
     <link rel="stylesheet" href="{{ asset('css/mcc-tables.css') }}?v={{ filemtime(public_path('css/mcc-tables.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/mcc-dashboard.css') }}?v={{ filemtime(public_path('css/mcc-dashboard.css')) }}">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>

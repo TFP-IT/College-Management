@@ -18,7 +18,7 @@
                                 @else
                                     <span class="mcc-cell">
                                         @if (!empty($cell['avatar']))<span class="mcc-avatar" aria-hidden="true">{{ collect(preg_split('/\s+/', trim($cell['avatar'])))->take(2)->map(fn ($p) => mb_strtoupper(mb_substr($p, 0, 1)))->implode('') }}</span>@endif
-                                        <span><span class="{{ !empty($cell['strong']) ? 'strong' : '' }} {{ $cell['tone'] ?? '' }}">{{ $cell['text'] }}</span>@if (!empty($cell['sub']))<small>{{ $cell['sub'] }}</small>@endif</span>
+                                        <span>@if (!empty($cell['url']))<a href="{{ $cell['url'] }}" class="strong">{{ $cell['text'] }}</a>@else<span class="{{ !empty($cell['strong']) ? 'strong' : '' }} {{ $cell['tone'] ?? '' }}">{{ $cell['text'] }}</span>@endif @if (!empty($cell['sub']))<small>{{ $cell['sub'] }}</small>@endif</span>
                                     </span>
                                 @endif
                             </td>

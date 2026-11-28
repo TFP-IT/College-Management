@@ -1,7 +1,7 @@
 {{-- Smooth area chart drawn on the server. $b: items[{label,value,note}], max, suffix --}}
 @php
     $items = array_values($b['items']);
-    $W = 640; $H = 230; $L = 40; $R = 16; $T = 18; $B = 30;
+    $W = ($b['width'] ?? '') === 'narrow' ? 640 : 900; $H = 240; $L = 40; $R = 16; $T = 18; $B = 30;
     $max = $b['max'] ?? max(1, ...array_map(fn ($i) => $i['value'], $items));
     $n = count($items);
     $x = fn ($i) => $n > 1 ? $L + $i * ($W - $L - $R) / ($n - 1) : ($L + $W - $R) / 2;
@@ -31,7 +31,7 @@
         <defs><linearGradient id="{{ $id }}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c62828" stop-opacity=".22"/><stop offset="1" stop-color="#c62828" stop-opacity="0"/></linearGradient></defs>
         @foreach ([0, .25, .5, .75, 1] as $f)
             @php $gy = $T + (1 - $f) * ($H - $T - $B); @endphp
-            <line x1="{{ $L }}" x2="{{ $W - $R }}" y1="{{ $gy }}" y2="{{ $gy }}" class="grid"/>
+            <line x1="{{ $L }}" x2="{{ $W - $R }}" y1="{{ $gy }}" y2="{{ $gy }}" class="mc-grid"/>
             <text x="{{ $L - 8 }}" y="{{ $gy + 4 }}" class="axis" text-anchor="end">{{ round($max * $f) }}{{ ($b['suffix'] ?? '') === '%' ? '%' : '' }}</text>
         @endforeach
         <path d="{{ $area }}" fill="url(#{{ $id }})"/>

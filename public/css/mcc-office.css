@@ -35,7 +35,7 @@ h2 { font-size: 16px; font-weight: 700; }
 .side-foot b { display: block; } .side-foot form { margin-top: 10px; display: flex; gap: 14px; }
 .side-foot a, .side-foot button { color: var(--crest); background: none; border: 0; padding: 0; font: 700 12.5px var(--sans); cursor: pointer; }
 
-.main { padding: 28px clamp(16px, 3vw, 40px) 56px; width: 100%; max-width: 1280px; }
+.main { padding: 28px clamp(16px, 3vw, 40px) 56px; width: 100%; max-width: none; min-width: 0; }
 .page-head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 24px; margin-bottom: 22px; }
 .page-head > div:first-child { margin-right: auto; }
 .back { display: inline-block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }

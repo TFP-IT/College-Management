@@ -66,7 +66,7 @@ class PortalDashboard
     // ---- Building blocks ----------------------------------------------------
 
     /** A link only when the page exists, so a missing route never breaks the dashboard. */
-    private function url(string $route, array $parameters = []): ?string
+    private function url(string $route, mixed $parameters = []): ?string
     {
         return Route::has($route) ? route($route, $parameters) : null;
     }
@@ -230,7 +230,7 @@ class PortalDashboard
         ];
     }
 
-    private function recentPayments(int $limit = 6, ?array $students = null): array
+    private function recentPayments(int $limit = 6, ?array $students = null, bool $receipts = false): array
     {
         $rows = DB::table('fee_payments')->where('fee_payments.school_id', $this->school)->where('fee_payments.status', 'confirmed')
             ->when($students !== null, fn ($q) => $q->whereIn('fee_payments.student_id', $students ?: [0]))
@@ -241,12 +241,94 @@ class PortalDashboard
         $methods = ['cash' => 'Cash', 'bank' => 'Bank', 'bkash' => 'bKash', 'nagad' => 'Nagad', 'rocket' => 'Rocket', 'card' => 'Card', 'online' => 'Online'];
 
         return $rows->map(fn ($p) => [
-            ['text' => $p->name ?? '-', 'avatar' => $p->name ?? '?', 'sub' => $p->receipt_no],
+            ['text' => $p->name ?? '-', 'avatar' => $p->name ?? '?', 'sub' => $p->receipt_no, 'url' => $receipts ? $this->url('office.receipt', $p->id) : null],
             ['text' => $p->title ?? 'Fee payment'],
             ['badge' => $methods[$p->method] ?? ucfirst((string) $p->method), 'tone' => 'neutral'],
             ['text' => Carbon::parse($p->paid_at)->timezone(self::TZ)->format('j M, g:i A')],
             ['text' => $this->money($p->amount), 'strong' => true, 'num' => true],
         ])->all();
+    }
+
+    /**
+     * The office portal's home page. It shows only what the person's office areas allow.
+     *
+     * @param  string[]  $areas  from OfficeAccess::areas()
+     * @param  array  $today  OfficeReport::today()
+     * @param  array|null  $money  OfficeReport::money(), when the person handles fees
+     */
+    public function office(User $user, array $areas, array $today, ?array $money): array
+    {
+        $this->user = $user;
+        $this->school = (int) $user->school_id;
+        $this->session = $this->school ? StudentContext::runningSession($this->school) : null;
+        $can = fn (string $area) => in_array($area, $areas, true);
+        $roles = \App\Modules\Campus\Engine\Access::roles($user);
+        $role = in_array('Principal', $roles, true) ? 'Principal' : (in_array('admin', $roles, true) ? 'Office administrator' : (in_array('accounts', $roles, true) ? 'Accounts' : 'Office'));
+        $rate = $today['recorded'] ? (int) round($today['attended'] / $today['recorded'] * 100) : null;
+        $approvals = DB::table('workflow_requests')->where('school_id', $this->school)->where('status', 'pending')->count();
+        $invoices = $money ? $this->invoices() : collect();
+
+        $kpis = [
+            $this->kpi('Attendance today', $rate === null ? '-' : "{$rate}%", 'check', 'ok', $today['recorded'] ? "{$today['attended']} of {$today['recorded']} marked, {$today['late']} late" : 'Not taken yet'),
+            $this->kpi('Students enrolled', $today['students'], 'users', 'crest', trans_choice('{1} :count section|[0,*] :count sections', $n = $today['classes']->count(), ['count' => $n]), $can('students') ? $this->url('office.students') : null),
+        ];
+        if ($money) {
+            $kpis[] = $this->kpi('Collected today', $this->money($money['today']), 'wallet', 'gold', $this->money($money['month']) . ' this month', $this->url('office.fees'));
+            $kpis[] = $this->kpi('Outstanding fees', $this->money($money['due']), 'alert', 'info', "{$money['debtors']} students with a balance", $this->url('office.fees'));
+        } else {
+            $kpis[] = $this->kpi('Results to approve', $today['pending_results'], 'award', 'gold', 'Families see marks after you publish', $can('results') ? $this->url('office.results') : null);
+            $kpis[] = $this->kpi('Help requests', $today['open_tickets'], 'chat', 'info', 'Open or in progress', $can('help') ? $this->url('office.tickets') : null);
+        }
+
+        $modules = array_values(array_filter([
+            ['label' => 'Attendance', 'value' => $today['unmarked_sections'], 'unit' => 'sections not marked', 'chip' => $today['unmarked_sections'] ? 'Ask the class teacher' : 'All marked', 'tone' => $today['unmarked_sections'] ? 'gold' : 'ok', 'icon' => 'check', 'url' => null],
+            $can('results') ? ['label' => 'Results', 'value' => $today['pending_results'], 'unit' => 'waiting', 'chip' => 'For approval', 'tone' => 'info', 'icon' => 'award', 'url' => $this->url('office.results')] : null,
+            $can('approvals') ? ['label' => 'Approvals', 'value' => $approvals, 'unit' => 'pending', 'chip' => 'Requests', 'tone' => 'crest', 'icon' => 'stamp', 'url' => $this->url('office.approvals')] : null,
+            $can('help') ? ['label' => 'Help desk', 'value' => $today['open_tickets'], 'unit' => 'open', 'chip' => 'Requests', 'tone' => 'info', 'icon' => 'chat', 'url' => $this->url('office.tickets')] : null,
+            $money ? ['label' => 'Fees', 'value' => $money['debtors'], 'unit' => 'with dues', 'chip' => $invoices->where('status', 'verifying')->count() . ' to verify', 'tone' => 'gold', 'icon' => 'receipt', 'url' => $this->url('office.fees')] : null,
+            $can('insights') ? ['label' => 'Low attendance', 'value' => count($today['at_risk']), 'unit' => 'students', 'chip' => 'Below 80%', 'tone' => count($today['at_risk']) ? 'crest' : 'ok', 'icon' => 'alert', 'url' => $this->url('office.insights')] : null,
+        ]));
+
+        $sections = [
+            'type' => 'meters', 'width' => 'narrow', 'title' => 'Attendance by section', 'subtitle' => 'Today', 'empty' => 'No enrolled students yet.',
+            'items' => $today['classes']->map(fn ($c) => [
+                'label' => $c['label'],
+                'percent' => $c['students'] ? (int) round(($c['present'] + $c['late']) / $c['students'] * 100) : 0,
+                'value' => $c['recorded'] ? "{$c['recorded']} of {$c['students']} marked" : 'Not marked',
+                'tone' => $c['recorded'] < $c['students'] ? 'gold' : 'ok',
+            ])->values()->all(),
+        ];
+        $trend = ['type' => 'area', 'width' => 'wide', 'title' => 'Attendance', 'subtitle' => 'Share of marked students present, last school days', 'suffix' => '%', 'max' => 100, 'items' => $this->attendanceTrend(), 'empty' => 'No attendance has been recorded yet.'];
+        $risk = [
+            'type' => 'table', 'width' => 'narrow', 'compact' => true, 'title' => 'Low attendance', 'subtitle' => 'Below 80% across recorded days', 'url' => $can('insights') ? $this->url('office.insights') : null,
+            'empty' => 'No student is below 80%.', 'head' => ['Student', 'Rate'],
+            'rows' => collect($today['at_risk'])->map(fn ($r) => [
+                ['text' => $r->name, 'avatar' => $r->name, 'sub' => $r->student_id, 'url' => $can('students') ? $this->url('office.student', $r->id) : null],
+                ['badge' => $r->rate . '%', 'tone' => 'crest'],
+            ])->all(),
+        ];
+
+        $rows = $money ? [
+            [$trend, $this->invoiceDonut($invoices, 'Fee invoices')],
+            [['type' => 'bars', 'width' => 'wide', 'title' => 'Fee collection', 'subtitle' => 'Payments recorded, last six months', 'items' => $this->collectionByMonth(), 'money' => true, 'url' => $this->url('office.fees')], $sections],
+            [['type' => 'table', 'width' => 'wide', 'title' => 'Recent payments', 'url' => $this->url('office.fees'), 'empty' => 'No payment has been recorded yet.', 'head' => ['Student', 'For', 'Method', 'Received', 'Amount'], 'rows' => $this->recentPayments(6, null, true)], $risk],
+        ] : [
+            [$trend, $sections],
+            [$risk, $this->notices()],
+        ];
+
+        return [
+            'role' => $role,
+            'actions' => array_values(array_filter([
+                $can('announcements') ? ['label' => 'Send an announcement', 'url' => $this->url('office.announcements'), 'icon' => 'chat'] : null,
+                $money ? ['label' => 'Collect fees', 'url' => $this->url('office.fees'), 'icon' => 'wallet'] : null,
+                $can('results') ? ['label' => 'Review results', 'url' => $this->url('office.results'), 'icon' => 'award'] : null,
+                $can('students') ? ['label' => 'Students', 'url' => $this->url('office.students'), 'icon' => 'users'] : null,
+            ])),
+            'kpis' => $kpis,
+            'modules' => $modules,
+            'rows' => $rows,
+        ];
     }
 
     // ---- Roles --------------------------------------------------------------
