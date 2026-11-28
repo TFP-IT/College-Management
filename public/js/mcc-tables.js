@@ -86,7 +86,9 @@
           pill.classList.add('mcc-pill', 'mcc-pill-' + (tone ? tone[0] : 'neutral'));
         }
       });
-      if (NAME_HEAD.test(name)) {
+      // A plain "Name" column is a person only when the list also has an email or phone column.
+      var people = NAME_HEAD.test(name) && (!/^name$/i.test(name) || heads.some(function (h) { return /e-?mail|phone|mobile|contact|user info/i.test(text(h)); }));
+      if (people) {
         cells.forEach(function (cell) {
           if (cell.querySelector('img, .avatar, .mcc-av, .mcc-avatar, input')) return;
           // The name is the link, or else the first line of text; labels such as "Class :" are not names.
@@ -120,6 +122,15 @@
         if (v.length <= 26 && /\d{1,2}:\d{2}/.test(v) && /\d{4}|[A-Za-z]{3}/.test(v)) c.classList.add('mcc-nowrap');
       });
     });
+    Array.prototype.forEach.call(table.querySelectorAll('tbody img'), function (img) {
+      function swap() {
+        var row = img.closest('tr');
+        var who = row ? text(img.closest('td')) : '';
+        var av = el('span', { class: 'mcc-av', 'aria-hidden': 'true', 'data-hue': String((who.charCodeAt(0) || 0) % 5), text: initials(who || '?') });
+        img.replaceWith(av);
+      }
+      if (img.complete && img.naturalWidth === 0) swap(); else img.addEventListener('error', swap, { once: true });
+    });
     table.classList.add('mcc-decorated');
   }
 
@@ -141,6 +152,11 @@
     var heads = Array.prototype.slice.call(table.tHead.rows[table.tHead.rows.length - 1].cells);
     table.dataset.enhanced = '1';
     table.classList.add('mcc-list');
+    if (!body.rows.length) {
+      // A list with no rows still says so, instead of showing a bare heading.
+      body.appendChild(el('tr', { class: 'mcc-list-empty' }, [el('td', { colspan: String(heads.length) }, [el('span', { text: 'No records yet.' })])]));
+      return;
+    }
     if (rows.length) decorate(table, rows, heads);
     stripe(rows);
     if (rows.length < 3) return;

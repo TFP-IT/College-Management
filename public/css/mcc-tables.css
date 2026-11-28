@@ -1,7 +1,5 @@
 /* Toolbar, sortable headings and paging added to portal lists by js/mcc-tables.js. */
-.mcc-list-bar { --c: #c62828; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 14px; margin: 0 0 0; border: 1px solid #e6e8ec; border-bottom: 0; border-radius: 14px 14px 0 0; background: #fafbfc; }
-.mcc-list-bar + .table-responsive, .mcc-list-bar + .table-wrap, .mcc-list-bar + table, .mcc-list-bar + .mcc-table-wrap { border: 1px solid #e6e8ec; border-radius: 0 0 14px 14px; overflow: auto; }
-.mcc-list-bar + table { display: table; }
+.mcc-list-bar { --c: #c62828; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0 0 12px; margin: 0; border: 0; background: none; }
 .mcc-list-search { position: relative; margin: 0; flex: 1 1 220px; max-width: 320px; }
 .mcc-list-search::before { content: ''; position: absolute; left: 12px; top: 50%; width: 15px; height: 15px; transform: translateY(-50%); background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23858a91' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E"); }
 .mcc-list-bar input[type=search], .mcc-list-bar select { height: 38px; min-height: 38px !important; border: 1px solid #dcdfe4 !important; border-radius: 10px !important; background-color: #fff; font: 500 13.5px system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: #1a1a1a; box-shadow: none; }
@@ -29,16 +27,12 @@ th[aria-sort=ascending], th[aria-sort=descending] { color: #1a1a1a !important; }
 .mcc-list-pager button:disabled { opacity: .45; cursor: default; }
 @media (max-width: 600px) { .mcc-list-search { max-width: none; flex-basis: 100%; } .mcc-list-bar select { flex: 1 1 140px; } .mcc-list-gap { display: none; } }
 /* Inside a panel that has no padding of its own, the toolbar becomes a flat strip. */
-.panel .mcc-list-bar { border-left: 0; border-right: 0; border-radius: 0; }
-.panel .mcc-list-bar + .table-wrap, .panel .mcc-list-bar + .table-responsive, .panel .mcc-list-bar + table { border: 0; border-radius: 0; }
+.panel .mcc-list-bar { padding: 0 22px 12px; }
 .panel .mcc-list-pager { padding: 12px 22px; border-top: 1px solid #e6e8ec; }
-.mcc-list-bar.quiet { justify-content: flex-end; padding: 0 2px 8px; border: 0; background: none; }
-.mcc-list-bar.quiet + .table-responsive, .mcc-list-bar.quiet + .table-wrap, .mcc-list-bar.quiet + table { border: 0; }
+.mcc-list-bar.quiet { justify-content: flex-end; padding-bottom: 8px; }
 
 /* ---------- Table look: striped rows, soft header, pills ---------- */
-.main_content .table-responsive, main.main .table-wrap { border: 1px solid #e6e8ec; border-radius: 14px; background: #fff; }
-.mcc-list-bar + .table-responsive, .mcc-list-bar + .table-wrap { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
-.panel .table-wrap { border: 0; border-radius: 0; }
+.main_content .table-responsive, main.main .table-wrap { border: 0; border-radius: 0; background: #fff; }
 .main_content .table-responsive > table, main.main .table-wrap > table { margin: 0 !important; }
 
 .main_content table.mcc-list, main.main table.mcc-list, .main_content table.eTable, .main_content table.table { width: 100% !important; min-width: 0; border-collapse: separate !important; border-spacing: 0; color: #1f2328 !important; }
@@ -88,3 +82,11 @@ table.mcc-list .mcc-nowrap { white-space: nowrap; }
 /* Row actions stay compact so the list does not scroll sideways */
 table.mcc-list .table-action-btn-2, table.mcc-list .eBtn.dropdown-toggle, table.mcc-list td .btn-sm, .main_content table .table-action-btn-2 { height: 32px !important; padding: 0 12px !important; font-size: 12.5px !important; line-height: 30px !important; border-radius: 8px !important; }
 main.main table.mcc-list td .btn.small { min-height: 32px; }
+
+/* A list that sits alone in a narrowed column (old "col-7 offset-2" layouts) uses the full width. */
+.main_content .row:has(> [class*="col-"]:only-child) > [class*="col-"]:only-child:has(table.mcc-list, .eTable, table.table) { flex: 0 0 100%; width: 100%; max-width: 100%; margin-left: 0; }
+.main_content .row.justify-content-center:has(table) { justify-content: flex-start !important; }
+/* Rounded header corners inside the card. */
+.main_content table.mcc-list > thead > tr > th:first-child, main.main table.mcc-list > thead > tr > th:first-child { border-top-left-radius: 10px; }
+.main_content table.mcc-list > thead > tr > th:last-child, main.main table.mcc-list > thead > tr > th:last-child { border-top-right-radius: 10px; }
+.panel table.mcc-list > thead > tr > th { border-radius: 0 !important; }
